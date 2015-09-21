@@ -25,7 +25,9 @@ SECRET_KEY = '7v$kmjkvl6*)zc)i$oe)0=b9(f#@%=yq#nt)7*ks^x#s$qj@^='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1:8000'
+]
 
 
 # Application definition
@@ -38,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'topics',
     'votes'
@@ -84,13 +87,22 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    },
 }
 
 
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+}       
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

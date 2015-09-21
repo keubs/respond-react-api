@@ -8,3 +8,4 @@ class Topic(models.Model):
     created_by = models.ForeignKey(User)
     created_on = models.DateTimeField(auto_now_add=True)
 # Create your models here.
+

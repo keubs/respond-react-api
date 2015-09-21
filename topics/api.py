@@ -6,13 +6,18 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 
 class TopicList(APIView):
+
+    
     def get(self, request, format=None):
         topics = Topic.objects.all()
         serialized_topics = TopicSerializer(topics, many=True)
         return Response(serialized_topics.data)
 
+    @permission_classes((IsAuthenticated,))
     def post(self, request, format=None):
         serializer = TopicSerializer(data=request.data)
         if serializer.is_valid():
