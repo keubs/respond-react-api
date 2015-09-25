@@ -6,3 +6,4 @@ class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
         Fields = ('title', 'article_link', 'created_by', 'created_on')
+        many = True
