@@ -43,7 +43,8 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'corsheaders',
     'topics',
-    'votes'
+    'votes',
+    'updown'
 )
 
 MIDDLEWARE_CLASSES = (
