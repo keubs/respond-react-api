@@ -103,7 +103,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
-}       
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

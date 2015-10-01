@@ -9,6 +9,6 @@ class Topic(models.Model):
     article_link = models.TextField(validators=[URLValidator()])
     created_by = models.ForeignKey(User)
     created_on = models.DateTimeField(auto_now_add=True)
-    rating = RatingField()
+    rating = RatingField(can_change_vote=True)
 # Create your models here.
 
