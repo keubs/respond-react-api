@@ -6,11 +6,9 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
-
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-
+from rest_framework_jwt import utils
 class TopicList(APIView):
 
     def get(self, request, format=None):
@@ -33,11 +31,12 @@ class TopicDetail(APIView):
 
 
 class TopicPost(APIView):
-
     permission_classes = (IsAuthenticated, )
     authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, format=None):
+        user_id = utils.jwt_decode_handler(request.auth)
+        request.data['created_by'] = user_id['user_id']
         serializer = TopicSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

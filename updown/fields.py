@@ -10,11 +10,14 @@ Fields needed for the updown ratings
 :license: BSD, see LICENSE for more details.
 """
 from django.db.models import IntegerField, PositiveIntegerField
+
 from django.conf import settings
 
 from updown.models import Vote, SCORE_TYPES
 from updown.exceptions import InvalidRating, AuthRequired, CannotChangeVote
 from updown import forms
+
+from pprint import pprint
 
 
 if 'django.contrib.contenttypes' not in settings.INSTALLED_APPS:
@@ -22,11 +25,6 @@ if 'django.contrib.contenttypes' not in settings.INSTALLED_APPS:
                       "in your INSTALLED_APPS")
 
 from django.contrib.contenttypes.models import ContentType
-
-from rest_framework.permissions import IsAuthenticated
-
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-
 __all__ = ('Rating', 'RatingField', 'AnonymousRatingField')
 
 try:
@@ -47,8 +45,6 @@ class Rating(object):
 
 
 class RatingManager(object):
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (JSONWebTokenAuthentication, )
     def __init__(self, instance, field):
         self.content_type = None
         self.instance = instance
@@ -96,13 +92,12 @@ class RatingManager(object):
         if score not in SCORE_TYPES.values():
             raise InvalidRating("%s is not a valid score" % (score,))
 
-        is_anonymous = (user is None or not user.is_authenticated())
+        is_anonymous = (user is None)
         # if is_anonymous and not self.field.allow_anonymous:
         #     raise AuthRequired("User must be a user, not '%r'" % (user,))
 
         if is_anonymous:
             user = None
-
 
         defaults = {
             'score': score,
