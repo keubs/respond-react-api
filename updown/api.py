@@ -22,7 +22,7 @@ class RatingPost(APIView):
         serializer = VoteSerializer(data=request.data)
 
         
-        user = utils.jwt_decode_handler('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyIiwiZXhwIjoxNDQ0MzQ3MjI3LCJ1c2VyX2lkIjozLCJlbWFpbCI6InVzZXIyQHRlc3QuY29tIn0.gfSbX68nOVDuCH6gOjsLUsNWWtjVndjq8a-xSjp8Ysg')['user_id']
+        user = utils.jwt_decode_handler('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyIiwiZW1haWwiOiJ1c2VyMkB0ZXN0LmNvbSIsImV4cCI6MTQ0NDM0ODE0OSwidXNlcl9pZCI6M30.RlVrGj2zEgQuMTAPeawuP-pYy_nIyTVkYJzb133qvHY')['user_id']
         user = User.objects.get(id=user)
 
         rating = AddRatingFromModel()
