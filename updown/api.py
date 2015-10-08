@@ -27,4 +27,4 @@ class RatingPost(APIView):
 
         rating = AddRatingFromModel()
 
-        pprint(rating(request, model, app_label, object_id, field_name, score, user)['status'])
+        pprint(rating(request, model, app_label, object_id, field_name, score, user))
