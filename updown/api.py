@@ -3,6 +3,7 @@ from .serializers import VoteSerializer
 
 from django.http import Http404
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -22,7 +23,11 @@ class RatingPost(APIView):
         serializer = VoteSerializer(data=request.data)
 
         
-        user = utils.jwt_decode_handler('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NDY5NDMyNDAsInVzZXJuYW1lIjoidXNlcjIiLCJ1c2VyX2lkIjozLCJlbWFpbCI6InVzZXIyQHRlc3QuY29tIn0.WRWa_OHCJhpOgV9QMYLhnddnVOeUzlidOlaHsFLWo6M')['user_id']
+        if settings.BUILDING is True:
+            user = 1
+        if settings.BUILDING is False:
+            user = utils.jwt_decode_handler(request.auth)['user_id']
+        print(user)
         user = User.objects.get(id=user)
 
         rating = AddRatingFromModel()

@@ -78,7 +78,7 @@ class AddRatingView(object):
         # return Response
 
     def rating_added_response(self, request, context):
-        Response('{"response":"Vote recorded."}', status=status.HTTP_201_CREATED)
+        return Response('{"response":"Vote recorded."}', status=status.HTTP_201_CREATED)
         # response = HttpResponse('Vote recorded.')
         # return Response
 
