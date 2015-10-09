@@ -72,38 +72,39 @@ class AddRatingView(object):
         raise NotImplementedError
 
     def rating_changed_response(self, request, context):
-        Response('{response:Vote changed."}', status=status.HTTP_200_OK)
+
+        return Response('{"response":"Vote changed"}', status=status.HTTP_200_OK)
         # response = HttpResponse('Vote changed.')
-        return Response
+        # return Response
 
     def rating_added_response(self, request, context):
-        Response('{"response":"Vote recorded."}', status=status.HTTP_200_OK)
+        Response('{"response":"Vote recorded."}', status=status.HTTP_201_CREATED)
         # response = HttpResponse('Vote recorded.')
-        return Response
+        # return Response
 
     def authentication_required_response(self, request, context):
-        Response('{"response":"Vote recorded."}', status=status.HTTP_200_OK)
+        return Response('{"response":"You must be logged in to vote."}', status=status.HTTP_403_FORBIDDEN)
         # response = HttpResponse('You must be logged in to vote.')
         # response.status_code = 403
-        return Response
+        # return Response
 
     def cannot_change_vote_response(self, request, context):
-        Response('{"response":"Vote recorded."}', status=status.HTTP_200_OK)
+        return Response('{"response":"You have already voted."}', status=status.HTTP_200_OK)
         # response = HttpResponse('You have already voted.')
         # response.status_code = 403
-        return Response
+        # return Response
 
     def invalid_field_response(self, request, context):
-        Response('{"response":"Vote recorded."}', status=status.HTTP_200_OK)
+        return Response('{"response":"Invalid field name."}', status=status.HTTP_403_FORBIDDEN)
         # response = HttpResponse('Invalid field name.')
         # response.status_code = 403
-        return Response
+        # return Response
 
     def invalid_rating_response(self, request, context):
-        Response('{"response":"Vote recorded."}', status=status.HTTP_200_OK)
+        return Response('{"response":"Invalid rating value."}', status=status.HTTP_403_FORBIDDEN)
         # response = HttpResponse('Invalid rating value.')
         # response.status_code = 403
-        return Response
+        # return Response
 
     def get_instance(self, content_type_id, object_id):
         return ContentType.objects.get(pk=content_type_id)\
