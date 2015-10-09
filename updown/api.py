@@ -27,7 +27,7 @@ class RatingPost(APIView):
             user = 1
         if settings.BUILDING is False:
             user = utils.jwt_decode_handler(request.auth)['user_id']
-        print(user)
+
         user = User.objects.get(id=user)
 
         rating = AddRatingFromModel()

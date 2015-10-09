@@ -25,6 +25,8 @@ SECRET_KEY = '7v$kmjkvl6*)zc)i$oe)0=b9(f#@%=yq#nt)7*ks^x#s$qj@^='
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# BUILDING variable allows you to not need JWT tokens
 BUILDING = False
 
 ALLOWED_HOSTS = [

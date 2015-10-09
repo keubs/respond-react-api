@@ -1,4 +1,6 @@
 #### 1. A few commands to better test the backend
-* POST a topic to the backend `curl -X POST -d '{"title":"superego12","article_link":"http://disclosures.com","created_by":"1"}'  -H "Content-Type: application/json" -H "Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NDMyMjMxMjksInVzZXJuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQHRlc3QuY29tIiwidXNlcl9pZCI6MX0.yGiMO9wNLQxH2uzxj-VRMurjE4cFUNHuPPsQ-LQezqg" http://127.0.0.1:8000/api/topics/submit`
+* POST a topic to the backend `curl -X POST -d '{"title":"superego12","article_link":"http://disclosures.com","created_by":"1"}'  -H "Content-Type: application/json" -H "Authorization: JWT  <JWT token>" http://127.0.0.1:8000/api/topics/submit`
 
 * POST credentials to get JWT string `curl -X POST -d "username=admin&password=test" http://localhost:8000/api-token-auth/ | sed -e 's/^.*"token":"\([^"]*\)".*$/\1/'`
+
+* submit a rating to the backend `curl -H 'Authorization: JWT <JWT token>' http://localhost:8000/api/topics/20/rate/-1`
