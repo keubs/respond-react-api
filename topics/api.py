@@ -9,13 +9,15 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt import utils
+from operator import itemgetter
 
+from pprint import pprint
 class TopicList(APIView):
 
     def get(self, request, format=None):
-        topics = Topic.objects.all()
 
         # rewrite payload to include 'score' value
+        topics = Topic.objects.all()
         payload = []
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
@@ -28,8 +30,13 @@ class TopicList(APIView):
                 'created_by' : topic.created_by,
                 'rating_likes' : topic.rating_likes,
                 'rating_dislikes' : topic.rating_dislikes,
-            }      
-            payload.append(content)  
+            }
+            payload.append(content)
+
+        # sort by score instead
+        # @TODO score should probably be returned in the model, and thus sorted on a db-level
+        if request.query_params.get('order_by') == 'score':
+            payload = sorted(payload, key=itemgetter('score'), reverse=True)
         serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
