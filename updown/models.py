@@ -32,7 +32,6 @@ class Vote(models.Model):
     ip_address = models.IPAddressField()
     date_added = models.DateTimeField(default=timezone.now, editable=False)
     date_changed = models.DateTimeField(default=timezone.now, editable=False)
-
     content_object = generic.GenericForeignKey()
 
     class Meta:

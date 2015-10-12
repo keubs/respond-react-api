@@ -9,25 +9,56 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt import utils
+
 class TopicList(APIView):
 
     def get(self, request, format=None):
         topics = Topic.objects.all()
-        serialized_topics = TopicSerializer(topics, many=True)
+
+        # rewrite payload to include 'score' value
+        payload = []
+        for topic in topics:
+            score = topic.rating_likes - topic.rating_dislikes
+            content = {
+                'id' : topic.id,
+                'title' : topic.title,
+                'article_link' : topic.article_link,
+                'created_on' : topic.created_on,
+                'score' : score,
+                'created_by' : topic.created_by,
+                'rating_likes' : topic.rating_likes,
+                'rating_dislikes' : topic.rating_dislikes,
+            }      
+            payload.append(content)  
+        serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
 class TopicDetail(APIView):
 
     def get_object(self, pk):
         try:
-            return Topic.objects.get(pk=pk)
+            topics = Topic.objects.get(pk=pk)
+            return topics
+
         except Topic.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
         topic = self.get_object(pk)
+        score = topic.rating_likes - topic.rating_dislikes
+
         serialized_topic = TopicSerializer(topic)
-        return Response(serialized_topic.data)
+
+        payload = {
+            'id' : serialized_topic.data['id'],
+            'title' : serialized_topic.data['title'],
+            'article_link' : serialized_topic.data['article_link'],
+            'created_on' : serialized_topic.data['created_on'],
+            'score' : score,
+            'created_by' : serialized_topic.data['created_by']
+        }
+
+        return Response(payload)
 
 
 class TopicPost(APIView):

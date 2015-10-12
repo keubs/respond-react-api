@@ -126,4 +126,3 @@ class AddRatingFromModel(AddRatingView):
 
         return super(AddRatingFromModel, self).__call__(request, content_type.id,
                                                         object_id, field_name, score, user)
-
