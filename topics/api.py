@@ -1,5 +1,5 @@
-from .models import Topic
-from .serializers import TopicSerializer
+from .models import Topic, Action
+from .serializers import TopicSerializer, ActionSerializer
 
 from django.http import Http404
 
@@ -18,6 +18,7 @@ class TopicList(APIView):
 
         # rewrite payload to include 'score' value
         topics = Topic.objects.all()
+        pprint(topics)
         payload = []
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
@@ -80,3 +81,80 @@ class TopicPost(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ActionList(APIView):
+
+    def get(self, request, pk, format=None):
+
+        # rewrite payload to include 'score' value
+        actions = Action.objects.filter(topic_id=pk)
+
+        payload = []
+        for action in actions:
+            score = action.rating_likes - action.rating_dislikes
+            content = {
+                'id' : action.id,
+                'title' : action.title,
+                'description' : action.description,
+                'article_link' : action.article_link,
+                'created_on' : action.created_on,
+                'score' : score,
+                'topic' : action.topic,
+                'created_by' : action.created_by,
+                'rating_likes' : action.rating_likes,
+                'rating_dislikes' : action.rating_dislikes,
+            }
+            payload.append(content)
+
+        pprint(payload)
+        # sort by score instead
+        # @TODO score should probably be returned in the model, and thus sorted on a db-level
+        if request.query_params.get('order_by') == 'score':
+            payload = sorted(payload, key=itemgetter('score'), reverse=True)
+        serialized_actions = ActionSerializer(payload, many=True)
+        return Response(serialized_actions.data)
+
+class ActionDetail(APIView):
+
+    def get_object(self, pk):
+        try:
+            actions = Action.objects.get(pk=pk)
+            return actions
+
+        except Action.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        action = self.get_object(pk)
+        score = action.rating_likes - action.rating_dislikes
+
+        serialized_action = ActionSerializer(action)
+
+        payload = {
+            'id' : serialized_action.data['id'],
+            'title' : serialized_action.data['title'],
+            'description' : serialized_action.data['description'],
+            'article_link' : serialized_action.data['article_link'],
+            'created_on' : serialized_action.data['created_on'],
+            'score' : score,
+            'created_by' : serialized_action.data['created_by']
+        }
+
+        return Response(payload)
+
+class ActionPost(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
+
+    def post(self, request, pk, format=None):
+        pprint(request)
+        user_id = utils.jwt_decode_handler(request.auth)
+        request.data['created_by'] = user_id['user_id']
+        request.data['topic'] = pk
+        serializer = ActionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

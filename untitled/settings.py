@@ -48,7 +48,7 @@ INSTALLED_APPS = (
     'corsheaders',
     'topics',
     'votes',
-    'updown'
+    'updown',
 )
 
 MIDDLEWARE_CLASSES = (
