@@ -18,7 +18,6 @@ class TopicList(APIView):
 
         # rewrite payload to include 'score' value
         topics = Topic.objects.all()
-        pprint(topics)
         payload = []
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
@@ -56,6 +55,25 @@ class TopicDetail(APIView):
         score = topic.rating_likes - topic.rating_dislikes
 
         serialized_topic = TopicSerializer(topic)
+        actions = Action.objects.filter(topic_id=pk)
+
+        actionsPayload = []
+        for action in actions:
+            score = action.rating_likes - action.rating_dislikes
+            content = {
+                'id' : action.id,
+                'title' : action.title,
+                'description' : action.description,
+                'article_link' : action.article_link,
+                'created_on' : action.created_on,
+                'score' : score,
+                'topic' : action.topic.title,
+                'created_by' : action.created_by.id,
+                'rating_likes' : action.rating_likes,
+                'rating_dislikes' : action.rating_dislikes,
+            }
+
+            actionsPayload.append(content)
 
         payload = {
             'id' : serialized_topic.data['id'],
@@ -63,9 +81,11 @@ class TopicDetail(APIView):
             'article_link' : serialized_topic.data['article_link'],
             'created_on' : serialized_topic.data['created_on'],
             'score' : score,
-            'created_by' : serialized_topic.data['created_by']
+            'created_by' : serialized_topic.data['created_by'],
+            'actions' : actionsPayload,
         }
 
+        pprint(payload)
         return Response(payload)
 
 
