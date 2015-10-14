@@ -85,7 +85,6 @@ class TopicDetail(APIView):
             'actions' : actionsPayload,
         }
 
-        pprint(payload)
         return Response(payload)
 
 
@@ -127,7 +126,6 @@ class ActionList(APIView):
             }
             payload.append(content)
 
-        pprint(payload)
         # sort by score instead
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
         if request.query_params.get('order_by') == 'score':
@@ -168,7 +166,6 @@ class ActionPost(APIView):
     authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, pk, format=None):
-        pprint(request)
         user_id = utils.jwt_decode_handler(request.auth)
         request.data['created_by'] = user_id['user_id']
         request.data['topic'] = pk
