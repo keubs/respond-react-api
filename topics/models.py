@@ -19,3 +19,8 @@ class Action(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     topic = models.ForeignKey(Topic)
     rating = RatingField(can_change_vote=True)
+
+class Tag(models.Model):
+    title = models.CharField(max_length=256)
+    object_id = models.ForeignKey(Topic, Action)
+    object_type = models.CharField(max_length=128)

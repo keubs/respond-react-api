@@ -21,12 +21,13 @@ urlpatterns = [
     }, name="topic_rating"),
 
     # Actions
-    url(r'^api/topics/(?P<pk>[0-9]+)/actions/$', topic_api.ActionList.as_view()),
+    url(r'^api/topics/(?P<pk>[0-9]+)/actions/$', topic_api.ActionListByTopic.as_view()),
     url(r'^api/topics/(?P<pk>[0-9]+)/actions/submit$', topic_api.ActionPost.as_view()),
-    url(r'^api/topics/(?P<pk>[0-9]+)/actions/(?P<fk>[0-9]+)/$', topic_api.ActionDetail.as_view()),
+    url(r'^api/topics/(?P<pk>[0-9]+)/actions/(?P<fk>[0-9]+)/$', topic_api.ActionDetailByTopic.as_view()),
     url(r'^api/topics/(?P<object_id>\d+)/rate/(?P<score>[\d\-]+)$', updown_api.RatingPost.as_view(), {
         'app_label': 'topics',
         'model': 'Action',
         'field_name': 'rating',
     }, name="action_rating"),
+    url(r'^api/actions/$', topic_api.ActionList.as_view()),
 ]

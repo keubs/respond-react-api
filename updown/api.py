@@ -22,10 +22,7 @@ class RatingPost(APIView):
     def post(self, request, model, app_label, object_id, field_name, score, **kwargs):
         serializer = VoteSerializer(data=request.data)
 
-        if settings.BUILDING is True:
-            user = 1
-        if settings.BUILDING is False:
-            user = utils.jwt_decode_handler(request.auth)['user_id']
+        user = utils.jwt_decode_handler(request.auth)['user_id']
 
         user = User.objects.get(id=user)
 
@@ -36,9 +33,6 @@ class RatingPost(APIView):
     def get(self, request, model, app_label, object_id, field_name, score):
         serializer = VoteSerializer(data=request.data)
 
-        if settings.BUILDING is True:
-            user = 1
-        if settings.BUILDING is False:
-            user = utils.jwt_decode_handler(request.auth)['user_id']
+        user = utils.jwt_decode_handler(request.auth)['user_id']
 
         return Response('{"response":"hey."}', status=status.HTTP_200_OK)

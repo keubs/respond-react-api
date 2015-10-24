@@ -101,8 +101,13 @@ class TopicPost(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class ActionList(APIView):
+    def get(self, request, format=None):
+        actions = Action.objects.all()
+        serialized_actions = ActionSerializer(actions, many=True)
+        return Response(serialized_actions.data)
+
+class ActionListByTopic(APIView):
 
     def get(self, request, pk, format=None):
 
@@ -133,7 +138,7 @@ class ActionList(APIView):
         serialized_actions = ActionSerializer(payload, many=True)
         return Response(serialized_actions.data)
 
-class ActionDetail(APIView):
+class ActionDetailByTopic(APIView):
 
     def get_object(self, pk):
         try:
