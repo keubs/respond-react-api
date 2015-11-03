@@ -72,6 +72,8 @@ class TopicDetail(APIView):
                 'created_by' : action.created_by.id,
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
+                # not working yet :(
+                # 'tags' : action.tags,
             }
 
             actionsPayload.append(content)
