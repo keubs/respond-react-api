@@ -30,6 +30,7 @@ class TopicList(APIView):
                 'created_by' : topic.created_by,
                 'rating_likes' : topic.rating_likes,
                 'rating_dislikes' : topic.rating_dislikes,
+                'tags' : topic.tags,
             }
             payload.append(content)
 
@@ -95,7 +96,6 @@ class TopicPost(APIView):
     def post(self, request, format=None):
         # user_id = utils.jwt_decode_handler(request.auth)
         request.data['created_by'] = 1
-        pprint(request.data['tags'])
         serializer = TopicSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
