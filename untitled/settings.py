@@ -48,6 +48,8 @@ INSTALLED_APPS = (
     'corsheaders',
     'topics',
     'updown',
+    'taggit',
+    'taggit_serializer',
 )
 
 MIDDLEWARE_CLASSES = (
