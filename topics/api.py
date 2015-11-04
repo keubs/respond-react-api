@@ -103,9 +103,24 @@ class TopicDetail(APIView):
 
 class TopicListByTag(APIView):
     def get(self, reuest, tag, format=None):
-        pprint(tag)
         topics = Topic.objects.filter(tags__name__in=[tag])
-        serialized_topics = TopicSerializer(topics, many=True)
+        payload = []
+        for topic in topics:
+            score = topic.rating_likes - topic.rating_dislikes
+            content = {
+                'id' : topic.id,
+                'title' : topic.title,
+                'article_link' : topic.article_link,
+                'created_on' : topic.created_on,
+                'score' : score,
+                'created_by' : topic.created_by,
+                'rating_likes' : topic.rating_likes,
+                'rating_dislikes' : topic.rating_dislikes,
+                'tags' : topic.tags,
+            }
+            payload.append(content)
+
+        serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
 class TopicPost(APIView):
