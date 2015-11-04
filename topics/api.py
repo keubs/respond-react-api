@@ -64,6 +64,7 @@ class TopicDetail(APIView):
             score = action.rating_likes - action.rating_dislikes
 
             # Create empty list and populate with the action's tags
+            # @todo gotta be a better way to map this association than an extra query
             tags = []
             for tag in action.tags.names():
                 tags.append(tag);
@@ -81,8 +82,6 @@ class TopicDetail(APIView):
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
                 'tags' : tags,
-                # not working yet :(
-                # 'tags' : action.tags,
             }
 
             actionsPayload.append(content)
@@ -102,13 +101,20 @@ class TopicDetail(APIView):
         return Response(payload)
 
 
+class TopicListByTag(APIView):
+    def get(self, reuest, tag, format=None):
+        pprint(tag)
+        topics = Topic.objects.filter(tags__name__in=[tag])
+        serialized_topics = TopicSerializer(topics, many=True)
+        return Response(serialized_topics.data)
+
 class TopicPost(APIView):
-    # permission_classes = (IsAuthenticated, )
-    # authentication_classes = (JSONWebTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, format=None):
-        # user_id = utils.jwt_decode_handler(request.auth)
-        request.data['created_by'] = 1
+        user_id = utils.jwt_decode_handler(request.auth)
+        request.data['created_by'] = user_id['user_id']
         serializer = TopicSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
