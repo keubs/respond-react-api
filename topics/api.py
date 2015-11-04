@@ -58,9 +58,17 @@ class TopicDetail(APIView):
         serialized_topic = TopicSerializer(topic)
         actions = Action.objects.filter(topic_id=pk)
 
+        # Create an empty list and populate with the topic's actions
         actionsPayload = []
         for action in actions:
             score = action.rating_likes - action.rating_dislikes
+
+            # Create empty list and populate with the action's tags
+            tags = []
+            for tag in action.tags.names():
+                tags.append(tag);
+
+            # Each action is a dict
             content = {
                 'id' : action.id,
                 'title' : action.title,
@@ -72,12 +80,14 @@ class TopicDetail(APIView):
                 'created_by' : action.created_by.id,
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
+                'tags' : tags,
                 # not working yet :(
                 # 'tags' : action.tags,
             }
 
             actionsPayload.append(content)
 
+        # Create payload dict for specific topic
         payload = {
             'id' : serialized_topic.data['id'],
             'title' : serialized_topic.data['title'],
@@ -85,6 +95,7 @@ class TopicDetail(APIView):
             'created_on' : serialized_topic.data['created_on'],
             'score' : score,
             'created_by' : serialized_topic.data['created_by'],
+            'tags' : serialized_topic.data['tags'],
             'actions' : actionsPayload,
         }
 
