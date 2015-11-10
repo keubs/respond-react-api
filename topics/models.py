@@ -13,6 +13,9 @@ class Topic(models.Model):
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
 
+    def __str__(self):
+        return self.title
+
 class Action(models.Model):
     title = models.CharField(max_length=512)
     description = models.TextField()
@@ -22,3 +25,6 @@ class Action(models.Model):
     topic = models.ForeignKey(Topic)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
+
+    def __str__(self):
+        return self.title
