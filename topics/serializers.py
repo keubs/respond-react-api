@@ -8,7 +8,7 @@ class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
     score = serializers.ReadOnlyField()
     class Meta:
         model = Topic
-        Fields = ('title', 'article_link', 'created_by', 'created_on', 'score', 'tags')
+        Fields = ('title', 'article_link', 'created_by', 'created_on', 'score', 'tags', 'image')
         many = True
 
 class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):

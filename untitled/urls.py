@@ -31,4 +31,6 @@ urlpatterns = [
         'field_name': 'rating',
     }, name="action_rating"),
     url(r'^api/actions/$', topic_api.ActionList.as_view()),
+
+    url(r'^api/suggest/(?P<tag>[a-z]+)$', topic_api.SuggestTest.as_view()),
 ]

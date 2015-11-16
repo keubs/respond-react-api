@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'updown',
     'taggit',
     'taggit_serializer',
+    'taggit_suggest',
 )
 
 MIDDLEWARE_CLASSES = (

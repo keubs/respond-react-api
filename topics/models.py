@@ -12,7 +12,7 @@ class Topic(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
-
+    image = models.ImageField(upload_to='topic_photos', max_length=512)
     def __str__(self):
         return self.title
 
@@ -25,6 +25,7 @@ class Action(models.Model):
     topic = models.ForeignKey(Topic)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
+    image = models.ImageField(upload_to='action_photos', max_length=512)
 
     def __str__(self):
         return self.title

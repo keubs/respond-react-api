@@ -12,6 +12,8 @@ from rest_framework_jwt import utils
 from operator import itemgetter
 
 from pprint import pprint
+
+from taggit_suggest import utils as suggest
 class TopicList(APIView):
 
     def get(self, request, format=None):
@@ -31,6 +33,7 @@ class TopicList(APIView):
                 'rating_likes' : topic.rating_likes,
                 'rating_dislikes' : topic.rating_dislikes,
                 'tags' : topic.tags,
+                'image' : topic.image,
             }
             payload.append(content)
 
@@ -82,6 +85,7 @@ class TopicDetail(APIView):
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
                 'tags' : tags,
+                'image' : action.image
             }
 
             actionsPayload.append(content)
@@ -96,6 +100,7 @@ class TopicDetail(APIView):
             'created_by' : serialized_topic.data['created_by'],
             'tags' : serialized_topic.data['tags'],
             'actions' : actionsPayload,
+            'image' : serialized_topic.data['image'],
         }
 
         return Response(payload)
@@ -117,6 +122,7 @@ class TopicListByTag(APIView):
                 'rating_likes' : topic.rating_likes,
                 'rating_dislikes' : topic.rating_dislikes,
                 'tags' : topic.tags,
+                'image': topic.image,
             }
             payload.append(content)
 
@@ -163,6 +169,7 @@ class ActionListByTopic(APIView):
                 'created_by' : action.created_by,
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
+                'image' : action.image,
             }
             payload.append(content)
 
@@ -196,7 +203,8 @@ class ActionDetailByTopic(APIView):
             'article_link' : serialized_action.data['article_link'],
             'created_on' : serialized_action.data['created_on'],
             'score' : score,
-            'created_by' : serialized_action.data['created_by']
+            'created_by' : serialized_action.data['created_by'],
+            'image' : serialized_action.data['image'],
         }
 
         return Response(payload)
@@ -215,3 +223,9 @@ class ActionPost(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class SuggestTest(APIView):
+    def post(self, request, tag):
+        tags = suggest.suggest_tags(content=tag)
+        pprint(tags)
+        return Response('data')
