@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import JSONParser, FileUploadParser
+
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt import utils
 from operator import itemgetter
@@ -130,12 +132,15 @@ class TopicListByTag(APIView):
         return Response(serialized_topics.data)
 
 class TopicPost(APIView):
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (JSONWebTokenAuthentication, )
+    # permission_classes = (IsAuthenticated, )
+    # authentication_classes = (JSONWebTokenAuthentication, )
+    parser_classes = (FileUploadParser, JSONParser)
 
     def post(self, request, format=None):
-        user_id = utils.jwt_decode_handler(request.auth)
-        request.data['created_by'] = user_id['user_id']
+        pprint(request.data)
+        # user_id = utils.jwt_decode_handler(request.auth)
+        request.data['created_by'] = '1'
+        pprint(request.data)
         serializer = TopicSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

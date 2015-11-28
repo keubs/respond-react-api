@@ -6,9 +6,11 @@ from taggit_serializer.serializers import TagListSerializerField, TaggitSerializ
 class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
     score = serializers.ReadOnlyField()
+    image = serializers.FileField()
+
     class Meta:
         model = Topic
-        Fields = ('title', 'article_link', 'created_by', 'created_on', 'score', 'tags', 'image')
+        Fields = ('title', 'article_link', 'created_by', 'created_on', 'score', 'tags')
         many = True
 
 class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):

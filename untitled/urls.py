@@ -1,5 +1,8 @@
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.conf.urls.static import static
+from django.conf import settings
+
 from topics import api as topic_api
 
 from rest_framework.urlpatterns import format_suffix_patterns
@@ -33,4 +36,4 @@ urlpatterns = [
     url(r'^api/actions/$', topic_api.ActionList.as_view()),
 
     url(r'^api/suggest/(?P<tag>[a-z]+)$', topic_api.SuggestTest.as_view()),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
