@@ -1,5 +1,5 @@
 from .models import Topic, Action
-from .serializers import TopicSerializer, ActionSerializer
+from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerializer
 
 from django.http import Http404
 
@@ -48,21 +48,13 @@ class TopicList(APIView):
 
 class TopicDetail(APIView):
 
-    def get_object(self, pk):
-        try:
-            topics = Topic.objects.get(pk=pk)
-            return topics
-
-        except Topic.DoesNotExist:
-            raise Http404
-
     def get(self, request, pk, format=None):
-        topic = self.get_object(pk)
+        topic = Topic.objects.get(pk=pk)
+
         score = topic.rating_likes - topic.rating_dislikes
 
-        serialized_topic = TopicSerializer(topic)
+        serialized_topic = TopicDetailSerializer(topic)
         actions = Action.objects.filter(topic_id=pk)
-
         # Create an empty list and populate with the topic's actions
         actionsPayload = []
         for action in actions:
@@ -87,12 +79,12 @@ class TopicDetail(APIView):
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
                 'tags' : tags,
-                'image' : action.image
             }
 
             actionsPayload.append(content)
 
         # Create payload dict for specific topic
+        score = topic.rating_likes - topic.rating_dislikes
         payload = {
             'id' : serialized_topic.data['id'],
             'title' : serialized_topic.data['title'],
@@ -132,15 +124,13 @@ class TopicListByTag(APIView):
         return Response(serialized_topics.data)
 
 class TopicPost(APIView):
-    # permission_classes = (IsAuthenticated, )
-    # authentication_classes = (JSONWebTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
     parser_classes = (FileUploadParser, JSONParser)
 
     def post(self, request, format=None):
-        pprint(request.data)
-        # user_id = utils.jwt_decode_handler(request.auth)
-        request.data['created_by'] = '1'
-        pprint(request.data)
+        user_id = utils.jwt_decode_handler(request.auth)
+        request.data['created_by'] = user_id['user_id']
         serializer = TopicSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -154,7 +144,6 @@ class ActionList(APIView):
         return Response(serialized_actions.data)
 
 class ActionListByTopic(APIView):
-
     def get(self, request, pk, format=None):
 
         # rewrite payload to include 'score' value
@@ -174,6 +163,7 @@ class ActionListByTopic(APIView):
                 'created_by' : action.created_by,
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
+                'tags' : action.tags,
                 'image' : action.image,
             }
             payload.append(content)
@@ -186,21 +176,11 @@ class ActionListByTopic(APIView):
         return Response(serialized_actions.data)
 
 class ActionDetailByTopic(APIView):
-
-    def get_object(self, pk):
-        try:
-            actions = Action.objects.get(pk=pk)
-            return actions
-
-        except Action.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        action = self.get_object(pk)
+    def get(self, request, pk, fk, format=None):
+        action = Action.objects.filter(pk=fk)
         score = action.rating_likes - action.rating_dislikes
 
         serialized_action = ActionSerializer(action)
-
         payload = {
             'id' : serialized_action.data['id'],
             'title' : serialized_action.data['title'],
@@ -210,6 +190,7 @@ class ActionDetailByTopic(APIView):
             'score' : score,
             'created_by' : serialized_action.data['created_by'],
             'image' : serialized_action.data['image'],
+            'tags' : serialized_action.data['tags'],
         }
 
         return Response(payload)
@@ -217,6 +198,7 @@ class ActionDetailByTopic(APIView):
 class ActionPost(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (JSONWebTokenAuthentication, )
+    parser_classes = (FileUploadParser, JSONParser)
 
     def post(self, request, pk, format=None):
         user_id = utils.jwt_decode_handler(request.auth)
@@ -232,5 +214,4 @@ class ActionPost(APIView):
 class SuggestTest(APIView):
     def post(self, request, tag):
         tags = suggest.suggest_tags(content=tag)
-        pprint(tags)
         return Response('data')
