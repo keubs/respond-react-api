@@ -12,7 +12,7 @@ class Topic(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
-    image = models.ImageField(upload_to='static', max_length=512)
+    image = models.ImageField(upload_to='static', max_length=512, blank=True)
     def __str__(self):
         return self.title
 
