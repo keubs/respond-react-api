@@ -39,4 +39,6 @@ urlpatterns = [
     url(r'^api/suggest/(?P<tag>[a-z]+)$', topic_api.SuggestTest.as_view()),
 
     url(r'^api/getimage/$', misc_api.ImageHelpers.as_view()),
+
+    url(r'^api/user/register/$', misc_api.UserRegistration.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -101,7 +101,7 @@ class TopicDetail(APIView):
 
 
 class TopicListByTag(APIView):
-    def get(self, reuest, tag, format=None):
+    def get(self, request, tag, format=None):
         topics = Topic.objects.filter(tags__name__in=[tag])
         payload = []
         for topic in topics:
