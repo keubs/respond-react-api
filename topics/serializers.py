@@ -16,11 +16,10 @@ class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
 class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
     score = serializers.ReadOnlyField()
-    image = serializers.FileField()
 
     class Meta:
         model = Topic
-        Fields = ('title', 'article_link', 'created_by', 'created_on', 'tags', 'score', 'image')
+        Fields = ('title', 'description', 'article_link', 'created_by', 'tags', 'score', 'image_url')
         many = True
 
 class TopicDetailSerializer(TaggitSerializer, serializers.ModelSerializer):

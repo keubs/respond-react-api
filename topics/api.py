@@ -1,7 +1,14 @@
+
+import requests
+
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+
 from .models import Topic, Action
 from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerializer
 
 from django.http import Http404
+from django.core.files import File
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,9 +20,10 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt import utils
 from operator import itemgetter
 
+from taggit_suggest import utils as suggest
+
 from pprint import pprint
 
-from taggit_suggest import utils as suggest
 class TopicList(APIView):
 
     def get(self, request, format=None):
@@ -36,6 +44,7 @@ class TopicList(APIView):
                 'rating_dislikes' : topic.rating_dislikes,
                 'tags' : topic.tags,
                 'image' : topic.image,
+                'image_url' : topic.image_url,
             }
             payload.append(content)
 
@@ -124,18 +133,29 @@ class TopicListByTag(APIView):
         return Response(serialized_topics.data)
 
 class TopicPost(APIView):
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (JSONWebTokenAuthentication, )
-    parser_classes = (FileUploadParser, JSONParser)
+    # permission_classes = (IsAuthenticated, )
+    # authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, format=None):
-        user_id = utils.jwt_decode_handler(request.auth)
-        request.data['created_by'] = user_id['user_id']
+        # user_id = utils.jwt_decode_handler(request.auth)
+        request.data['created_by'] = 1
+        # request.data['image'] = get_remote_image(request.data)
         serializer = TopicSerializer(data=request.data)
+        # request.data['image'] = self.save_image_from_url(Topic, request.data['image_url'])
         if serializer.is_valid():
-            serializer.save()
+            model = serializer.save()
+            self.save_image_from_url(model, request.data['image_url'])
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def save_image_from_url(self, model, url):
+        r = requests.get(url)
+        from urllib import parse
+        filename = parse.urlparse(url).path.split('/')[-1]
+        img_temp = NamedTemporaryFile(delete=True)
+        img_temp.write(r.content)
+        img_temp.flush()
+        model.image.save("image.jpg", File(img_temp), save=True)
 
 class ActionList(APIView):
     def get(self, request, format=None):
@@ -215,3 +235,9 @@ class SuggestTest(APIView):
     def post(self, request, tag):
         tags = suggest.suggest_tags(content=tag)
         return Response('data')
+
+        import requests
+
+        from django.core.files import File
+        from django.core.files.temp import NamedTemporaryFile
+
