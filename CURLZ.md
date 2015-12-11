@@ -1,5 +1,5 @@
 #### 1. A few commands to better test the backend
-* POST a topic to the backend `curl --verbose -X POST -H "Content-Type:multipart/form-data" -F "title=This is a test topic" -F "article_link=http://testtopic-1.com" -F "created_by=1" -F 'tags=["tag1","tag2"]' -F "image=@/Users/Kevin/Pictures/z8.jpg;type=image/jpg" -F "description=this is the first topic" -H "Authorization: JWT <jwt token>" http://127.0.0.1:8100/api/topics/submit`
+* POST a topic to the backend `curl --verbose -X POST -H "Content-Type:multipart/form-data" -F "title=This is a test topic" -F "article_link=http://testtopic-1.com" -F "created_by=1" -F 'tags=["tag1","tag2"]' -F "description=this is the first topic" -F "image_url=http://a.espncdn.com/photo/2015/1207/deandre_mem_169.jpg" -H "Authorization: JWT <JWT token>" http://127.0.0.1:8100/api/topics/submit`
 
 * POST credentials to get JWT string `curl -X POST -d "username=admin&password=test" http://localhost:8000/api/token-auth/ | sed -e 's/^.*"token":"\([^"]*\)".*$/\1/'`
 

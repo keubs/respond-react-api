@@ -22,4 +22,10 @@ class ImageHelpers(APIView):
     def post(self, request, format=None):
 
         og = opengraph.OpenGraph(url=request.data['url'])
-        return Response({'image' : og['image']}, status=status.HTTP_200_OK)
+        pprint(og)
+        try:
+            return Response({'image' : og['image'], 'title' : og['title']}, status=status.HTTP_200_OK)
+        except urllib.error.URLError:
+            return Response({'image':'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
+        except KeyError:
+            return Response({'image':'Not Found'}, status=status.HTTP_404_NOT_FOUND)
