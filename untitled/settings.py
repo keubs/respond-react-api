@@ -50,7 +50,7 @@ INSTALLED_APPS = (
     'updown',
     'taggit',
     'taggit_serializer',
-    'taggit_suggest',
+    'opengraph',
 )
 
 MIDDLEWARE_CLASSES = (

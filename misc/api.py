@@ -7,15 +7,19 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from django.db import IntegrityError
+from .serializers import UserSerializer
 from pprint import pprint
 class UserRegistration(APIView):
     def post(self, request, format=None):
         try:
-            user = User(email=request.data['email'], username=request.data['username'])
+            user = User(email=request.data['email'], username=request.data['username'], password=request.data['password'])
             user.save()
-            return Response({'booya':'grandma'}, status=status.HTTP_201_CREATED)
+            serialized_user = UserSerializer(request.data)
+            return Response(serialized_user.data, status=status.HTTP_201_CREATED)
         except IntegrityError as e:
-            return Response({'booya':'grandma'}, status=status.HTTP_404_NOT_FOUND)
+            pprint(e)
+            return Response({'user':'username alraedy in use'}, status=status.HTTP_409_CONFLICT)
 
 
 class ImageHelpers(APIView):

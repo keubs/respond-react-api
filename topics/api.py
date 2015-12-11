@@ -20,7 +20,6 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt import utils
 from operator import itemgetter
 
-from taggit_suggest import utils as suggest
 
 from pprint import pprint
 
@@ -104,6 +103,7 @@ class TopicDetail(APIView):
             'tags' : serialized_topic.data['tags'],
             'actions' : actionsPayload,
             'image' : serialized_topic.data['image'],
+            'image_url' : serialized_topic.data['image_url'],
         }
 
         return Response(payload)
@@ -126,6 +126,7 @@ class TopicListByTag(APIView):
                 'rating_dislikes' : topic.rating_dislikes,
                 'tags' : topic.tags,
                 'image': topic.image,
+                'image_url': topic.image_url,
             }
             payload.append(content)
 
@@ -228,16 +229,3 @@ class ActionPost(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class SuggestTest(APIView):
-    def post(self, request, tag):
-        tags = suggest.suggest_tags(content=tag)
-        return Response('data')
-
-        import requests
-
-        from django.core.files import File
-        from django.core.files.temp import NamedTemporaryFile
-
