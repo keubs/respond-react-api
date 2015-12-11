@@ -22,7 +22,7 @@ class UserRegistration(APIView):
             return Response({'user':'username alraedy in use'}, status=status.HTTP_409_CONFLICT)
 
 
-class ImageHelpers(APIView):
+class OpenGraphHelpers(APIView):
     def post(self, request, format=None):
 
         og = opengraph.OpenGraph(url=request.data['url'])

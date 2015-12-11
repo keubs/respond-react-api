@@ -37,7 +37,7 @@ urlpatterns = [
     url(r'^api/actions/$', topic_api.ActionList.as_view()),
 
 
-    url(r'^api/getimage/$', misc_api.ImageHelpers.as_view()),
+    url(r'^api/getopengraph/$', misc_api.OpenGraphHelpers.as_view()),
 
     url(r'^api/user/register/$', misc_api.UserRegistration.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
