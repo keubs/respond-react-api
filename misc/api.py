@@ -14,19 +14,21 @@ class UserRegistration(APIView):
     def post(self, request, format=None):
         try:
             user = User(email=request.data['email'], username=request.data['username'], password=request.data['password'])
-            # user.save()
+            user.save()
+
+            # Get new user id and return in response
+            request.data['id'] = user.id
             serialized_user = UserSerializer(request.data)
             return Response(serialized_user.data, status=status.HTTP_201_CREATED)
         except IntegrityError as e:
             pprint(e)
-            return Response({'user':'username alraedy in use'}, status=status.HTTP_409_CONFLICT)
+            return Response({'user':'username or email alraedy in use'}, status=status.HTTP_409_CONFLICT)
 
 
 class OpenGraphHelpers(APIView):
     def post(self, request, format=None):
-
         og = opengraph.OpenGraph(url=request.data['url'])
-        pprint(og)
+
         try:
             return Response({'image' : og['image'], 'title' : og['title']}, status=status.HTTP_200_OK)
         except urllib.error.URLError:
