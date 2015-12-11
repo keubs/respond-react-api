@@ -14,7 +14,7 @@ class UserRegistration(APIView):
     def post(self, request, format=None):
         try:
             user = User(email=request.data['email'], username=request.data['username'], password=request.data['password'])
-            user.save()
+            # user.save()
             serialized_user = UserSerializer(request.data)
             return Response(serialized_user.data, status=status.HTTP_201_CREATED)
         except IntegrityError as e:
