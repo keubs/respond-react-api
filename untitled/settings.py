@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'taggit',
     'taggit_serializer',
     'opengraph',
+    'django_facebook',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -124,6 +125,7 @@ JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'misc.views.jwt_response_payload_handler',
 }
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
@@ -150,3 +152,13 @@ STATICFILES_DIRS = (
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
+
+
+FACEBOOK_APP_ID = '1513191525645232'
+FACEBOOK_APP_SECRET = 'c9a2ea8ff74eb7b4e0bdf17a1fe6cf18'
+AUTH_PROFILE_MODULE = 'django_facebook.FacebookProfile'
+
+AUTHENTICATION_BACKENDS = (
+    'django_facebook.auth_backends.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)

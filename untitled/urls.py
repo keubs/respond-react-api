@@ -38,6 +38,8 @@ urlpatterns = [
 
 
     url(r'^api/getopengraph/$', misc_api.OpenGraphHelpers.as_view()),
+    url(r'^facebook/', include('django_facebook.urls')),
+    url(r'^accounts/', include('django_facebook.auth_urls')), #Don't add this line if you use django registration or userena for registration and auth.
 
     url(r'^api/user/register/$', misc_api.UserRegistration.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

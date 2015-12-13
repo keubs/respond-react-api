@@ -61,6 +61,7 @@ class TopicDetail(APIView):
         # Create an empty list and populate with the topic's actions
         actionsPayload = []
         for action in actions:
+
             score = action.rating_likes - action.rating_dislikes
 
             # Create empty list and populate with the action's tags
@@ -68,7 +69,6 @@ class TopicDetail(APIView):
             tags = []
             for tag in action.tags.names():
                 tags.append(tag);
-
             # Each action is a dict
             content = {
                 'id' : action.id,
@@ -82,6 +82,7 @@ class TopicDetail(APIView):
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
                 'tags' : tags,
+                'image' : action.image.url,
             }
 
             actionsPayload.append(content)
@@ -208,11 +209,11 @@ class ActionPost(APIView):
     # authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, pk, format=None):
-        user_id = utils.jwt_decode_handler(request.auth)
+        # user_id = utils.jwt_decode_handler(request.auth)
         request.data['created_by'] = 1
         request.data['topic'] = pk
-        pprint(request.data)
-        serializer = TopicSerializer(data=request.data)
+
+        serializer = ActionSerializer(data=request.data)
         if serializer.is_valid():
             model = serializer.save()
             try:

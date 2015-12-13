@@ -18,7 +18,7 @@ class Topic(models.Model):
     image_url = models.URLField()
 
     def __str__(self):
-        return self.title
+        return self.id
 
 class Action(models.Model):
     title = models.CharField(max_length=512)
@@ -29,8 +29,8 @@ class Action(models.Model):
     topic = models.ForeignKey(Topic)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
-    image = models.ImageField(upload_to='static', max_length=512)
+    image = models.ImageField(upload_to='static', max_length=512, blank=True, null=True)
     image_url = models.URLField()
 
     def __str__(self):
-        return self.title
+        return self.id
