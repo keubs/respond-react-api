@@ -1,9 +1,3 @@
-
-import requests
-
-from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
-
 from .models import Topic, Action
 from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerializer
 
@@ -20,6 +14,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt import utils
 from operator import itemgetter
 
+from misc import views as misc_views
 
 from pprint import pprint
 
@@ -134,29 +129,21 @@ class TopicListByTag(APIView):
         return Response(serialized_topics.data)
 
 class TopicPost(APIView):
-    # permission_classes = (IsAuthenticated, )
-    # authentication_classes = (JSONWebTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, format=None):
-        # user_id = utils.jwt_decode_handler(request.auth)
-        request.data['created_by'] = 1
-        # request.data['image'] = get_remote_image(request.data)
+        user_id = utils.jwt_decode_handler(request.auth)
+        request.data['created_by'] = user_id['user_id']
         serializer = TopicSerializer(data=request.data)
-        # request.data['image'] = self.save_image_from_url(Topic, request.data['image_url'])
         if serializer.is_valid():
             model = serializer.save()
-            self.save_image_from_url(model, request.data['image_url'])
+            try:
+                misc_views.save_image_from_url(model, request.data['image_url'])
+            except KeyError:
+                Response({'image':'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def save_image_from_url(self, model, url):
-        r = requests.get(url)
-        from urllib import parse
-        filename = parse.urlparse(url).path.split('/')[-1]
-        img_temp = NamedTemporaryFile(delete=True)
-        img_temp.write(r.content)
-        img_temp.flush()
-        model.image.save("image.jpg", File(img_temp), save=True)
 
 class ActionList(APIView):
     def get(self, request, format=None):
@@ -217,15 +204,20 @@ class ActionDetailByTopic(APIView):
         return Response(payload)
 
 class ActionPost(APIView):
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (JSONWebTokenAuthentication, )
-    parser_classes = (FileUploadParser, JSONParser)
+    # permission_classes = (IsAuthenticated, )
+    # authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, pk, format=None):
         user_id = utils.jwt_decode_handler(request.auth)
-        request.data['created_by'] = user_id['user_id']
+        request.data['created_by'] = 1
         request.data['topic'] = pk
-        serializer = ActionSerializer(data=request.data)
+        pprint(request.data)
+        serializer = TopicSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            model = serializer.save()
+            try:
+                misc_views.save_image_from_url(model, request.data['image_url'])
+            except KeyError:
+                Response({'image':'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
