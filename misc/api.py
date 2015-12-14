@@ -1,7 +1,6 @@
 import re
 import urllib
-import opengraph
-
+from opengraph import opengraph
 from urllib.request import urlopen
 from rest_framework import status
 from rest_framework.views import APIView
@@ -21,12 +20,12 @@ class UserRegistration(APIView):
             serialized_user = UserSerializer(request.data)
             return Response(serialized_user.data, status=status.HTTP_201_CREATED)
         except IntegrityError as e:
-            pprint(e)
             return Response({'user':'username or email alraedy in use'}, status=status.HTTP_409_CONFLICT)
 
 
 class OpenGraphHelpers(APIView):
     def post(self, request, format=None):
+        
         og = opengraph.OpenGraph(url=request.data['url'])
 
         try:
