@@ -25,9 +25,7 @@ class UserRegistration(APIView):
 
 class OpenGraphHelpers(APIView):
     def post(self, request, format=None):
-        
         og = opengraph.OpenGraph(url=request.data['url'])
-
         try:
             return Response({'image' : og['image'], 'title' : og['title']}, status=status.HTTP_200_OK)
         except urllib.error.URLError:
