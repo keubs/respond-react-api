@@ -208,10 +208,9 @@ class ActionPost(APIView):
     # permission_classes = (IsAuthenticated, )
     # authentication_classes = (JSONWebTokenAuthentication, )
 
-    def post(self, request, pk, format=None):
+    def post(self, request, format=None):
         # user_id = utils.jwt_decode_handler(request.auth)
         request.data['created_by'] = 1
-        request.data['topic'] = pk
 
         serializer = ActionSerializer(data=request.data)
         if serializer.is_valid():
