@@ -23,7 +23,7 @@ class TopicList(APIView):
     def get(self, request, format=None):
 
         # rewrite payload to include 'score' value
-        topics = Topic.objects.all()
+        topics = Topic.objects.all().order_by('-created_on')
         payload = []
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
@@ -87,6 +87,7 @@ class TopicDetail(APIView):
 
             actionsPayload.append(content)
 
+
         # Create payload dict for specific topic
         score = topic.rating_likes - topic.rating_dislikes
         payload = {
@@ -101,7 +102,7 @@ class TopicDetail(APIView):
             'image' : serialized_topic.data['image'],
             'image_url' : serialized_topic.data['image_url'],
         }
-
+        payload['action_count'] = len(actionsPayload)
         return Response(payload)
 
 
