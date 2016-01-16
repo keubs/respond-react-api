@@ -16,8 +16,8 @@ from updown.views import AddRatingFromModel
 from pprint import pprint
 
 class RatingPost(APIView):
-    # permission_classes = (IsAuthenticated, )
-    # authentication_classes = (JSONWebTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, model, app_label, object_id, field_name, score, **kwargs):
         serializer = VoteSerializer(data=request.data)
