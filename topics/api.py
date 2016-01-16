@@ -69,23 +69,23 @@ class TopicDetail(APIView):
             tags = []
             for tag in action.tags.names():
                 tags.append(tag);
-            # Each action is a dict
-            content = {
-                'id' : action.id,
-                'title' : action.title,
-                'description' : action.description,
-                'article_link' : action.article_link,
-                'created_on' : action.created_on,
-                'score' : score,
-                'topic' : action.topic.title,
-                'created_by' : action.created_by.id,
-                'rating_likes' : action.rating_likes,
-                'rating_dislikes' : action.rating_dislikes,
-                'tags' : tags,
-                'image' : action.image.url,
-            }
+            # # Each action is a dict
+            # content = {
+            #     'id' : action.id,
+            #     'title' : action.title,
+            #     'description' : action.description,
+            #     'article_link' : action.article_link,
+            #     'created_on' : action.created_on,
+            #     'score' : score,
+            #     'topic' : action.topic.title,
+            #     'created_by' : action.created_by.id,
+            #     'rating_likes' : action.rating_likes,
+            #     'rating_dislikes' : action.rating_dislikes,
+            #     'tags' : tags,
+            #     'image' : action.image.url,
+            # }
 
-            actionsPayload.append(content)
+            # actionsPayload.append(content)
 
 
         # Create payload dict for specific topic
@@ -175,6 +175,7 @@ class ActionListByTopic(APIView):
                 'rating_dislikes' : action.rating_dislikes,
                 'tags' : action.tags,
                 'image' : action.image,
+                'image_url': action.image_url,
             }
             payload.append(content)
 
