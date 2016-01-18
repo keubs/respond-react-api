@@ -13,6 +13,7 @@ class UserRegistration(APIView):
     def post(self, request, format=None):
         try:
             user = User(email=request.data['email'], username=request.data['username'], password=request.data['password'])
+
             user.save()
 
             # Get new user id and return in response
@@ -20,7 +21,7 @@ class UserRegistration(APIView):
             serialized_user = UserSerializer(request.data)
             return Response(serialized_user.data, status=status.HTTP_201_CREATED)
         except IntegrityError as e:
-            return Response({'user':'username or email alraedy in use'}, status=status.HTTP_409_CONFLICT)
+            return Response({'user':'username or email already in use'}, status=status.HTTP_409_CONFLICT)
 
 
 class OpenGraphHelpers(APIView):
