@@ -18,7 +18,7 @@ class Topic(models.Model):
     image_url = models.URLField()
 
     def __str__(self):
-        return self.id
+        return str(self.title)
 
 class Action(models.Model):
     title = models.CharField(max_length=512)
@@ -33,4 +33,4 @@ class Action(models.Model):
     image_url = models.URLField()
 
     def __str__(self):
-        return self.id
+        return str(self.title)

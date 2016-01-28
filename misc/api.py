@@ -33,3 +33,5 @@ class OpenGraphHelpers(APIView):
             return Response({'image':'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
             return Response({'image':'Not Found'}, status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response({'response':'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
