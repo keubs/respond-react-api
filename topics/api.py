@@ -57,52 +57,12 @@ class TopicDetail(APIView):
         score = topic.rating_likes - topic.rating_dislikes
 
         serialized_topic = TopicDetailSerializer(topic)
-        actions = Action.objects.filter(topic_id=pk)
-        # Create an empty list and populate with the topic's actions
-        actionsPayload = []
-        for action in actions:
+        payload = {}
+        for attr, value in serialized_topic.data.items():
+            payload[attr] = value
 
-            score = action.rating_likes - action.rating_dislikes
+        payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
 
-            # Create empty list and populate with the action's tags
-            # @todo gotta be a better way to map this association than an extra query
-            tags = []
-            for tag in action.tags.names():
-                tags.append(tag);
-            # # Each action is a dict
-            # content = {
-            #     'id' : action.id,
-            #     'title' : action.title,
-            #     'description' : action.description,
-            #     'article_link' : action.article_link,
-            #     'created_on' : action.created_on,
-            #     'score' : score,
-            #     'topic' : action.topic.title,
-            #     'created_by' : action.created_by.id,
-            #     'rating_likes' : action.rating_likes,
-            #     'rating_dislikes' : action.rating_dislikes,
-            #     'tags' : tags,
-            #     'image' : action.image.url,
-            # }
-
-            # actionsPayload.append(content)
-
-
-        # Create payload dict for specific topic
-        score = topic.rating_likes - topic.rating_dislikes
-        payload = {
-            'id' : serialized_topic.data['id'],
-            'title' : serialized_topic.data['title'],
-            'article_link' : serialized_topic.data['article_link'],
-            'created_on' : serialized_topic.data['created_on'],
-            'score' : score,
-            'created_by' : serialized_topic.data['created_by'],
-            'tags' : serialized_topic.data['tags'],
-            'actions' : actionsPayload,
-            'image' : serialized_topic.data['image'],
-            'image_url' : serialized_topic.data['image_url'],
-        }
-        payload['action_count'] = len(actionsPayload)
         return Response(payload)
 
 
