@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^api/topics/submit$', topic_api.TopicPost.as_view()),
     url(r'^api/topics/(?P<pk>[0-9]+)/$', topic_api.TopicDetail.as_view()),
     url(r'^api/token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
+    url(r'^api/token/', 'misc.views.jwt_response_token'),
     url(r'^api/topics/(?P<object_id>\d+)/rate/(?P<score>[\d\-]+)$', updown_api.RatingPost.as_view(), {
         'app_label': 'topics',
         'model': 'Topic',
@@ -38,6 +39,10 @@ urlpatterns = [
 
 
     url(r'^api/getopengraph/$', misc_api.OpenGraphHelpers.as_view()),
-
     url(r'^api/user/register/$', misc_api.UserRegistration.as_view()),
+    url(r'^api/login/', include('rest_social_auth.urls_jwt')),
+
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

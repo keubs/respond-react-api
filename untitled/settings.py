@@ -51,6 +51,15 @@ INSTALLED_APPS = (
     'taggit',
     'taggit_serializer',
     'opengraph',
+    'social.apps.django_app.default',
+    'oauth2_provider',
+    'rest_social_auth',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    # OAuth
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -110,6 +119,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
     ),
 
     'DEFAULT_PARSER_CLASSES': (
@@ -117,6 +127,29 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.FileUploadParser',
     ),
+}
+
+AUTHENTICATION_BACKENDS = {
+    # Facebook OAuth2
+    'social.backends.facebook.FacebookAppOAuth2',
+    'social.backends.facebook.FacebookOAuth2',
+
+    # Django
+    'django.contrib.auth.backends.ModelBackend',
+}
+
+# Facebook configuration
+SOCIAL_AUTH_FACEBOOK_KEY = '1513191525645232'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'c9a2ea8ff74eb7b4e0bdf17a1fe6cf18'
+
+# Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook. Email is not sent by default, to get it, you must request the email permission:
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
+
+SOCIAL_AUTH_ENABLED_BACKENDS = ('facebook')
+
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+  'fields': 'id, name, email'
 }
 
 JWT_AUTH = {
