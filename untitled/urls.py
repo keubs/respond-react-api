@@ -17,9 +17,8 @@ urlpatterns = [
     url(r'^api/topics/$', topic_api.TopicList.as_view()),
     url(r'^api/topics/tag/(?P<tag>.*)/$', topic_api.TopicListByTag.as_view()),
     url(r'^api/topics/submit$', topic_api.TopicPost.as_view()),
-    url(r'^api/topics/(?P<pk>[0-9]+)/$', topic_api.TopicDetail.as_view()),
+    url(r'^api/topics/(?P<pk>[0-9]+)$', topic_api.TopicDetail.as_view()),
     url(r'^api/token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
-    url(r'^api/token/', 'misc.views.jwt_response_token'),
     url(r'^api/topics/(?P<object_id>\d+)/rate/(?P<score>[\d\-]+)$', updown_api.RatingPost.as_view(), {
         'app_label': 'topics',
         'model': 'Topic',

@@ -182,5 +182,10 @@ STATICFILES_DIRS = (
     '/Users/Kevin/python/untitled/back/static',
 )
 
+# @TODO eventually get whitelists working
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
+CORS_ORIGIN_WHITELIST = (
+    'http://squ.ad:3000',
+    'http://squ.ad:8100',
+)
