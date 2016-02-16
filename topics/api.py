@@ -3,6 +3,7 @@ from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerialize
 
 from django.http import Http404
 from django.core.files import File
+from django.contrib.auth.models import User
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -27,6 +28,7 @@ class TopicList(APIView):
         payload = []
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
+            user = User.objects.get(id=int(topic.created_by.id))
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
@@ -34,6 +36,7 @@ class TopicList(APIView):
                 'created_on' : topic.created_on,
                 'score' : score,
                 'created_by' : topic.created_by,
+                'username' : user.username,
                 'rating_likes' : topic.rating_likes,
                 'rating_dislikes' : topic.rating_dislikes,
                 'tags' : topic.tags,
@@ -41,6 +44,7 @@ class TopicList(APIView):
                 'image_url' : topic.image_url,
             }
             payload.append(content)
+
 
         # sort by score instead
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
