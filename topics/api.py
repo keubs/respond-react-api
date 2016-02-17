@@ -56,18 +56,21 @@ class TopicList(APIView):
 class TopicDetail(APIView):
 
     def get(self, request, pk, format=None):
-        topic = Topic.objects.get(pk=pk)
+        try:
+            topic = Topic.objects.get(pk=pk)
 
-        score = topic.rating_likes - topic.rating_dislikes
+            score = topic.rating_likes - topic.rating_dislikes
 
-        serialized_topic = TopicDetailSerializer(topic)
-        payload = {}
-        for attr, value in serialized_topic.data.items():
-            payload[attr] = value
+            serialized_topic = TopicDetailSerializer(topic)
+            payload = {}
+            for attr, value in serialized_topic.data.items():
+                payload[attr] = value
 
-        payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
+            payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
 
-        return Response(payload)
+            return Response(payload)
+        except Topic.DoesNotExist:
+            return Response({"error" : "topic not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class TopicListByTag(APIView):
