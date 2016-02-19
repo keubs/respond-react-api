@@ -6,7 +6,7 @@ from taggit_serializer.serializers import TagListSerializerField, TaggitSerializ
 class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
     score = serializers.ReadOnlyField()
-
+    username = serializers.ReadOnlyField()
     class Meta:
         model = Action
         Fields = ('title', 'description', 'article_link', 'created_on', 'created_by', 'topic', 'tags', 'score', 'image_url')

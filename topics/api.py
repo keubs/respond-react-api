@@ -79,6 +79,7 @@ class TopicListByTag(APIView):
         payload = []
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
+            user = User.objects.get(id=int(topic.created_by.id))
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
@@ -86,6 +87,7 @@ class TopicListByTag(APIView):
                 'created_on' : topic.created_on,
                 'score' : score,
                 'created_by' : topic.created_by,
+                'username' : user.username,
                 'rating_likes' : topic.rating_likes,
                 'rating_dislikes' : topic.rating_dislikes,
                 'tags' : topic.tags,
@@ -129,6 +131,7 @@ class ActionListByTopic(APIView):
         payload = []
         for action in actions:
             score = action.rating_likes - action.rating_dislikes
+            user = User.objects.get(id=int(action.created_by.id))
             content = {
                 'id' : action.id,
                 'title' : action.title,
@@ -137,6 +140,7 @@ class ActionListByTopic(APIView):
                 'created_on' : action.created_on,
                 'score' : score,
                 'topic' : action.topic,
+                'username' : user.username,
                 'created_by' : action.created_by,
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
