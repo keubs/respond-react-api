@@ -1,5 +1,6 @@
 import re
 import urllib
+import requests
 from opengraph import opengraph
 from urllib.request import urlopen
 from rest_framework import status
@@ -7,8 +8,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.conf import settings
 from .serializers import UserSerializer
+
 from pprint import pprint
+
 class UserRegistration(APIView):
     def post(self, request, format=None):
         try:
@@ -35,3 +39,10 @@ class OpenGraphHelpers(APIView):
             return Response({'image':'Not Found'}, status=status.HTTP_404_NOT_FOUND)
         except:
             return Response({'response':'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
+
+class nyTimesAPIHelpers(APIView):
+    def post(self, request, format=None):
+        dictionary = requests.get('http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("' + request.data['url'] + '")&api-key='+ settings.NY_TIMES_API_KEY).json()
+        response = dictionary['response']
+
+        return Response(response)

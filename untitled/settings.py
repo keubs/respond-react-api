@@ -142,6 +142,10 @@ AUTHENTICATION_BACKENDS = {
 SOCIAL_AUTH_FACEBOOK_KEY = '1513191525645232'
 SOCIAL_AUTH_FACEBOOK_SECRET = 'c9a2ea8ff74eb7b4e0bdf17a1fe6cf18'
 
+
+# NY Times configuration
+NY_TIMES_API_KEY = 'c277ad1aa3dfb2a71395b92bb3e9a80c:16:69678011'
+
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook. Email is not sent by default, to get it, you must request the email permission:
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
