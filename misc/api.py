@@ -30,15 +30,22 @@ class UserRegistration(APIView):
 
 class OpenGraphHelpers(APIView):
     def post(self, request, format=None):
-        try:
-            og = opengraph.OpenGraph(url=request.data['url'])
-            return Response({'image' : og['image'], 'title' : og['title'], 'description' : og['description']}, status=status.HTTP_200_OK)
-        except urllib.error.URLError:
-            return Response({'image':'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
-        except KeyError:
-            return Response({'image':'Not Found'}, status=status.HTTP_404_NOT_FOUND)
-        except:
-            return Response({'response':'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
+        # try:
+        og = opengraph.OpenGraph(url=request.data['url'])
+
+        # Description may or may not exist
+        if 'description' in og:
+            desc = og['description']
+        else:
+            desc = ''
+
+        return Response({'image' : og['image'], 'title' : og['title'], 'description' : desc}, status=status.HTTP_200_OK)
+        # except urllib.error.URLError:
+        #     return Response({'image':'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
+        # except KeyError:
+        #     return Response({'image':'Not Found'}, status=status.HTTP_404_NOT_FOUND)
+        # except:
+        #     return Response({'response':'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
 
 class nyTimesAPIHelpers(APIView):
     def post(self, request, format=None):
