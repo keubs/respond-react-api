@@ -152,8 +152,8 @@ class ActionListByTopic(APIView):
 
         # sort by score instead
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
-        if request.query_params.get('order_by') == 'score':
-            payload = sorted(payload, key=itemgetter('score'), reverse=True)
+        # if request.query_params.get('order_by') == 'score':
+        payload = sorted(payload, key=itemgetter('score'), reverse=True)
         serialized_actions = ActionSerializer(payload, many=True)
         return Response(serialized_actions.data)
 
