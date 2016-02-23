@@ -49,7 +49,9 @@ class OpenGraphHelpers(APIView):
 
 class nyTimesAPIHelpers(APIView):
     def post(self, request, format=None):
-        dictionary = requests.get('http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("' + request.data['url'] + '")&api-key='+ settings.NY_TIMES_API_KEY).json()
-        response = dictionary['response']
-
-        return Response(response)
+        try:
+            dictionary = requests.get('http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("' + request.data['url'] + '")&api-key='+ settings.NY_TIMES_API_KEY).json()
+            response = dictionary['response']
+            return Response(response)
+        except KeyError:
+            return Response({"error" : "invalid data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
