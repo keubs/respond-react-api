@@ -35,7 +35,7 @@ urlpatterns = [
         'field_name': 'rating',
     }, name="action_rating"),
     url(r'^api/actions/$', topic_api.ActionList.as_view()),
-
+    url(r'^api/actions/tag/(?P<tag>.*)/$', topic_api.ActionListByTag.as_view()),
 
     url(r'^api/getopengraph/$', misc_api.OpenGraphHelpers.as_view()),
     url(r'^api/nytimes/$', misc_api.nyTimesAPIHelpers.as_view()),

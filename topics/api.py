@@ -99,6 +99,38 @@ class TopicListByTag(APIView):
         serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
+
+class ActionListByTag(APIView):
+    def get(self, request, tag, format=None):
+        actions = Action.objects.filter(tags__name__in=[tag])
+
+        payload = []
+        for action in actions:
+            pprint(action)
+            score = action.rating_likes - action.rating_dislikes
+            user = User.objects.get(id=int(action.created_by.id))
+            content = {
+                'id' : action.id,
+                'title' : action.title,
+                'description' : action.description,
+                'article_link' : action.article_link,
+                'created_on' : action.created_on,
+                'score' : score,
+                'topic' : action.topic,
+                'username' : user.username,
+                'created_by' : action.created_by,
+                'rating_likes' : action.rating_likes,
+                'rating_dislikes' : action.rating_dislikes,
+                'tags' : action.tags,
+                'image' : action.image,
+                'image_url': action.image_url,
+            }
+            payload.append(content)
+
+        payload = sorted(payload, key=itemgetter('score'), reverse=True)
+        serialized_actions = ActionSerializer(payload, many=True)
+        return Response(serialized_actions.data)
+
 class TopicPost(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (JSONWebTokenAuthentication, )
