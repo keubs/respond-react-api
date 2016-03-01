@@ -29,6 +29,7 @@ class TopicList(APIView):
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
             user = User.objects.get(id=int(topic.created_by.id))
+            actions = Action.objects.filter(topic=topic.id).count()
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
@@ -42,6 +43,7 @@ class TopicList(APIView):
                 'tags' : topic.tags,
                 'image' : topic.image,
                 'image_url' : topic.image_url,
+                'actions' : actions,
             }
             payload.append(content)
 
