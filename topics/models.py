@@ -5,7 +5,6 @@ from django.core.validators import URLValidator
 
 from updown.fields import RatingField
 from taggit.managers import TaggableManager
-from django.core.files import File
 
 class Topic(models.Model):
     title = models.CharField(max_length=512)
