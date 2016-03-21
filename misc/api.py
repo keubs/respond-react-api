@@ -1,8 +1,12 @@
 import re
 import urllib
 import requests
+import urllib.request
+import json
+
+import zipcode
+
 from opengraph import opengraph
-from urllib.request import urlopen
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,7 +14,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.conf import settings
 from .serializers import UserSerializer
-
+from pprint import pprint
 class UserRegistration(APIView):
     def post(self, request, format=None):
         try:
@@ -52,3 +56,17 @@ class nyTimesAPIHelpers(APIView):
             return Response(response)
         except KeyError:
             return Response({"error" : "invalid data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class geolocationHelpers(APIView):
+    def post(self, request, format=None):
+        gmapurl = 'http://maps.googleapis.com/maps/api/geocode/json?address=' + request.data['zip']
+        response = urllib.request.urlopen(gmapurl)
+        content = response.read()
+        data = json.loads(content.decode("utf8"))
+        
+        myzip = zipcode.isequal(request.data['zip'])
+        cbus = (data['results'][0]['geometry']['location']['lat'], data['results'][0]['geometry']['location']['lng'])
+
+        pprint(zipcode.isinradius(cbus, 20))
+        return Response(data['results'][0]['geometry']['location'], status=status.HTTP_200_OK)

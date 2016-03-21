@@ -40,6 +40,7 @@ urlpatterns = [
 
     url(r'^api/getopengraph/$', misc_api.OpenGraphHelpers.as_view()),
     url(r'^api/nytimes/$', misc_api.nyTimesAPIHelpers.as_view()),
+    url(r'^api/geolocate/$', misc_api.geolocationHelpers.as_view()),
     url(r'^api/user/register/$', misc_api.UserRegistration.as_view()),
     url(r'^api/login/', include('rest_social_auth.urls_jwt')),
 

@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'oauth2_provider',
     'rest_social_auth',
+    'address',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
