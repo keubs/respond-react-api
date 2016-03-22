@@ -24,6 +24,7 @@ class Topic(models.Model):
         choices = SCOPE_CHOICES,
         max_length=9,
     )
+    zip = models.CharField(max_length=10)
     def __str__(self):
         return str(self.title)
 
@@ -43,6 +44,7 @@ class Action(models.Model):
     tags = TaggableManager()
     image = models.ImageField(upload_to='static', max_length=512, blank=True, null=True)
     image_url = models.URLField()
+    zip = models.CharField(max_length=10)
     scope = models.CharField(
         choices=SCOPE_CHOICES,
         max_length=9,

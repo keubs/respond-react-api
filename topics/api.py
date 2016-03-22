@@ -44,6 +44,8 @@ class TopicList(APIView):
                 'image' : topic.image,
                 'image_url' : topic.image_url,
                 'actions' : actions,
+                'zip' : topic.zip,
+                'scope' : topic.scope,
             }
             payload.append(content)
 
@@ -181,6 +183,8 @@ class ActionListByTopic(APIView):
                 'tags' : action.tags,
                 'image' : action.image,
                 'image_url': action.image_url,
+                'zip' : action.zip,
+                'scope' : action.scope,
             }
             payload.append(content)
 

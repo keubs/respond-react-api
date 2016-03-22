@@ -61,6 +61,7 @@ class OpenGraph(dict):
                'Connection': 'keep-alive'}
         req = urllib2.Request(url, headers=hdr) 
         raw = urllib2.urlopen(req)
+
         html = raw.read()
         return self.parser(html)
 
@@ -73,6 +74,8 @@ class OpenGraph(dict):
             doc = html
         ogs = doc.html.head.findAll(property=re.compile(r'^og'))
         for og in ogs:
+            from pprint import pprint
+            pprint(og)
             self[og[u'property'][3:]]=og[u'content']
 
         # Couldn't fetch all attrs from og tags, try scraping body
