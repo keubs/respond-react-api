@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'topics',
     'updown',
     'taggit',
+    'customuser',
     'taggit_serializer',
     'opengraph',
     'social.apps.django_app.default',
@@ -172,6 +173,20 @@ JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'misc.views.jwt_response_payload_handler',
 }
 
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    'social.pipeline.user.create_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+    'customuser.social_pipeline.save_avatar',  # custom action
+)
+
+AUTH_USER_MODEL = 'customuser.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
