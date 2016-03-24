@@ -3,7 +3,6 @@ from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerialize
 
 from django.http import Http404
 from django.core.files import File
-from django.contrib.auth.models import User
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -16,6 +15,7 @@ from rest_framework_jwt import utils
 from operator import itemgetter
 
 from misc import views as misc_views
+from customuser.models import CustomUser
 
 from pprint import pprint
 
@@ -28,7 +28,7 @@ class TopicList(APIView):
         payload = []
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
-            user = User.objects.get(id=int(topic.created_by.id))
+            user = CustomUser.objects.get(id=int(topic.created_by.id))
             actions = Action.objects.filter(topic=topic.id).count()
             content = {
                 'id' : topic.id,
@@ -83,7 +83,7 @@ class TopicListByTag(APIView):
         payload = []
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
-            user = User.objects.get(id=int(topic.created_by.id))
+            user = CustomUser.objects.get(id=int(topic.created_by.id))
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
@@ -112,7 +112,7 @@ class ActionListByTag(APIView):
         for action in actions:
             pprint(action)
             score = action.rating_likes - action.rating_dislikes
-            user = User.objects.get(id=int(action.created_by.id))
+            user = CustomUser.objects.get(id=int(action.created_by.id))
             content = {
                 'id' : action.id,
                 'title' : action.title,
@@ -167,7 +167,7 @@ class ActionListByTopic(APIView):
         payload = []
         for action in actions:
             score = action.rating_likes - action.rating_dislikes
-            user = User.objects.get(id=int(action.created_by.id))
+            user = CustomUser.objects.get(id=int(action.created_by.id))
             content = {
                 'id' : action.id,
                 'title' : action.title,
@@ -216,11 +216,11 @@ class ActionDetailByTopic(APIView):
         return Response(payload)
 
 class ActionPost(APIView):
-    # permission_classes = (IsAuthenticated, )
-    # authentication_classes = (JSONWebTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, format=None):
-        # user_id = utils.jwt_decode_handler(request.auth)
+        user_id = utils.jwt_decode_handler(request.auth)
         request.data['created_by'] = 1
 
         serializer = ActionSerializer(data=request.data)
@@ -232,3 +232,18 @@ class ActionPost(APIView):
                 Response({'image':'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TopicByScope(APIView):
+    def get(self, request, format=None):
+        pprint(request.data['zip'])
+
+
+
+
+
+
+
+
+
+

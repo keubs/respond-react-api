@@ -2,7 +2,6 @@ from .models import Vote
 from .serializers import VoteSerializer
 
 from django.http import Http404
-from django.contrib.auth.models import User
 from django.conf import settings
 
 from rest_framework.views import APIView
@@ -13,6 +12,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt import utils
 
 from updown.views import AddRatingFromModel
+from customuser.models import CustomUser
 from pprint import pprint
 
 class RatingPost(APIView):
@@ -24,7 +24,7 @@ class RatingPost(APIView):
 
         user = utils.jwt_decode_handler(request.auth)['user_id']
 
-        user = User.objects.get(id=user)
+        user = CustomUser.objects.get(id=user)
 
         addRating = AddRatingFromModel()
 
