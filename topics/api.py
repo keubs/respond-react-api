@@ -97,6 +97,8 @@ class TopicListByTag(APIView):
                 'tags' : topic.tags,
                 'image': topic.image,
                 'image_url': topic.image_url,
+                'scope': topic.scope,
+                'zip' : topic.zip,
             }
             payload.append(content)
 
