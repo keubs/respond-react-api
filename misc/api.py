@@ -5,6 +5,7 @@ import urllib.request
 import json
 
 import zipcode
+import random
 
 from opengraph import opengraph
 from rest_framework import status
@@ -14,6 +15,9 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.conf import settings
 from .serializers import UserSerializer
+
+from topics.models import Topic, Action
+from topics.serializers import TopicSerializer
 from pprint import pprint
 class UserRegistration(APIView):
     def post(self, request, format=None):
@@ -64,9 +68,35 @@ class geolocationHelpers(APIView):
         response = urllib.request.urlopen(gmapurl)
         content = response.read()
         data = json.loads(content.decode("utf8"))
-        
+
         myzip = zipcode.isequal(request.data['zip'])
+        ziplist = zipcode.getzipsinscope(request.data['zip'], request.data['scope'])
+
+        # pprint(type(['adsf', 'afdasf']))
+        # pprint(ziplist)
+
+        pprint(random.choice(Topic.objects.filter(zip__in=ziplist)))
         cbus = (data['results'][0]['geometry']['location']['lat'], data['results'][0]['geometry']['location']['lng'])
 
-        pprint(zipcode.isinradius(cbus, 20))
         return Response(data['results'][0]['geometry']['location'], status=status.HTTP_200_OK)
+
+
+
+class regionalGeolocateHelpers(APIView):
+    def post(self, request, format=None):
+        gmapurl = 'http://maps.googleapis.com/maps/api/geocode/json?address=%s' % request.data['zip']
+        response = urllib.request.urlopen(gmapurl)
+        content = response.read()
+        data = json.loads(content.decode("utf8"))
+
+        myzip = zipcode.isequal(request.data['zip'])
+        if request.data['scope'] == 'world':
+            topic = random.choice(Topic.objects.all())
+        else:
+            ziplist = zipcode.getzipsinscope(request.data['zip'], request.data['scope'])
+            topic = random.choice(Topic.objects.filter(zip__in=ziplist))
+
+        serialized_topic = TopicSerializer(topic)
+
+        return Response(serialized_topic.data, status=status.HTTP_200_OK)
+
