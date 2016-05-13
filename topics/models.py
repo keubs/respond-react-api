@@ -5,6 +5,7 @@ from django.core.validators import URLValidator
 
 from updown.fields import RatingField
 from taggit.managers import TaggableManager
+from address.models import AddressField
 
 class Topic(models.Model):
     SCOPE_CHOICES = [
@@ -24,7 +25,7 @@ class Topic(models.Model):
         choices = SCOPE_CHOICES,
         max_length=9,
     )
-    zip = models.CharField(max_length=10)
+    address = AddressField(null=True)
     def __str__(self):
         return str(self.title)
 
@@ -44,11 +45,11 @@ class Action(models.Model):
     tags = TaggableManager()
     image = models.ImageField(upload_to='static', max_length=512, blank=True, null=True)
     image_url = models.URLField()
-    zip = models.CharField(max_length=10)
     scope = models.CharField(
         choices=SCOPE_CHOICES,
         max_length=9,
     )
+    address = AddressField(null=True)
 
     def __str__(self):
         return str(self.title)

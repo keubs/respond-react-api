@@ -44,8 +44,8 @@ class TopicList(APIView):
                 'image' : topic.image,
                 'image_url' : topic.image_url,
                 'actions' : actions,
-                'zip' : topic.zip,
                 'scope' : topic.scope,
+                'address' : topic.address,
             }
             payload.append(content)
 
@@ -98,7 +98,7 @@ class TopicListByTag(APIView):
                 'image': topic.image,
                 'image_url': topic.image_url,
                 'scope': topic.scope,
-                'zip' : topic.zip,
+                'address' : topic.address,
             }
             payload.append(content)
 
@@ -130,6 +130,7 @@ class ActionListByTag(APIView):
                 'tags' : action.tags,
                 'image' : action.image,
                 'image_url': action.image_url,
+                'address': action.address,
             }
             payload.append(content)
 
@@ -185,8 +186,9 @@ class ActionListByTopic(APIView):
                 'tags' : action.tags,
                 'image' : action.image,
                 'image_url': action.image_url,
-                'zip' : action.zip,
+                'action' : action.address,
                 'scope' : action.scope,
+                'address': action.address,
             }
             payload.append(content)
 
