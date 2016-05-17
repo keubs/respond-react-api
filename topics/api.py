@@ -131,6 +131,7 @@ class ActionListByTag(APIView):
                 'image' : action.image,
                 'image_url': action.image_url,
                 'address': action.address,
+                'scope' : action.scope,
             }
             payload.append(content)
 

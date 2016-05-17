@@ -5,6 +5,6 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('password', 'first_name', 'last_name', 'email', 'username', 'id', 'zip',)
+        fields = ('password', 'first_name', 'last_name', 'email', 'username', 'id',)
         write_only_fields = ('password',)
-        read_only_fields = ('is_staff', 'is_superuser', 'is_active', 'date_joined','id', 'zip',)
+        read_only_fields = ('is_staff', 'is_superuser', 'is_active', 'date_joined','id',)
