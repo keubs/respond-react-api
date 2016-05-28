@@ -10,6 +10,7 @@ from updown.views import AddRatingFromModel
 from updown import api as updown_api
 from misc import api as misc_api
 from linkfactory import api as linkfactory_api
+from addressapi import api as address_api
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -48,5 +49,7 @@ urlpatterns = [
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
     url(r'^api/linkfactory/$', linkfactory_api.ProcessLink.as_view()),
+
+    url(r'^api/address/submit/$', address_api.AddressPost.as_view()),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

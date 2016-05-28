@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'oauth2_provider',
     'rest_social_auth',
     'address',
+    'addressapi',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
