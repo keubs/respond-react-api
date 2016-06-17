@@ -3,8 +3,6 @@ import urllib
 import requests
 import urllib.request
 import json
-
-import zipcode
 import random
 
 from opengraph import opengraph
