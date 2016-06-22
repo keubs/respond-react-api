@@ -10,16 +10,26 @@ from rest_framework import status
 class AddressPost(APIView):
     def post(self, request, format=None):
 
-        latlng = getLatLng(request.data['raw'])
-
-        request.data['latitude'] = latlng['lat']
-        request.data['longitude'] = latlng['lng']
+        if 'lat' in request.data:
+            request.data['latitude'] = request.data['lat']
+            request.data['longitude'] = request.data['lng']
+        else:
+            latlng = getLatLng(request.data['raw'])
+            request.data['latitude'] = latlng['lat']
+            request.data['longitude'] = latlng['lng']
 
         serializer = AddressSerializer(data=request.data)
         if serializer.is_valid():
             addr = serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+class AddressList(APIView):
+    def get(self, request, format=None):
+        addresses = Address.objects.all()
+
+        serialized_addresses = AddressSerializer(addresses, many=True)
+        return Response(serialized_addresses.data)
 
 def getLatLng(data):
     response = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + data)

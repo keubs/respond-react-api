@@ -51,5 +51,6 @@ urlpatterns = [
     url(r'^api/linkfactory/$', linkfactory_api.ProcessLink.as_view()),
 
     url(r'^api/address/submit/$', address_api.AddressPost.as_view()),
-
+    url(r'^api/addresses/$', address_api.AddressList.as_view()),
+    
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
