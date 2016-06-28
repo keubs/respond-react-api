@@ -3,6 +3,7 @@ from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerialize
 
 from django.http import Http404
 from django.core.files import File
+from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -16,8 +17,8 @@ from operator import itemgetter
 
 from misc import views as misc_views
 from customuser.models import CustomUser
-
-from pprint import pprint
+from address.models import Address
+from addressapi.serializers import AddressSerializer
 
 class TopicList(APIView):
 
@@ -71,8 +72,14 @@ class TopicDetail(APIView):
                 payload[attr] = value
 
             payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
-
+            try:
+                topic_address = Address.objects.get(pk=payload['address'])
+                address_serializer = AddressSerializer(topic_address)
+                payload['address'] = address_serializer.data
+            except Address.DoesNotExist:
+                pass
             return Response(payload)
+
         except Topic.DoesNotExist:
             return Response({"error" : "topic not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -146,7 +153,10 @@ class TopicPost(APIView):
     def post(self, request, format=None):
         user_id = utils.jwt_decode_handler(request.auth)
         request.data['created_by'] = user_id['user_id']
+
         serializer = TopicSerializer(data=request.data)
+        
+
         if serializer.is_valid():
             model = serializer.save()
             try:
@@ -226,7 +236,9 @@ class ActionPost(APIView):
 
     def post(self, request, format=None):
         user_id = utils.jwt_decode_handler(request.auth)
-        request.data['created_by'] = 1
+        user_id = user_id['user_id']
+
+        request.data['created_by'] = user_id
 
         serializer = ActionSerializer(data=request.data)
         if serializer.is_valid():
