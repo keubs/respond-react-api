@@ -53,7 +53,6 @@ INSTALLED_APPS = (
     'taggit_serializer',
     'opengraph',
     'social.apps.django_app.default',
-    'oauth2_provider',
     'rest_social_auth',
     'address',
     'addressapi',
@@ -132,7 +131,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
     ),
 
     'DEFAULT_PARSER_CLASSES': (
