@@ -15,7 +15,7 @@ from django.conf import settings
 from .serializers import UserSerializer
 
 from topics.models import Topic, Action
-from topics.serializers import TopicSerializer
+from topics.serializers import TopicSerializer, ActionSerializer
 from pprint import pprint
 class UserRegistration(APIView):
     def post(self, request, format=None):
@@ -35,20 +35,30 @@ class UserRegistration(APIView):
 class OpenGraphHelpers(APIView):
     def post(self, request, format=None):
         try:
-            og = opengraph.OpenGraph(url=request.data['url'])
-
-            # Description may or may not exist
-            if 'description' in og:
-                desc = og['description']
+            if request.data['type'] is 'topic':
+                topic = Topic.objects.get(article_link=request.data['url'])
+                topic_serializer = TopicSerializer(topic)
+                return Response(topic_serializer.data, status=status.HTTP_409_CONFLICT)
             else:
-                desc = ''
-            return Response({'image' : og['image'], 'title' : og['title'], 'description' : desc}, status=status.HTTP_200_OK)
-        except urllib.error.URLError:
-            return Response({'image':'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
-        except KeyError:
-            return Response({'image':'Not Found'}, status=status.HTTP_404_NOT_FOUND)
-        except:
-            return Response({'response':'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
+                action = Action.objects.get(article_link=request.data['url'])
+                action_serializer = ActionSerializer(action)
+                return Response(action_serializer.data, status=status.HTTP_409_CONFLICT)
+
+        except (Topic.DoesNotExist, Action.DoesNotExist) as e:
+            try:
+                og = opengraph.OpenGraph(url=request.data['url'])
+                # Description may or may not exist
+                if 'description' in og:
+                    desc = og['description']
+                else:
+                    desc = ''
+                return Response({'image' : og['image'], 'title' : og['title'], 'description' : desc}, status=status.HTTP_200_OK)
+            except urllib.error.URLError:
+                return Response({'image':'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
+            except KeyError:
+                return Response({'image':'Not Found'}, status=status.HTTP_404_NOT_FOUND)
+            # except:
+            #     return Response({'response':'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
 
 class nyTimesAPIHelpers(APIView):
     def post(self, request, format=None):
