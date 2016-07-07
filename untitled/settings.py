@@ -187,6 +187,8 @@ SOCIAL_AUTH_PIPELINE = (
     'customuser.social_pipeline.save_avatar',  # custom action
 )
 
+TAGGIT_CASE_INSENSITIVE = True
+
 AUTH_USER_MODEL = 'customuser.CustomUser'
 
 # Internationalization
