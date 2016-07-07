@@ -7,6 +7,7 @@ class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
     score = serializers.ReadOnlyField()
     username = serializers.ReadOnlyField()
     tags = TagListSerializerField()
+    address_raw = serializers.ReadOnlyField()
     class Meta:
         model = Action
         Fields = ('title', 'description', 'article_link', 'created_on', 'created_by', 'topic', 'tags', 'score', 'image_url', 'username', 'scope', 'address')
