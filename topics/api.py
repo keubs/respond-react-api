@@ -20,6 +20,7 @@ from customuser.models import CustomUser
 from address.models import Address
 from addressapi.serializers import AddressSerializer
 
+from pprint import pprint
 class TopicList(APIView):
 
     def get(self, request, format=None):
@@ -119,7 +120,6 @@ class ActionListByTag(APIView):
 
         payload = []
         for action in actions:
-            pprint(action)
             score = action.rating_likes - action.rating_dislikes
             user = CustomUser.objects.get(id=int(action.created_by.id))
             content = {
@@ -249,15 +249,6 @@ class ActionPost(APIView):
                 Response({'image':'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class TopicByScope(APIView):
-    def get(self, request, format=None):
-        pprint(request.data['zip'])
-
-
-
-
 
 
 
