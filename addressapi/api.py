@@ -47,7 +47,7 @@ class AddressPost(APIView):
             pass
             # return Response(country_serializer.data, status=status.HTTP_200_OK)            
 
-        if 'locality' in request.data:
+        if 'locality' in request.data and 'postal_code' in request.data:
             try:
                 locality_serializer = LocalitySerializer(data={'name': request.data['locality'], 'postal_code': request.data['postal_code'], 'state': state.id})
                 if locality_serializer.is_valid(raise_exception=True):
