@@ -4,6 +4,7 @@ from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerialize
 from django.http import Http404
 from django.core.files import File
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -27,6 +28,19 @@ class TopicList(APIView):
 
         # rewrite payload to include 'score' value
         topics = Topic.objects.all().order_by('-created_on')
+        paginator = Paginator(topics, 10) 
+        page = request.GET.get('page')
+
+        try:
+            topics = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            topics = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            contacts = paginator.page(paginator.num_pages)
+
+
         payload = []
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
@@ -182,6 +196,8 @@ class ActionListByTopic(APIView):
         for action in actions:
             score = action.rating_likes - action.rating_dislikes
             user = CustomUser.objects.get(id=int(action.created_by.id))
+            raw = action.address.raw
+
             content = {
                 'id' : action.id,
                 'title' : action.title,
@@ -200,6 +216,7 @@ class ActionListByTopic(APIView):
                 'action' : action.address,
                 'scope' : action.scope,
                 'address': action.address,
+                'address_raw': raw,
             }
             payload.append(content)
 
