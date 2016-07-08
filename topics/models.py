@@ -35,6 +35,10 @@ class Action(models.Model):
         (u'national',u'National'),
         (u'worldwide',u'Worldwide'),
     ]
+    RESPOND_REACT = [
+        (u'respond', 'Respond'),
+        (u'react', 'React'),
+    ]
     title = models.CharField(max_length=512)
     description = models.TextField()
     article_link = models.TextField(validators=[URLValidator()])
@@ -48,6 +52,11 @@ class Action(models.Model):
     scope = models.CharField(
         choices=SCOPE_CHOICES,
         max_length=9,
+    )
+    respond_react = models.CharField(
+        choices = RESPOND_REACT,
+        max_length = 7,
+        null=True
     )
     address = AddressField(null=True)
 
