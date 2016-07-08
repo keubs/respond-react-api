@@ -44,6 +44,7 @@ class Action(models.Model):
     article_link = models.TextField(validators=[URLValidator()])
     created_by = models.ForeignKey(CustomUser)
     created_on = models.DateTimeField(auto_now_add=True)
+    expiration = models.DateTimeField(null=True)
     topic = models.ForeignKey(Topic)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
