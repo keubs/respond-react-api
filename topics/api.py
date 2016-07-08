@@ -38,7 +38,7 @@ class TopicList(APIView):
             topics = paginator.page(1)
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
-            contacts = paginator.page(paginator.num_pages)
+            topics = paginator.page(paginator.num_pages)
 
 
         payload = []
@@ -63,8 +63,8 @@ class TopicList(APIView):
                 'scope' : topic.scope,
                 'address' : topic.address,
             }
-            payload.append(content)
 
+            payload.append(content)
 
         # sort by score instead
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
@@ -165,8 +165,8 @@ class TopicPost(APIView):
     authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, format=None):
-        user_id = utils.jwt_decode_handler(request.auth)
-        request.data['created_by'] = user_id['user_id']
+        user_id = UserIdFromToken(request.auth)
+        request.data['created_by'] = user_id
 
         serializer = TopicSerializer(data=request.data)
         
@@ -252,8 +252,7 @@ class ActionPost(APIView):
     authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, format=None):
-        user_id = utils.jwt_decode_handler(request.auth)
-        user_id = user_id['user_id']
+        user_id = UserIdFromToken(request.auth)
 
         request.data['created_by'] = user_id
 
@@ -270,5 +269,9 @@ class ActionPost(APIView):
 
 
 
+def UserIdFromToken(token):
+    user_id = utils.jwt_decode_handler(token)
+    user_id = user_id['user_id']
 
+    return user_id
 
