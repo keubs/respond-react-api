@@ -1,22 +1,21 @@
-from rest_framework.decorators import detail_route
 from .models import CustomUser
 
-class CustomUserViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
+from django.shortcuts import get_object_or_404
+from .serializers import CustomUserSerializer
 
-    Additionally we also provide an extra `highlight` action.
-    """
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly,)
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import detail_route
 
-    @detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
-    def highlight(self, request, *args, **kwargs):
-        snippet = self.get_object()
-        return Response(snippet.highlighted)
+from pprint import pprint
+class CustomUserViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = CustomUser.objects.all()
+        serializer = CustomUserSerializer(queryset, many=True)
+        return Response(serializer.data)
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    def retrieve(self, request, pk=None):
+        queryset = CustomUser.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = CustomUserSerializer(user)
+        return Response(serializer.data)

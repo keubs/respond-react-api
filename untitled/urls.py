@@ -11,6 +11,7 @@ from updown import api as updown_api
 from misc import api as misc_api
 from linkfactory import api as linkfactory_api
 from addressapi import api as address_api
+from customuser import api as customuser_viewset
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -53,5 +54,7 @@ urlpatterns = [
 
     url(r'^api/address/submit/$', address_api.AddressPost.as_view()),
     url(r'^api/addresses/$', address_api.AddressList.as_view()),
-    
+
+    url(r'api/users/$', customuser_viewset.CustomUserViewSet.as_view({'get': 'list'})),
+    url(r'api/users/(?P<pk>[0-9]+)', customuser_viewset.CustomUserViewSet.as_view({'get': 'retrieve'}))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
