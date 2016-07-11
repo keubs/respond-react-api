@@ -17,6 +17,7 @@ urlpatterns = [
 
     # Topics
     url(r'^api/topics/$', topic_api.TopicList.as_view()),
+    url(r'^api/topics/count$', topic_api.TopicCount.as_view()),
     url(r'^api/topics/tag/(?P<tag>.*)/$', topic_api.TopicListByTag.as_view()),
     url(r'^api/topics/submit$', topic_api.TopicPost.as_view()),
     url(r'^api/topics/(?P<pk>[0-9]+)$', topic_api.TopicDetail.as_view()),

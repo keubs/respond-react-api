@@ -22,15 +22,16 @@ from address.models import Address
 from addressapi.serializers import AddressSerializer
 
 from pprint import pprint
+
+MAX_PAGE_SIZE = 10
 class TopicList(APIView):
 
     def get(self, request, format=None):
 
         # rewrite payload to include 'score' value
         topics = Topic.objects.all().order_by('-created_on')
-        paginator = Paginator(topics, 10) 
+        paginator = Paginator(topics, MAX_PAGE_SIZE) 
         page = request.GET.get('page')
-
         try:
             topics = paginator.page(page)
         except PageNotAnInteger:
@@ -98,7 +99,6 @@ class TopicDetail(APIView):
         except Topic.DoesNotExist:
             return Response({"error" : "topic not found"}, status=status.HTTP_404_NOT_FOUND)
 
-
 class TopicListByTag(APIView):
     def get(self, request, tag, format=None):
         topics = Topic.objects.filter(tags__name__in=[tag])
@@ -127,6 +127,33 @@ class TopicListByTag(APIView):
         serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
+class TopicPost(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
+
+    def post(self, request, format=None):
+        user_id = UserIdFromToken(request.auth)
+        request.data['created_by'] = user_id
+
+        serializer = TopicSerializer(data=request.data)
+        
+
+        if serializer.is_valid():
+            model = serializer.save()
+            try:
+                misc_views.save_image_from_url(model, request.data['image_url'])
+            except KeyError:
+                Response({'image':'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class TopicCount(APIView):
+    
+    def get(self, request, format=None):
+        topics = Topic.objects.all()
+        count = len(topics)
+
+        return Response({'count': count}, status=status.HTTP_200_OK)
 
 class ActionListByTag(APIView):
     def get(self, request, tag, format=None):
@@ -159,26 +186,6 @@ class ActionListByTag(APIView):
         payload = sorted(payload, key=itemgetter('score'), reverse=True)
         serialized_actions = ActionSerializer(payload, many=True)
         return Response(serialized_actions.data)
-
-class TopicPost(APIView):
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (JSONWebTokenAuthentication, )
-
-    def post(self, request, format=None):
-        user_id = UserIdFromToken(request.auth)
-        request.data['created_by'] = user_id
-
-        serializer = TopicSerializer(data=request.data)
-        
-
-        if serializer.is_valid():
-            model = serializer.save()
-            try:
-                misc_views.save_image_from_url(model, request.data['image_url'])
-            except KeyError:
-                Response({'image':'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ActionList(APIView):
     def get(self, request, format=None):
@@ -216,6 +223,7 @@ class ActionListByTopic(APIView):
                 'description' : action.description,
                 'article_link' : action.article_link,
                 'created_on' : action.created_on,
+                'start_date_time' : action.start_date_time,
                 'score' : score,
                 'topic' : action.topic,
                 'username' : user.username,
