@@ -10,7 +10,7 @@ class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
     address_raw = serializers.ReadOnlyField()
     class Meta:
         model = Action
-        Fields = ('title', 'description', 'article_link', 'created_on', 'created_by', 'topic', 'tags', 'score', 'image_url', 'username', 'scope', 'address', 'start_date_time')
+        # Fields = ('title', 'description', 'article_link', 'created_on', 'created_by', 'topic', 'tags', 'score', 'image_url', 'username', 'scope', 'address', 'start_date_time')
         many = True
 
 class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
@@ -20,7 +20,7 @@ class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
     actions = serializers.ReadOnlyField()
     class Meta:
         model = Topic
-        Fields = ('title', 'description', 'article_link', 'created_by', 'tags', 'score', 'image_url', 'username')
+        # Fields = ('title', 'description', 'article_link', 'created_by', 'tags', 'score', 'image_url', 'username')
         many = True
 
 class TopicDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
@@ -31,5 +31,5 @@ class TopicDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Topic
-        Fields = ('title', 'article_link', 'created_by', 'created_on', 'tags', 'score', 'image', 'actions')
+        # Fields = ('title', 'article_link', 'created_by', 'created_on', 'tags', 'score', 'image', 'actions')
         many = True
