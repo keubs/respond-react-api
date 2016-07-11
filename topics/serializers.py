@@ -10,7 +10,7 @@ class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
     address_raw = serializers.ReadOnlyField()
     class Meta:
         model = Action
-        Fields = ('title', 'description', 'article_link', 'created_on', 'created_by', 'topic', 'tags', 'score', 'image_url', 'username', 'scope', 'address')
+        Fields = ('title', 'description', 'article_link', 'created_on', 'created_by', 'topic', 'tags', 'score', 'image_url', 'username', 'scope', 'address', 'start_date_time')
         many = True
 
 class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
