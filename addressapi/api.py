@@ -56,6 +56,7 @@ class AddressPost(APIView):
                     return Response(locality_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
             except serializers.ValidationError:
+                pprint(locality_serializer.errors)
                 locality = Locality.objects.get(postal_code=request.data['postal_code'])
 
         else:

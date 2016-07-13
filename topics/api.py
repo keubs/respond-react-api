@@ -150,8 +150,8 @@ class TopicPost(APIView):
 class TopicCount(APIView):
     
     def get(self, request, format=None):
-        topics = Topic.objects.all()
-        count = len(topics)
+        count = Topic.objects.all().count()
+        # count = len(topics)
 
         return Response({'count': count}, status=status.HTTP_200_OK)
 
