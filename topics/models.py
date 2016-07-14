@@ -20,7 +20,7 @@ class Topic(models.Model):
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
     image = models.ImageField(upload_to='static', max_length=512, blank=True, null=True)
-    image_url = models.URLField()
+    image_url = models.URLField(max_length=512)
     scope = models.CharField(
         choices = SCOPE_CHOICES,
         max_length=9,
@@ -50,7 +50,7 @@ class Action(models.Model):
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
     image = models.ImageField(upload_to='static', max_length=512, blank=True, null=True)
-    image_url = models.URLField()
+    image_url = models.URLField(max_length=512)
     scope = models.CharField(
         choices=SCOPE_CHOICES,
         max_length=9,
