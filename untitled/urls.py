@@ -42,6 +42,9 @@ urlpatterns = [
     url(r'^api/actions/tag/(?P<tag>.*)/$', topic_api.ActionListByTag.as_view()),
 
     url(r'^api/getopengraph/$', misc_api.OpenGraphHelpers.as_view()),
+
+    url(r'api/misc/token-auth/$', misc_api.GetUserFromToken.as_view()),
+
     url(r'^api/nytimes/$', misc_api.nyTimesAPIHelpers.as_view()),
     url(r'^api/geolocate/$', misc_api.regionalGeolocateHelpers.as_view()),
 

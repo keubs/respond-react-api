@@ -9,6 +9,9 @@ from opengraph import opengraph
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from rest_framework_jwt import utils
+
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.conf import settings
@@ -31,6 +34,14 @@ class UserRegistration(APIView):
         except IntegrityError as e:
             return Response({'user':'username or email already in use'}, status=status.HTTP_409_CONFLICT)
 
+class GetUserFromToken(APIView):
+    def post(self, request, format=None):
+        try:
+            user_id = utils.jwt_decode_handler(request.auth)
+            pprint(request)
+            return Response(user_id, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error":e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class OpenGraphHelpers(APIView):
     def post(self, request, format=None):
