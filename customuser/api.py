@@ -3,12 +3,17 @@ from .models import CustomUser
 from django.shortcuts import get_object_or_404
 from .serializers import CustomUserSerializer
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route
+from rest_framework.permissions import IsAuthenticated
 
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework_jwt import utils 
 from topics.models import Topic, Action
 from address.models import Locality
+
+from pprint import pprint
 class CustomUserViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = CustomUser.objects.all()
@@ -25,3 +30,20 @@ class CustomUserViewSet(viewsets.ViewSet):
 
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
+
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
+    def update(self, request, pk=None):
+        user_id = utils.jwt_decode_handler(request.auth)
+        user_id = user_id['user_id']
+        if user_id == int(pk):
+
+            customuser = CustomUser.objects.get(pk=pk)
+            serializer = CustomUserSerializer(customuser, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)

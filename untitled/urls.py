@@ -57,7 +57,9 @@ urlpatterns = [
 
     url(r'^api/address/submit/$', address_api.AddressPost.as_view()),
     url(r'^api/addresses/$', address_api.AddressList.as_view()),
+    url(r'^api/addresses/(?P<pk>[0-9]+)$', address_api.AddressList.as_view()),
 
     url(r'api/users/$', customuser_viewset.CustomUserViewSet.as_view({'get': 'list'})),
+    url(r'api/users/(?P<pk>[0-9]+)/update$', customuser_viewset.CustomUserViewSet.as_view({'post': 'update'})),
     url(r'api/users/(?P<pk>[0-9]+)', customuser_viewset.CustomUserViewSet.as_view({'get': 'retrieve'}))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
