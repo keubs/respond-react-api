@@ -8,6 +8,7 @@ Unidecode==0.04.18
 beautifulsoup4==4.4.1
 defusedxml==0.4.1
 django-address==0.1.5
+django-annoying==0.9.0
 django-braces==1.8.1
 django-cors-headers==1.1.0
 django-facebook==6.0.3
