@@ -155,6 +155,41 @@ class TopicCount(APIView):
 
         return Response({'count': count}, status=status.HTTP_200_OK)
 
+class TopicByScope(APIView):
+
+    def get(self, request, scope, format=None):
+
+        if scope == 'national':
+            for topics in Topic.objects.raw(
+                """
+                SELECT tt.* FROM topics_topic tt 
+                    INNER JOIN address_address aa ON tt.address_id = aa.id 
+                    INNER JOIN address_locality al ON aa.locality_id = al.id 
+                    INNER JOIN address_state ass ON al.state_id = ass.id 
+                    INNER JOIN address_country ac ON ass.country_id = ac.id 
+                    WHERE ac.id = 5 
+                    AND tt.scope = 'national'
+                    ORDER BY RAND() LIMIT 1
+                """):
+                    topic_serializer = TopicSerializer(topics)
+                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
+
+        elif scope == 'local':
+            for topic in Topic.objects.raw(
+                """
+                SELECT tt.* FROM topics_topic tt 
+                    INNER JOIN address_address aa ON tt.address_id = aa.id 
+                    INNER JOIN address_locality al ON aa.locality_id = al.id 
+                    INNER JOIN address_state ass ON al.state_id = ass.id
+                    WHERE ass.id = 2 
+                    AND tt.scope = 'local'
+                    ORDER BY RAND() LIMIT 1
+                """):
+                    topic_serializer = TopicSerializer(topic)
+                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
+
+
+
 class ActionListByTag(APIView):
     def get(self, request, tag, format=None):
         actions = Action.objects.filter(tags__name__in=[tag])
