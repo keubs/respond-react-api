@@ -12,7 +12,6 @@ from rest_framework import status
 
 from annoying.functions import get_object_or_None
 
-
 class AddressPost(APIView):
     def post(self, request, format=None):
         if 'country' in request.data:
@@ -33,33 +32,36 @@ class AddressPost(APIView):
             else:
                 return Response(state_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        locality = None
         if 'locality' in request.data and 'postal_code' in request.data:
             localityObj = get_object_or_None(Locality, name=request.data['locality'], postal_code=request.data['postal_code'], state=state.id)
             locality_serializer = LocalitySerializer(localityObj, data={'name': request.data['locality'], 'postal_code': request.data['postal_code'], 'state': state.id})
 
             if locality_serializer.is_valid():
-                locality= locality_serializer.save()
+                locality = locality_serializer.save()
             else:
                 return Response(locality_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            addressObj = get_object_or_None(Address, latitude=request.data['latitude'], longitude=request.data['longitude'], raw=request.data['formatted'])
-            address_serializer = AddressSerializer(addressObj, data={
-                        'raw': request.data['raw'], 
-                        'latitude': request.data['latitude'], 
-                        'longitude': request.data['longitude'], 
-                        'locality': locality.id if locality else None
-                        })
 
-            if addressObj is None:
-                stat = status.HTTP_201_CREATED
-            else:
-                stat = status.HTTP_200_OK
+        lid = locality.id if locality else None
+        addressObj = get_object_or_None(Address, latitude=request.data['latitude'], longitude=request.data['longitude'], raw=request.data['formatted'])
+        address_serializer = AddressSerializer(addressObj, data={
+                    'raw': request.data['raw'], 
+                    'latitude': request.data['latitude'], 
+                    'longitude': request.data['longitude'], 
+                    'locality': lid
+                    })
 
-            if address_serializer.is_valid():
-                address_serializer.save()
-                return Response(address_serializer.data, status=stat)
-            else:
-                return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if addressObj is None:
+            stat = status.HTTP_201_CREATED
+        else:
+            stat = status.HTTP_200_OK
+
+        if address_serializer.is_valid():
+            address_serializer.save()
+            return Response(address_serializer.data, status=stat)
+        else:
+            return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AddressList(APIView):
