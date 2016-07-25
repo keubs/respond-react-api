@@ -18,7 +18,8 @@ from operator import itemgetter
 
 from misc import views as misc_views
 from customuser.models import CustomUser
-from address.models import Address
+
+from address.models import Address, Locality, State, Country
 from addressapi.serializers import AddressSerializer
 
 from pprint import pprint
@@ -30,17 +31,6 @@ class TopicList(APIView):
 
         # rewrite payload to include 'score' value
         topics = Topic.objects.all().order_by('-created_on')
-        paginator = Paginator(topics, MAX_PAGE_SIZE) 
-        page = request.GET.get('page')
-        try:
-            topics = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            topics = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            topics = paginator.page(paginator.num_pages)
-
 
         payload = []
         for topic in topics:
@@ -69,8 +59,19 @@ class TopicList(APIView):
 
         # sort by score instead
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
-        if request.query_params.get('order_by') == 'score':
-            payload = sorted(payload, key=itemgetter('score'), reverse=True)
+        # if request.query_params.get('order_by') == 'score':
+        payload = sorted(payload, key=itemgetter('score'), reverse=True)
+
+        paginator = Paginator(payload, MAX_PAGE_SIZE) 
+        page = request.GET.get('page')
+        try:
+            payload = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            payload = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            payload = paginator.page(paginator.num_pages)
         serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
@@ -158,37 +159,64 @@ class TopicCount(APIView):
 class TopicByScope(APIView):
 
     def get(self, request, scope, format=None):
+        # hardcoded defaults to US and Cali
+        country = 5
+        state = 2
+
+        if request.auth:
+            user_id = UserIdFromToken(request.auth)
+            user = CustomUser.objects.get(id=int(user_id))
+            address = Address.objects.get(id=user.address_id)
+
+            locality = Locality.objects.get(id=address.locality_id)
+            state = State.objects.get(id=locality.state_id)
+            country = Country.objects.get(id=state.country_id)
+            state = state.id
+            country = country.id
 
         if scope == 'national':
-            for topics in Topic.objects.raw(
-                """
+            query = """
                 SELECT tt.* FROM topics_topic tt 
                     INNER JOIN address_address aa ON tt.address_id = aa.id 
                     INNER JOIN address_locality al ON aa.locality_id = al.id 
                     INNER JOIN address_state ass ON al.state_id = ass.id 
                     INNER JOIN address_country ac ON ass.country_id = ac.id 
-                    WHERE ac.id = 5 
+                    WHERE ac.id = {country} 
                     AND tt.scope = 'national'
                     ORDER BY RAND() LIMIT 1
-                """):
+                """.format(country=country)
+            for topics in Topic.objects.raw(query):
                     topic_serializer = TopicSerializer(topics)
                     return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
         elif scope == 'local':
-            for topic in Topic.objects.raw(
-                """
+            query = """
                 SELECT tt.* FROM topics_topic tt 
                     INNER JOIN address_address aa ON tt.address_id = aa.id 
                     INNER JOIN address_locality al ON aa.locality_id = al.id 
                     INNER JOIN address_state ass ON al.state_id = ass.id
-                    WHERE ass.id = 2 
+                    WHERE ass.id = {state} 
                     AND tt.scope = 'local'
                     ORDER BY RAND() LIMIT 1
-                """):
+                """.format(state=state)
+            for topic in Topic.objects.raw(query):
                     topic_serializer = TopicSerializer(topic)
                     return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
+        elif scope == 'worldwide':
+            query = """
+            SELECT tt.* FROM topics_topic tt 
+                INNER JOIN address_address aa ON tt.address_id = aa.id 
+                INNER JOIN address_locality al ON aa.locality_id = al.id 
+                INNER JOIN address_state ass ON al.state_id = ass.id 
+                INNER JOIN address_country ac ON ass.country_id = ac.id 
+                WHERE ac.id <> {country}
+                ORDER BY RAND() LIMIT 1
+            """.format(country=country)
 
+            for topics in Topic.objects.raw(query):
+                    topic_serializer = TopicSerializer(topics)
+                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
 class ActionListByTag(APIView):
     def get(self, request, tag, format=None):
