@@ -24,8 +24,12 @@ class AddressPost(APIView):
                 return Response(country_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if 'state' in request.data:
-            stateObj = get_object_or_None(State, name=request.data['state'], code=request.data['state_code'], country=country.id)
-            state_serializer = StateSerializer(stateObj, data={'name': request.data['state'], 'code': request.data['state_code'], 'country': country.id})
+            if len(request.data['state_code']) <= 3:
+                state_code = request.data['state_code']
+            else:
+                state_code = request.data['state_code'][0:2]    
+            stateObj = get_object_or_None(State, name=request.data['state'], code=state_code, country=country.id)
+            state_serializer = StateSerializer(stateObj, data={'name': request.data['state'], 'code': state_code, 'country': country.id})
 
             if state_serializer.is_valid():
                 state = state_serializer.save()
