@@ -47,7 +47,7 @@ class TopicList(APIView):
                 'username' : user.username,
                 'rating_likes' : topic.rating_likes,
                 'rating_dislikes' : topic.rating_dislikes,
-                'tags' : topic.tags,
+                'tags' : [{ 'slug':tag.slug, 'name': tag.name.title() } for tag in topic.tags.all()],
                 'image' : topic.image,
                 'image_url' : topic.image_url,
                 'actions' : actions,
@@ -80,7 +80,7 @@ class TopicDetail(APIView):
     def get(self, request, pk, format=None):
         try:
             topic = Topic.objects.get(pk=pk)
-
+            topic.tags = [{ 'slug':tag.slug, 'name': tag.name.title() } for tag in topic.tags.all()]
             score = topic.rating_likes - topic.rating_dislikes
 
             serialized_topic = TopicDetailSerializer(topic)
@@ -102,7 +102,7 @@ class TopicDetail(APIView):
 
 class TopicListByTag(APIView):
     def get(self, request, tag, format=None):
-        topics = Topic.objects.filter(tags__name__in=[tag])
+        topics = Topic.objects.filter(tags__slug__in=[tag])
         payload = []
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
@@ -117,7 +117,7 @@ class TopicListByTag(APIView):
                 'username' : user.username,
                 'rating_likes' : topic.rating_likes,
                 'rating_dislikes' : topic.rating_dislikes,
-                'tags' : topic.tags,
+                'tags' : [{ 'slug':tag.slug, 'name': tag.name.title() } for tag in topic.tags.all()],
                 'image': topic.image,
                 'image_url': topic.image_url,
                 'scope': topic.scope,
@@ -238,7 +238,7 @@ class ActionListByTag(APIView):
                 'created_by' : action.created_by,
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
-                'tags' : action.tags,
+                'tags' : [{ 'slug':tag.slug, 'name': tag.name.title() } for tag in action.tags.all()],
                 'image' : action.image,
                 'image_url': action.image_url,
                 'address': action.address,
@@ -293,7 +293,7 @@ class ActionListByTopic(APIView):
                 'created_by' : action.created_by,
                 'rating_likes' : action.rating_likes,
                 'rating_dislikes' : action.rating_dislikes,
-                'tags' : action.tags,
+                'tags' : [{ 'slug':tag.slug, 'name': tag.name.title() } for tag in action.tags.all()],
                 'image' : action.image,
                 'image_url': action.image_url,
                 'action' : action.address,
@@ -325,7 +325,7 @@ class ActionDetailByTopic(APIView):
             'score' : score,
             'created_by' : serialized_action.data['created_by'],
             'image' : serialized_action.data['image'],
-            'tags' : serialized_action.data['tags'],
+            'tags' : [{ 'slug':tag.slug, 'name': tag.name.title() } for tag in serialized_action.data['tags'].all()],
         }
 
         return Response(payload)
