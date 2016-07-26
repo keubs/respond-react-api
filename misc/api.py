@@ -38,7 +38,6 @@ class GetUserFromToken(APIView):
     def post(self, request, format=None):
         try:
             user_id = utils.jwt_decode_handler(request.auth)
-            pprint(request)
             return Response(user_id, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error":e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -63,10 +62,14 @@ class OpenGraphHelpers(APIView):
                     desc = og['description']
                 else:
                     desc = ''
-                return Response({'image' : og['image'], 'title' : og['title'], 'description' : desc}, status=status.HTTP_200_OK)
+                if 'title' in og:
+                    title = og['title']
+                else:
+                    title = ''
+                return Response({'image' : og['image'], 'title' : title, 'description' : desc}, status=status.HTTP_200_OK)
             except urllib.error.URLError:
                 return Response({'image':'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
-            except KeyError:
+            except KeyError as e:
                 return Response({'image':'Not Found'}, status=status.HTTP_404_NOT_FOUND)
             # except:
             #     return Response({'response':'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
@@ -90,9 +93,6 @@ class geolocationHelpers(APIView):
 
         myzip = zipcode.isequal(request.data['zip'])
         ziplist = zipcode.getzipsinscope(request.data['zip'], request.data['scope'])
-
-        # pprint(type(['adsf', 'afdasf']))
-        # pprint(ziplist)
 
         pprint(random.choice(Topic.objects.filter(zip__in=ziplist)))
         cbus = (data['results'][0]['geometry']['location']['lat'], data['results'][0]['geometry']['location']['lng'])
