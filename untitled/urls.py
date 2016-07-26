@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^api/topics/$', topic_api.TopicList.as_view()),
     url(r'^api/topics/count$', topic_api.TopicCount.as_view()),
     url(r'^api/topics/tag/(?P<tag>.*)/$', topic_api.TopicListByTag.as_view()),
+    url(r'^api/users/(?P<pk>.*)/topics/$', topic_api.TopicListByUser.as_view()),
     url(r'^api/topics/scope/(?P<scope>.*)/$', topic_api.TopicByScope.as_view()),
     url(r'^api/topics/submit$', topic_api.TopicPost.as_view()),
     url(r'^api/topics/(?P<pk>[0-9]+)$', topic_api.TopicDetail.as_view()),
@@ -62,5 +63,5 @@ urlpatterns = [
 
     url(r'api/users/$', customuser_viewset.CustomUserViewSet.as_view({'get': 'list'})),
     url(r'api/users/(?P<pk>[0-9]+)/update$', customuser_viewset.CustomUserViewSet.as_view({'post': 'update'})),
-    url(r'api/users/(?P<pk>[0-9]+)', customuser_viewset.CustomUserViewSet.as_view({'get': 'retrieve'}))
+    url(r'api/users/(?P<pk>[0-9]+)/$', customuser_viewset.CustomUserViewSet.as_view({'get': 'retrieve'}))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -75,6 +75,12 @@ class TopicList(APIView):
         serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
+class TopicListByUser(APIView):
+    def get(self, request, pk, format=None):
+        topics = Topic.objects.filter(created_by=pk)
+        topic_serializer = TopicSerializer(topics, many=True)
+
+        return Response(topic_serializer.data)
 class TopicDetail(APIView):
 
     def get(self, request, pk, format=None):
@@ -217,6 +223,8 @@ class TopicByScope(APIView):
             for topics in Topic.objects.raw(query):
                     topic_serializer = TopicSerializer(topics)
                     return Response(topic_serializer.data, status=status.HTTP_200_OK)
+
+
 
 class ActionListByTag(APIView):
     def get(self, request, tag, format=None):

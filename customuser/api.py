@@ -12,6 +12,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt import utils 
 from topics.models import Topic, Action
 from address.models import Locality
+from updown.models import Vote
 
 from pprint import pprint
 class CustomUserViewSet(viewsets.ViewSet):
@@ -24,15 +25,16 @@ class CustomUserViewSet(viewsets.ViewSet):
         queryset = CustomUser.objects.all()
         topic_count = Topic.objects.filter(created_by=pk).count()
         action_count = Action.objects.filter(created_by=pk).count()
+        vote_count = Vote.objects.filter(user_id=pk, score=1).count()
         user = get_object_or_404(queryset, pk=pk)
         user.topic_count = topic_count
         user.action_count = action_count
-
+        user.vote_count = vote_count
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
 
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (JSONWebTokenAuthentication, )
+    # permission_classes = (IsAuthenticated, )
+    # authentication_classes = (JSONWebTokenAuthentication, )
     def update(self, request, pk=None):
         user_id = utils.jwt_decode_handler(request.auth)
         user_id = user_id['user_id']
