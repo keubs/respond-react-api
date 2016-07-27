@@ -14,7 +14,6 @@ from topics.models import Topic, Action
 from address.models import Locality
 from updown.models import Vote
 
-from pprint import pprint
 class CustomUserViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = CustomUser.objects.all()
@@ -33,9 +32,9 @@ class CustomUserViewSet(viewsets.ViewSet):
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
 
-    # permission_classes = (IsAuthenticated, )
-    # authentication_classes = (JSONWebTokenAuthentication, )
     def update(self, request, pk=None):
+        permission_classes = (IsAuthenticated, )
+        authentication_classes = (JSONWebTokenAuthentication, )
         user_id = utils.jwt_decode_handler(request.auth)
         user_id = user_id['user_id']
         if user_id == int(pk):

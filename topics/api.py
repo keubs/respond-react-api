@@ -172,13 +172,14 @@ class TopicByScope(APIView):
         if request.auth:
             user_id = UserIdFromToken(request.auth)
             user = CustomUser.objects.get(id=int(user_id))
-            address = Address.objects.get(id=user.address_id)
+            if user.address_id is not None:
+                address = Address.objects.get(id=user.address_id)
 
-            locality = Locality.objects.get(id=address.locality_id)
-            state = State.objects.get(id=locality.state_id)
-            country = Country.objects.get(id=state.country_id)
-            state = state.id
-            country = country.id
+                locality = Locality.objects.get(id=address.locality_id)
+                state = State.objects.get(id=locality.state_id)
+                country = Country.objects.get(id=state.country_id)
+                state = state.id
+                country = country.id
 
         if scope == 'national':
             query = """
