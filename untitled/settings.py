@@ -145,6 +145,9 @@ AUTHENTICATION_BACKENDS = {
     'social.backends.facebook.FacebookAppOAuth2',
     'social.backends.facebook.FacebookOAuth2',
 
+    # Google Oauth2
+    'social.backends.google.GoogleOAuth2',
+
     # Django
     'django.contrib.auth.backends.ModelBackend',
 }
@@ -153,15 +156,18 @@ AUTHENTICATION_BACKENDS = {
 SOCIAL_AUTH_FACEBOOK_KEY = '1513191525645232'
 SOCIAL_AUTH_FACEBOOK_SECRET = 'c9a2ea8ff74eb7b4e0bdf17a1fe6cf18'
 
+# Google configuration
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '593171474012-e4eu1o08jset6iqv8p75mdgq95jbojcg.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '-YPM0smede_C0gccIt155AqH'
 
 # NY Times configuration
 NY_TIMES_API_KEY = 'c277ad1aa3dfb2a71395b92bb3e9a80c:16:69678011'
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook. Email is not sent by default, to get it, you must request the email permission:
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email']
 
-
-SOCIAL_AUTH_ENABLED_BACKENDS = ('facebook')
+SOCIAL_AUTH_ENABLED_BACKENDS = ('facebook', 'google')
 
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
   'fields': 'id, name, email'
@@ -221,4 +227,31 @@ CORS_ALLOW_CREDENTIALS = False
 CORS_ORIGIN_WHITELIST = (
     'http://squ.ad:3000',
     'http://squ.ad:8100',
+    'http://respondreact.com:3000',
+    'http://respondreact.com:8100',
 )
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s:%(name)s: %(message)s '
+                      '(%(asctime)s; %(filename)s:%(lineno)d)',
+            'datefmt': "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'rest_social_auth': {
+            'handlers': ['console', ],
+            'level': "DEBUG",
+        },
+    }
+}
