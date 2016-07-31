@@ -33,18 +33,21 @@ class CustomUserViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def update(self, request, pk=None):
-        permission_classes = (IsAuthenticated, )
-        authentication_classes = (JSONWebTokenAuthentication, )
-        user_id = utils.jwt_decode_handler(request.auth)
-        user_id = user_id['user_id']
-        if user_id == int(pk):
+        if request.auth is not None:
+            permission_classes = (IsAuthenticated, )
+            authentication_classes = (JSONWebTokenAuthentication, )
+            user_id = utils.jwt_decode_handler(request.auth)
+            user_id = user_id['user_id']
+            if user_id == int(pk):
 
-            customuser = CustomUser.objects.get(pk=pk)
-            serializer = CustomUserSerializer(customuser, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                customuser = CustomUser.objects.get(pk=pk)
+                serializer = CustomUserSerializer(customuser, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
