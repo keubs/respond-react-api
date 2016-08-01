@@ -75,6 +75,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    # 'misc.middleware.SocialAuthExceptionMiddleware',
 )
 
 
@@ -141,6 +142,9 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = {
+    # Django
+    'django.contrib.auth.backends.ModelBackend',
+
     # Facebook OAuth2
     'social.backends.facebook.FacebookAppOAuth2',
     'social.backends.facebook.FacebookOAuth2',
@@ -148,8 +152,9 @@ AUTHENTICATION_BACKENDS = {
     # Google Oauth2
     'social.backends.google.GoogleOAuth2',
 
-    # Django
-    'django.contrib.auth.backends.ModelBackend',
+    # Twitter
+    'social.backends.twitter.TwitterOAuth',  # OAuth1.0
+
 }
 
 # Facebook configuration
@@ -159,6 +164,10 @@ SOCIAL_AUTH_FACEBOOK_SECRET = 'c9a2ea8ff74eb7b4e0bdf17a1fe6cf18'
 # Google configuration
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '593171474012-e4eu1o08jset6iqv8p75mdgq95jbojcg.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '-YPM0smede_C0gccIt155AqH'
+
+# Twitter configuration
+SOCIAL_AUTH_TWITTER_KEY = 'vrVr0eDOlVmQNRn7SxulMAobJ'
+SOCIAL_AUTH_TWITTER_SECRET = 'cLaqyx58nZ69LikMEGMpj9STS7JMggkNcP1umOyqPgCXGdwYBY'
 
 # NY Times configuration
 NY_TIMES_API_KEY = 'c277ad1aa3dfb2a71395b92bb3e9a80c:16:69678011'
@@ -230,28 +239,3 @@ CORS_ORIGIN_WHITELIST = (
     'http://respondreact.com:3000',
     'http://respondreact.com:8100',
 )
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s:%(name)s: %(message)s '
-                      '(%(asctime)s; %(filename)s:%(lineno)d)',
-            'datefmt': "%Y-%m-%d %H:%M:%S",
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-        },
-    },
-    'loggers': {
-        'rest_social_auth': {
-            'handlers': ['console', ],
-            'level': "DEBUG",
-        },
-    }
-}
