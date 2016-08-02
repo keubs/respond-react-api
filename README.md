@@ -1,11 +1,10 @@
-# untitled
-As-yet untitled Angular/Django-rest-framework project for an as-yet undecided subject
-
-## Build
-```
-$ mkdir ~/.venv && ~/.venv
-$ pyvenv-3.4 <project_name> && source ./<project_name>/bin/activate
-$ cd <projects>
-$ git clone git@github.com:keubs/untitled.git && cd untitled
-$ pip install -r back/requirements.txt
-```
+## Build & Backend setup (REQUIRES PYTHON 3)
+* `pip install virtualenv`
+* `mkdir ~/.venv/` (if necessary)
+* `which python3`
+* `virtualenv ~/.venv/untitled -p /usr/local/bin/python3 [use path to python from previous command]` 
+* `source ~/.venv/untitled/bin/activate`
+* `pip install -r back/requirements.txt`
+* `cd back`
+* `python manage.py runserver 8100`
+* `python manage.py syncdb`
