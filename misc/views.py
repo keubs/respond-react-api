@@ -1,5 +1,6 @@
 import jwt
 import requests
+import error
 
 from django.shortcuts import render
 from django.core.files import File
@@ -16,6 +17,8 @@ def jwt_response_payload_handler(token, user=None, request=None):
 
 
 def save_image_from_url(model, url):
+    logger = logging.getLogger(__name__)
+
     try:
         r = requests.get(url)
         from urllib import parse
@@ -24,5 +27,6 @@ def save_image_from_url(model, url):
         img_temp.write(r.content)
         img_temp.flush()
         model.image.save("image.jpg", File(img_temp), save=True)
-    except:
-        pprint('sorry')
+    except Exception as e:
+                logger.error('Something went wrong!')
+                logger.error(e)

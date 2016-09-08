@@ -195,9 +195,10 @@ class TopicByScope(APIView):
                     AND tt.scope = 'national'
                     ORDER BY RAND() LIMIT 1
                 """.format(country=country)
+
             for topics in Topic.objects.raw(query):
-                    topic_serializer = TopicSerializer(topics)
-                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
+                topic_serializer = TopicSerializer(topics)
+                return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
         elif scope == 'local':
             query = """
