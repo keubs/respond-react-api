@@ -30,7 +30,10 @@ DEBUG = True
 BUILDING = False
 
 ALLOWED_HOSTS = [
-    '127.0.0.1:8000'
+    '127.0.0.1:8000',
+    '.keubs.webfaction.com',
+    'respondreact.com',
+    'api.respondreact.com',
 ]
 
 
@@ -114,9 +117,9 @@ WSGI_APPLICATION = 'untitled.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'respondreact',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'NAME': 'respondreactdb',
+        'USER': 'rr_dbuser',
+        'PASSWORD': '\MdD!tP<Qv}DA7{?',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
@@ -223,12 +226,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/static/'
+#STATIC_URL = '/static/'
+STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
-    '/Users/Kevin/python/untitled/back/static',
+    '/home/keubs/webapps/respondreactapi/respond-react-api/static',
+    '/home/keubs/webapps/static/static',
 )
+
+STATIC_ROOT = '/home/keubs/webapps/static'
 
 # @TODO eventually get whitelists working
 CORS_ORIGIN_ALLOW_ALL = True
@@ -237,5 +244,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://squ.ad:3000',
     'http://squ.ad:8100',
     'http://respondreact.com:3000',
+    'http://respondreact.com',
     'http://respondreact.com:8100',
+    'http://api.respondreaact.com',
 )
