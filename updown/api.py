@@ -29,10 +29,3 @@ class RatingPost(APIView):
         addRating = AddRatingFromModel()
 
         return addRating(request, model, app_label, object_id, field_name, score, user)
-
-    def get(self, request, model, app_label, object_id, field_name, score):
-        serializer = VoteSerializer(data=request.data)
-
-        user = utils.jwt_decode_handler(request.auth)['user_id']
-
-        return Response('{"response":"hey."}', status=status.HTTP_200_OK)

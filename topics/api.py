@@ -1,5 +1,6 @@
 from .models import Topic, Action
 from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerializer
+from .permissions import IsOwnerOrReadOnly
 
 from django.http import Http404
 from django.core.files import File
@@ -11,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser, FileUploadParser
+from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt import utils
@@ -81,6 +83,7 @@ class TopicListByUser(APIView):
         topic_serializer = TopicSerializer(topics, many=True)
 
         return Response(topic_serializer.data)
+
 class TopicDetail(APIView):
 
     def get(self, request, pk, format=None):
@@ -141,7 +144,7 @@ class TopicPost(APIView):
     def post(self, request, format=None):
         user_id = UserIdFromToken(request.auth)
         request.data['created_by'] = user_id
-
+        pprint(request.data)
         serializer = TopicSerializer(data=request.data)
         
 
@@ -192,9 +195,10 @@ class TopicByScope(APIView):
                     AND tt.scope = 'national'
                     ORDER BY RAND() LIMIT 1
                 """.format(country=country)
+
             for topics in Topic.objects.raw(query):
-                    topic_serializer = TopicSerializer(topics)
-                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
+                topic_serializer = TopicSerializer(topics)
+                return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
         elif scope == 'local':
             query = """
@@ -225,6 +229,34 @@ class TopicByScope(APIView):
                     topic_serializer = TopicSerializer(topics)
                     return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
+@permission_classes((IsOwnerOrReadOnly, ))
+class TopicUpdate(APIView):
+
+    def put(self, request, pk, format=None):
+        topic = get_object_or_404(Topic, pk=pk)
+        pprint(request.data)
+        self.check_object_permissions(self.request, topic)
+        serializer = TopicSerializer(topic, data=request.data, partial=True)
+        if serializer.is_valid():
+            model = serializer.save()
+            try:
+                misc_views.save_image_from_url(model, request.data['image_url'])
+            except KeyError:
+                Response({'image':'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes((IsOwnerOrReadOnly, ))
+class TopicDelete(APIView):
+
+    def delete(self, request, pk, format=None):
+        topic = get_object_or_404(Topic, pk=pk)
+        serializer = TopicSerializer(topic, data=request.data)
+        # self.check_object_permissions(self.request, topic)
+        pprint(serializer)
+        topic.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ActionListByTag(APIView):
