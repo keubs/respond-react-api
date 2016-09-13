@@ -61,6 +61,7 @@ class Action(models.Model):
         null=True
     )
     address = AddressField(null=True)
+    approved = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.title)

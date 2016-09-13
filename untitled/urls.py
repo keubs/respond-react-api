@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^api/topics/(?P<pk>[0-9]+)/actions/$', topic_api.ActionListByTopic.as_view()),
     url(r'^api/actions/submit$', topic_api.ActionPost.as_view()),
     url(r'^api/topics/(?P<pk>[0-9]+)/actions/(?P<fk>[0-9]+)/$', topic_api.ActionDetailByTopic.as_view()),
+    url(r'^api/actions/(?P<pk>[0-9]+)/$', topic_api.ActionDetailByTopic.as_view()),
     url(r'^api/actions/(?P<object_id>\d+)/rate/(?P<score>[\d\-]+)$', updown_api.RatingPost.as_view(), {
         'app_label': 'topics',
         'model': 'Action',
@@ -44,7 +45,11 @@ urlpatterns = [
     }, name="action_rating"),
     url(r'^api/actions/$', topic_api.ActionList.as_view()),
     url(r'^api/actions/tag/(?P<tag>.*)/$', topic_api.ActionListByTag.as_view()),
+    url(r'^api/actions/unapproved/count/$', topic_api.UnapprovedActionCount.as_view()),
+    url(r'^api/actions/unapproved/$', topic_api.UnapprovedActions.as_view()),
+    url(r'^api/actions/(?P<pk>\d+)/approve/$', topic_api.ApproveAction.as_view()),
 
+    # Other
     url(r'^api/getopengraph/$', misc_api.OpenGraphHelpers.as_view()),
 
     url(r'api/misc/token-auth/$', misc_api.GetUserFromToken.as_view()),
