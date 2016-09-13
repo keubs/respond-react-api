@@ -48,6 +48,7 @@ urlpatterns = [
     url(r'^api/actions/unapproved/count/$', topic_api.UnapprovedActionCount.as_view()),
     url(r'^api/actions/unapproved/$', topic_api.UnapprovedActions.as_view()),
     url(r'^api/actions/(?P<pk>\d+)/approve/$', topic_api.ApproveAction.as_view()),
+    url(r'^api/actions/(?P<pk>\d+)/delete/$', topic_api.ActionDelete.as_view()),
 
     # Other
     url(r'^api/getopengraph/$', misc_api.OpenGraphHelpers.as_view()),
