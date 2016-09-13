@@ -395,7 +395,7 @@ class UnapprovedActions(APIView):
     def get(self, request, format=None):
         user_id = UserIdFromToken(request.auth)
 
-        actions = Action.objects.filter(approved=0, created_by_id=2)
+        actions = Action.objects.filter(approved=0, created_by_id=user_id)
         action_serializer = ActionSerializer(actions, many=True)
 
 
