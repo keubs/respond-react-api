@@ -244,14 +244,13 @@ class TopicUpdate(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@permission_classes((IsOwnerOrReadOnly, ))
 class TopicDelete(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
 
     def delete(self, request, pk, format=None):
         topic = get_object_or_404(Topic, pk=pk)
-        serializer = TopicSerializer(topic, data=request.data)
-        # self.check_object_permissions(self.request, topic)
-        pprint(serializer)
+        
         topic.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -376,6 +375,15 @@ class ActionPost(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class ActionDelete(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
+
+    def delete(self, request, pk, format=None):
+        action = get_object_or_404(Action, pk=pk)
+        action.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class UnapprovedActionCount(APIView):
     permission_classes = (IsAuthenticated, )
