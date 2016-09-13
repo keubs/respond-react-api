@@ -85,7 +85,6 @@ class TopicListByUser(APIView):
         return Response(topic_serializer.data)
 
 class TopicDetail(APIView):
-
     def get(self, request, pk, format=None):
         try:
             topic = Topic.objects.get(pk=pk)
@@ -144,9 +143,7 @@ class TopicPost(APIView):
     def post(self, request, format=None):
         user_id = UserIdFromToken(request.auth)
         request.data['created_by'] = user_id
-        pprint(request.data)
         serializer = TopicSerializer(data=request.data)
-        
 
         if serializer.is_valid():
             model = serializer.save()
@@ -352,24 +349,13 @@ class ActionListByTopic(APIView):
         return Response(serialized_actions.data)
 
 class ActionDetailByTopic(APIView):
-    def get(self, request, pk, fk, format=None):
-        action = Action.objects.filter(pk=fk)
-        score = action.rating_likes - action.rating_dislikes
+    def get(self, request, pk, format=None):
+        action = Action.objects.get(pk=pk)
 
+        action.tags = [{ 'slug':tag.slug, 'name': tag.name.title() } for tag in action.tags.all()]
         serialized_action = ActionSerializer(action)
-        payload = {
-            'id' : serialized_action.data['id'],
-            'title' : serialized_action.data['title'],
-            'description' : serialized_action.data['description'],
-            'article_link' : serialized_action.data['article_link'],
-            'created_on' : serialized_action.data['created_on'],
-            'score' : score,
-            'created_by' : serialized_action.data['created_by'],
-            'image' : serialized_action.data['image'],
-            'tags' : [{ 'slug':tag.slug, 'name': tag.name.title() } for tag in serialized_action.data['tags'].all()],
-        }
 
-        return Response(payload)
+        return Response(serialized_action.data, status=status.HTTP_200_OK)
 
 class ActionPost(APIView):
     permission_classes = (IsAuthenticated, )
@@ -391,7 +377,43 @@ class ActionPost(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UnapprovedActionCount(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
 
+    def get(self, request, format=None):
+        user_id = UserIdFromToken(request.auth)
+
+        count = Action.objects.filter(approved=0, created_by_id=user_id).count()
+
+        return Response({'count': count}, status=status.HTTP_200_OK)
+
+class UnapprovedActions(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
+
+    def get(self, request, format=None):
+        user_id = UserIdFromToken(request.auth)
+
+        actions = Action.objects.filter(approved=0, created_by_id=2)
+        action_serializer = ActionSerializer(actions, many=True)
+
+
+        return Response(action_serializer.data, status=status.HTTP_200_OK)
+
+
+class ApproveAction(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
+
+    def post(self, request, pk, format=None):
+        action = get_object_or_404(Action, pk=pk)
+        action.approved = True
+        action.save()
+
+        action_serializer = ActionSerializer(action)
+
+        return Response(action_serializer.data, status=status.HTTP_200_OK)
 
 def UserIdFromToken(token):
     user_id = utils.jwt_decode_handler(token)
