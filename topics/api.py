@@ -367,11 +367,18 @@ class ActionPost(APIView):
 
         serializer = ActionSerializer(data=request.data)
         if serializer.is_valid():
-            model = serializer.save()
+            action = serializer.save()
             try:
-                misc_views.save_image_from_url(model, request.data['image_url'])
+                misc_views.save_image_from_url(action, request.data['image_url'])
             except KeyError:
                 Response({'image':'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            # send email
+            import sendemail.emails as ev
+            user = action.created_by
+            email = ev.EmailMessage("noreply@respondreact.com",[user.email], user)
+            email.new_action(action.topic, action)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

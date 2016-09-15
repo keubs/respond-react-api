@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'rest_social_auth',
     'address',
     'addressapi',
+    'sendemail',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -199,6 +200,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details',
+    'customuser.email.email_user',
     'customuser.social_pipeline.save_avatar',  # custom action
 )
 
@@ -239,3 +241,10 @@ CORS_ORIGIN_WHITELIST = (
     'http://respondreact.com:3000',
     'http://respondreact.com:8100',
 )
+
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'The respond/react Team <noreply@respondreact.com>'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'noreply@respondreact.com'
+EMAIL_HOST_PASSWORD = 'PXQJdzA6w95pqTYp'
+EMAIL_PORT = 587
