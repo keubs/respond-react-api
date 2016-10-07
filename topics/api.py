@@ -428,6 +428,12 @@ class ApproveAction(APIView):
 
         action_serializer = ActionSerializer(action)
 
+        # send email
+        import sendemail.emails as ev
+        user = action.created_by
+        email = ev.EmailMessage("noreply@respondreact.com",[user.email], user)
+        email.action_approved(action.topic, action)
+
         return Response(action_serializer.data, status=status.HTTP_200_OK)
 
 def UserIdFromToken(token):
