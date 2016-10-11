@@ -7,11 +7,11 @@ from customuser.models import CustomUser
 # Create your views here.
 class EmailMessage(EmailMultiAlternatives):
 
-	def __init__(self, from_email, to_emails, user):
+	def __init__(self, from_email, to_emails, user=None):
 		self.html_body = """
 		<a style="margin:0 auto; display: block; text-align: center" href="http://respondreact.com"><img style="width: 60px;" src="http://api.respondreact.com/static/logo-color.png" title="respond/react" /></a><br />
 		<p style="text-align: center">Don&apos;t just <strong>react</strong>, <em>respond</em>.</p>
-		<div style="border: solid 1px #666; padding: 25px 15px; max-width: 1024px">
+		<div style="border: solid 1px #666; padding: 25px 15px; max-width: 800px">
 			{interior}
 		</div>
 		{cta}
@@ -36,9 +36,9 @@ class EmailMessage(EmailMultiAlternatives):
 
 		html_interior = "<p>Welcome to respond/react!<br />Now is the time to get yourself - and others - involved in your community.</p>"
 		cta = """
-		<p><a style="padding: 20px 40px; display: inline-block; background: #30bad7; color: #FFF; text-decoration: none; margin: 20px 0;" href="http://respondreact.com/user/{userid}">Get Started Now</a></p>
-		""".format(userid=self.user.id)
-		self.html_body = self.html_body.format(userid=self.user.id, interior=html_interior, cta=cta)
+		<p><a style="padding: 20px 40px; display: inline-block; background: #30bad7; color: #FFF; text-decoration: none; margin: 20px 0;" href="http://respondreact.com/">Get Started Now</a></p>
+		"""
+		self.html_body = self.html_body.format(interior=html_interior, cta=cta)
 
 		self.send()
 
