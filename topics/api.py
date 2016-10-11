@@ -38,7 +38,7 @@ class TopicList(APIView):
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
             user = CustomUser.objects.get(id=int(topic.created_by.id))
-            actions = Action.objects.filter(topic=topic.id).count()
+            actions = Action.objects.filter(topic=topic.id, approved=1).count()
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
@@ -297,7 +297,7 @@ class ActionListByTopic(APIView):
     def get(self, request, pk, format=None):
 
         # rewrite payload to include 'score' value
-        actions = Action.objects.filter(topic_id=pk)
+        actions = Action.objects.filter(topic_id=pk, approved=1)
 
         paginator = Paginator(actions, MAX_PAGE_SIZE) 
         page = request.GET.get('action_page')
