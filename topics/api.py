@@ -337,6 +337,7 @@ class ActionListByTopic(APIView):
                 'scope' : action.scope,
                 'address': action.address,
                 'address_raw': raw,
+                'approved': action.approved,
             }
             payload.append(content)
 
@@ -355,6 +356,28 @@ class ActionDetailByTopic(APIView):
         serialized_action = ActionSerializer(action)
 
         return Response(serialized_action.data, status=status.HTTP_200_OK)
+
+class ActionsForAllUserTopics(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
+
+    def get(self, request, format=None):
+        user_id = UserIdFromToken(request.auth)
+        # user_id = 3
+        topics = Topic.objects.filter(created_by=user_id)
+
+        topic_list = []
+        for topic in topics:
+            actions = []
+            topic_actions = Action.objects.filter(topic_id=topic.id)
+
+            if topic_actions.count() > 0:
+                for action in topic_actions:
+                    serialized_action = ActionSerializer(action)
+                    actions.append(serialized_action.data)
+
+
+        return Response(actions)
 
 class ActionPost(APIView):
     permission_classes = (IsAuthenticated, )
@@ -404,17 +427,26 @@ class UnapprovedActionCount(APIView):
         return Response({'count': count}, status=status.HTTP_200_OK)
 
 class UnapprovedActions(APIView):
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (JSONWebTokenAuthentication, )
+    # permission_classes = (IsAuthenticated, )
+    # authentication_classes = (JSONWebTokenAuthentication, )
 
     def get(self, request, format=None):
-        user_id = UserIdFromToken(request.auth)
+        # user_id = UserIdFromToken(request.auth)
+        user_id = 1
+        topics = Topic.objects.filter(created_by=user_id)
 
-        actions = Action.objects.filter(approved=0, created_by_id=user_id)
-        action_serializer = ActionSerializer(actions, many=True)
+        topic_list = []
+        for topic in topics:
+            actions = []
+            topic_actions = Action.objects.filter(topic_id=topic.id, approved=False)
+
+            if topic_actions.count() > 0:
+                for action in topic_actions:
+                    serialized_action = ActionSerializer(action)
+                    actions.append({'title': topic.title, 'id': topic.id, 'actions': serialized_action.data})
 
 
-        return Response(action_serializer.data, status=status.HTTP_200_OK)
+        return Response(actions, status=status.HTTP_200_OK)
 
 
 class ApproveAction(APIView):

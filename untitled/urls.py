@@ -44,6 +44,7 @@ urlpatterns = [
         'field_name': 'rating',
     }, name="action_rating"),
     url(r'^api/actions/$', topic_api.ActionList.as_view()),
+    url(r'^api/actionsbytopic/$', topic_api.ActionsForAllUserTopics.as_view()),
     url(r'^api/actions/tag/(?P<tag>.*)/$', topic_api.ActionListByTag.as_view()),
     url(r'^api/actions/unapproved/count/$', topic_api.UnapprovedActionCount.as_view()),
     url(r'^api/actions/unapproved/$', topic_api.UnapprovedActions.as_view()),
