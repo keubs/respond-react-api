@@ -66,8 +66,23 @@ class EmailMessage(EmailMultiAlternatives):
 
 		self.send()
 
-	def action_approved(self):
-		pass
+	def action_approved(self, topic, action):
+		action_user = CustomUser.objects.get(pk=action.created_by.id)
+		self.subject = "respond/react - Your action was approved and is now public"
+		self.txt_body = """
+		http://respondreact.com\n\n
+		{topic_user} has approved your action {action_title} for the topic:\n\n
+		{topic_title}\n\n
+		""".format(topic_user=topic.created_by.username, action_username=action_user.username, action_title=action.title, topic_title=topic.title, userid=self.user.id)
+
+		html_interior = """
+		<p><a href="http://respondreact.com/user/{topic_userid}">{topic_user}</a> has approved your action: <strong>{action_title}</strong>.</p>
+		<p>View it under the topic <a href="http://respondreact.com/topic/{topicid}">{topic_title}</a>.</p>
+		""".format(topic_userid=topic.created_by.id, topic_user=topic.created_by.username, action_title=action.title, topicid=topic.id, topic_title=topic.title)
+				
+		self.html_body = self.html_body.format(interior=html_interior, cta='')
+
+		self.send()
 
 	def action_declined(self):
 		pass
