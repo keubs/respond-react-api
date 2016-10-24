@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 import datetime
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
@@ -117,17 +117,14 @@ WSGI_APPLICATION = 'untitled.wsgi.application'
 
 DATABASES = {
     'default': {
-<<<<<<< HEAD
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'respondreactdb',
-        'USER': 'rr_dbuser',
-        'PASSWORD': '\MdD!tP<Qv}DA7{?',
-=======
+        # 'ENGINE': 'django.db.backends.mysql', 
+        # 'NAME': 'respondreactdb',
+        # 'USER': 'rr_dbuser',
+        # 'PASSWORD': '\MdD!tP<Qv}DA7{?',
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'respondreact',
         'USER': 'root',
         'PASSWORD': 'root',
->>>>>>> 3ebc9b72ff6ca7356c11bbcbb36ecbef20c2a3bd
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
@@ -235,17 +232,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-#STATIC_URL = '/static/'
-STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
+STATIC_URL = '/static/'
+# STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
-    '/home/keubs/webapps/respondreactapi/respond-react-api/static',
-    '/home/keubs/webapps/static/static',
+    # '/home/keubs/webapps/respondreactapi/respond-react-api/static',
+    # '/home/keubs/webapps/static/static',
 )
 
-STATIC_ROOT = '/home/keubs/webapps/static'
-
+# STATIC_ROOT = '/Users/kevincook/python/respondreact/respond-react-api/static'
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 # @TODO eventually get whitelists working
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
