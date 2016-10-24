@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'rest_social_auth',
     'address',
     'addressapi',
+    'sendemail',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -116,10 +117,17 @@ WSGI_APPLICATION = 'untitled.wsgi.application'
 
 DATABASES = {
     'default': {
+<<<<<<< HEAD
         'ENGINE': 'django.db.backends.mysql', 
         'NAME': 'respondreactdb',
         'USER': 'rr_dbuser',
         'PASSWORD': '\MdD!tP<Qv}DA7{?',
+=======
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'respondreact',
+        'USER': 'root',
+        'PASSWORD': 'root',
+>>>>>>> 3ebc9b72ff6ca7356c11bbcbb36ecbef20c2a3bd
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
@@ -198,6 +206,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.auth_allowed',
     'social.pipeline.social_auth.social_user',
     'social.pipeline.user.get_username',
+    'customuser.email.email_user',
     'social.pipeline.user.create_user',
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
@@ -248,3 +257,15 @@ CORS_ORIGIN_WHITELIST = (
     'http://respondreact.com:8100',
     'http://api.respondreaact.com',
 )
+
+EMAIL_HOST = '127.0.0.1'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 1025
+EMAIL_USE_TLS = False
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 'The respond/react Team <noreply@respondreact.com>'
+# EMAIL_HOST = 'smtp://localhost:1025'
+# EMAIL_HOST_USER = 'noreply@respondreact.com'
+# EMAIL_HOST_PASSWORD = 'PXQJdzA6w95pqTYp'
+# EMAIL_PORT = 587
