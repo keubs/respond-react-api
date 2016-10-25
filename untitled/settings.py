@@ -236,8 +236,6 @@ USE_TZ = True
 STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-    '/home/keubs/webapps/respondreactapi/respond-react-api/static',
     '/home/keubs/webapps/static/static',
 )
 
