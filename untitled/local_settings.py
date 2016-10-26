@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '7v$kmjkvl6*)zc)i$oe)0=b9(f#@%=yq#nt)7*ks^x#s$qj@^='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # BUILDING variable allows you to not need JWT tokens
 BUILDING = False
@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1:8000',
     '.keubs.webfaction.com',
     'respondreact.com',
+    'respondreact.com:3000',
     'api.respondreact.com',
 ]
 
@@ -117,14 +118,14 @@ WSGI_APPLICATION = 'untitled.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'respondreactdb',
-        'USER': 'rr_dbuser',
-        'PASSWORD': '\MdD!tP<Qv}DA7{?',
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': 'respondreact',
-        # 'USER': 'root',
-        # 'PASSWORD': 'root',
+        # 'ENGINE': 'django.db.backends.mysql', 
+        # 'NAME': 'respondreactdb',
+        # 'USER': 'rr_dbuser',
+        # 'PASSWORD': '\MdD!tP<Qv}DA7{?',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'respondreact',
+        'USER': 'root',
+        'PASSWORD': 'root',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
@@ -232,14 +233,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-#STATIC_URL = '/static/'
-STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
+STATIC_URL = '/static/'
+# STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
 
 STATICFILES_DIRS = (
-    '/home/keubs/webapps/static/static',
+    '/Users/kevincook/python/respondreact/respond-react-api/static',
 )
 
-STATIC_ROOT = '/home/keubs/webapps/static'
+# STATIC_ROOT = '/Users/kevincook/python/respondreact/respond-react-api/static'
 
 # @TODO eventually get whitelists working
 CORS_ORIGIN_ALLOW_ALL = True

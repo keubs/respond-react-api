@@ -422,31 +422,38 @@ class UnapprovedActionCount(APIView):
     def get(self, request, format=None):
         user_id = UserIdFromToken(request.auth)
 
-        count = Action.objects.filter(approved=0, created_by_id=user_id).count()
+        topics = Topic.objects.filter(created_by=user_id)
+        count = 0;
+        for topic in topics:
+            topic_actions = Action.objects.filter(topic_id=topic.id, approved=False)
+            if topic_actions.count() > 0:
+                for action in topic_actions:
+                    count = count + 1
+
 
         return Response({'count': count}, status=status.HTTP_200_OK)
 
 class UnapprovedActions(APIView):
-    # permission_classes = (IsAuthenticated, )
-    # authentication_classes = (JSONWebTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
 
     def get(self, request, format=None):
-        # user_id = UserIdFromToken(request.auth)
-        user_id = 1
+        user_id = UserIdFromToken(request.auth)
         topics = Topic.objects.filter(created_by=user_id)
-
         topic_list = []
         for topic in topics:
-            actions = []
             topic_actions = Action.objects.filter(topic_id=topic.id, approved=False)
+            actions = []
 
             if topic_actions.count() > 0:
                 for action in topic_actions:
                     serialized_action = ActionSerializer(action)
-                    actions.append({'title': topic.title, 'id': topic.id, 'actions': serialized_action.data})
+                    actions.append(serialized_action.data)
+                topic_list.append({'title': topic.title, 'id': topic.id, 'actions': actions})
 
 
-        return Response(actions, status=status.HTTP_200_OK)
+
+        return Response(topic_list, status=status.HTTP_200_OK)
 
 
 class ApproveAction(APIView):
