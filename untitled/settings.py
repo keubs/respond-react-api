@@ -253,14 +253,14 @@ CORS_ORIGIN_WHITELIST = (
     'http://api.respondreaact.com',
 )
 
-EMAIL_HOST = '127.0.0.1'
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_PORT = 1025
-EMAIL_USE_TLS = False
-# EMAIL_USE_TLS = True
-# DEFAULT_FROM_EMAIL = 'The respond/react Team <noreply@respondreact.com>'
-# EMAIL_HOST = 'smtp://localhost:1025'
-# EMAIL_HOST_USER = 'noreply@respondreact.com'
-# EMAIL_HOST_PASSWORD = 'PXQJdzA6w95pqTYp'
-# EMAIL_PORT = 587
+# EMAIL_HOST = '127.0.0.1'
+# EMAIL_HOST_USER = ''
+# EMAIL_HOST_PASSWORD = ''
+# EMAIL_PORT = 1025
+# EMAIL_USE_TLS = False
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'The respond/react Team <noreply@respondreact.com>'
+EMAIL_HOST = 'smtp://localhost:1025'
+EMAIL_HOST_USER = 'noreply@respondreact.com'
+EMAIL_HOST_PASSWORD = 'PXQJdzA6w95pqTYp'
+EMAIL_PORT = 587

@@ -24,8 +24,10 @@ from customuser.models import CustomUser
 from address.models import Address, Locality, State, Country
 from addressapi.serializers import AddressSerializer
 
+import logging
 from pprint import pprint
 
+logr = logging.getLogger(__name__)
 MAX_PAGE_SIZE = 10
 class TopicList(APIView):
 
@@ -315,7 +317,10 @@ class ActionListByTopic(APIView):
         for action in actions:
             score = action.rating_likes - action.rating_dislikes
             user = CustomUser.objects.get(id=int(action.created_by.id))
-            raw = action.address.raw
+            if action.address:
+                raw = action.address.raw
+            else:
+                raw = None
 
             content = {
                 'id' : action.id,
