@@ -56,7 +56,10 @@ class OpenGraphHelpers(APIView):
 
         except (Topic.DoesNotExist, Action.DoesNotExist) as e:
             try:
-                og = opengraph.OpenGraph(url=request.data['url'])
+                url=request.data['url']
+                og = opengraph.OpenGraph(url)
+                tags = getTags(url)
+
                 # Description may or may not exist
                 if 'description' in og:
                     desc = og['description']
@@ -66,7 +69,7 @@ class OpenGraphHelpers(APIView):
                     title = og['title']
                 else:
                     title = ''
-                return Response({'image' : og['image'], 'title' : title, 'description' : desc}, status=status.HTTP_200_OK)
+                return Response({'image' : og['image'], 'title' : title, 'description' : desc, 'tags' : tags}, status=status.HTTP_200_OK)
             except urllib.error.URLError:
                 return Response({'image':'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
             except KeyError as e:
@@ -94,7 +97,6 @@ class geolocationHelpers(APIView):
         myzip = zipcode.isequal(request.data['zip'])
         ziplist = zipcode.getzipsinscope(request.data['zip'], request.data['scope'])
 
-        pprint(random.choice(Topic.objects.filter(zip__in=ziplist)))
         cbus = (data['results'][0]['geometry']['location']['lat'], data['results'][0]['geometry']['location']['lng'])
 
         return Response(data['results'][0]['geometry']['location'], status=status.HTTP_200_OK)
@@ -119,3 +121,19 @@ class regionalGeolocateHelpers(APIView):
 
         return Response(serialized_topic.data, status=status.HTTP_200_OK)
 
+
+def getTags(url):
+    from linkfactory.models import Link, LinkType
+    links = Link.objects.all()
+    tags = []
+    match = False
+    linktypes = None
+    for link in links:
+        if re.search(link.preg, url) is not None:
+            match = True
+            linktypes = LinkType.objects.filter(link=link)
+            break
+
+    if linktypes is not None:
+        tags = [{ 'text':tag.linktype } for tag in linktypes]
+        return tags
