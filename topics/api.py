@@ -393,9 +393,15 @@ class ActionPost(APIView):
 
         request.data['created_by'] = user_id
 
+        topic = Topic.objects.get(pk=request.data['topic'])
+        request.data['approved'] = isActionOwner(topic.created_by.id, request.data['created_by'])
+        pprint(request.data)
         serializer = ActionSerializer(data=request.data)
+        pprint(serializer)
+
         if serializer.is_valid():
             action = serializer.save()
+            pprint(action.data)
             try:
                 misc_views.save_image_from_url(action, request.data['image_url'])
             except KeyError:
@@ -485,4 +491,11 @@ def UserIdFromToken(token):
     user_id = user_id['user_id']
 
     return user_id
+
+
+def isActionOwner(topic_owner, action_owner):
+    if topic_owner == action_owner:
+        return True
+    else:
+        return False
 
