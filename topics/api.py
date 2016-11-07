@@ -395,13 +395,10 @@ class ActionPost(APIView):
 
         topic = Topic.objects.get(pk=request.data['topic'])
         request.data['approved'] = isActionOwner(topic.created_by.id, request.data['created_by'])
-        pprint(request.data)
         serializer = ActionSerializer(data=request.data)
-        pprint(serializer)
 
         if serializer.is_valid():
             action = serializer.save()
-            pprint(action.data)
             try:
                 misc_views.save_image_from_url(action, request.data['image_url'])
             except KeyError:
