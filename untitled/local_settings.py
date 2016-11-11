@@ -14,6 +14,17 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 import datetime
 
+def get_env_var(name):
+    try:
+        return os.environ[name]
+    except KeyError:
+        try:
+            from conf import CONF
+            return CONF[name]
+        except (KeyError, Exception):
+            raise ImproperlyConfigured(
+                'The {0} environment variable must be defined.'.format(name))
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -168,19 +179,19 @@ AUTHENTICATION_BACKENDS = {
 }
 
 # Facebook configuration
-SOCIAL_AUTH_FACEBOOK_KEY = '1513191525645232'
-SOCIAL_AUTH_FACEBOOK_SECRET = 'c9a2ea8ff74eb7b4e0bdf17a1fe6cf18'
+SOCIAL_AUTH_FACEBOOK_KEY = get_env_var('SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = get_env_var('SOCIAL_AUTH_FACEBOOK_SECRET')
 
 # Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '593171474012-e4eu1o08jset6iqv8p75mdgq95jbojcg.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '-YPM0smede_C0gccIt155AqH'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = get_env_var('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = get_env_var('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 # Twitter configuration
-SOCIAL_AUTH_TWITTER_KEY = 'vrVr0eDOlVmQNRn7SxulMAobJ'
-SOCIAL_AUTH_TWITTER_SECRET = 'cLaqyx58nZ69LikMEGMpj9STS7JMggkNcP1umOyqPgCXGdwYBY'
+SOCIAL_AUTH_TWITTER_KEY = get_env_var('SOCIAL_AUTH_TWITTER_KEY')
+SOCIAL_AUTH_TWITTER_SECRET = get_env_var('SOCIAL_AUTH_TWITTER_SECRET')
 
 # NY Times configuration
-NY_TIMES_API_KEY = 'c277ad1aa3dfb2a71395b92bb3e9a80c:16:69678011'
+NY_TIMES_API_KEY = get_env_var('NY_TIMES_API_KEY')
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook. Email is not sent by default, to get it, you must request the email permission:
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
