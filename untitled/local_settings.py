@@ -235,13 +235,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+# MEDIA_URL  = '/media/'
 # STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
+
+MEDIA_ROOT = '/Users/kevincook/python/respondreact/respond-react-api/media'
 
 STATICFILES_DIRS = (
     '/Users/kevincook/python/respondreact/respond-react-api/static',
 )
 
-# STATIC_ROOT = '/Users/kevincook/python/respondreact/respond-react-api/static'
+MEDIAFILES_DIRS = (
+    '/Users/kevincook/python/respondreact/respond-react-api/media',
+)
 
 # @TODO eventually get whitelists working
 CORS_ORIGIN_ALLOW_ALL = True

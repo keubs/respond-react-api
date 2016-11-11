@@ -19,7 +19,7 @@ class Topic(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
-    image = models.ImageField(upload_to='static', max_length=512, blank=True, null=True)
+    image = models.ImageField(upload_to='media', max_length=512, blank=True, null=True)
     image_url = models.URLField(max_length=512)
     scope = models.CharField(
         choices = SCOPE_CHOICES,
@@ -49,7 +49,7 @@ class Action(models.Model):
     topic = models.ForeignKey(Topic)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
-    image = models.ImageField(upload_to='static', max_length=512, blank=True, null=True)
+    image = models.ImageField(upload_to='media', max_length=512, blank=True, null=True)
     image_url = models.URLField(max_length=512)
     scope = models.CharField(
         choices=SCOPE_CHOICES,
