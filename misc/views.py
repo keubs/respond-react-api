@@ -22,8 +22,9 @@ def save_image_from_url(model, url):
 
     r = requests.get(url)
     from urllib import parse
-    filename = parse.urlparse(url).path.split('/')[-1]
+    # filename = parse.urlparse(url).path.split('/')[-1]
     img_temp = NamedTemporaryFile(delete=True)
     img_temp.write(r.content)
     img_temp.flush()
-    model.image.save(str(uuid.uuid1()) + '.' + filename.split('.')[1], File(img_temp), save=True)
+    filename, file_extension = os.path.splitext(url)
+    model.image.save(str(uuid.uuid1()) + '.' + file_extension, File(img_temp), save=True)
