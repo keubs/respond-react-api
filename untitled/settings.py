@@ -241,7 +241,7 @@ STATICFILES_DIRS = (
 
 STATIC_ROOT = '/home/keubs/webapps/static'
 
-MEDIA_URL = 'http://media.respondreact.com/'
+MEDIA_URL = ''
 MEDIA_ROOT = '/home/keubs/webapps/media'
 
 # @TODO eventually get whitelists working
