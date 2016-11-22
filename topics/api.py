@@ -83,8 +83,9 @@ class TopicListByUser(APIView):
     def get(self, request, pk, format=None):
         topics = Topic.objects.filter(created_by=pk)
         topic_serializer = TopicSerializer(topics, many=True)
-
-        return Response(topic_serializer.data)
+        payload = topic_serializer.data
+        payload = sorted(payload, key=itemgetter('created_on'), reverse=True)
+        return Response(payload)
 
 class TopicDetail(APIView):
     def get(self, request, pk, format=None):
