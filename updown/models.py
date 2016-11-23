@@ -11,7 +11,8 @@ The vote model for storing ratings
 """
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+# from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
@@ -32,7 +33,7 @@ class Vote(models.Model):
     ip_address = models.IPAddressField()
     date_added = models.DateTimeField(default=timezone.now, editable=False)
     date_changed = models.DateTimeField(default=timezone.now, editable=False)
-    content_object = generic.GenericForeignKey()
+    content_object = GenericForeignKey()
 
     class Meta:
         unique_together = (('content_type', 'object_id', 'key', 'user',

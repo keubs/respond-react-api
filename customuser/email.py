@@ -1,4 +1,3 @@
-from pprint import pprint
 from customuser.models import CustomUser
 from annoying.functions import get_object_or_None
 def email_user(strategy, details, *args, **kwargs):

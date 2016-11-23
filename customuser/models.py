@@ -6,5 +6,6 @@ from address.models import AddressField
 class CustomUser(AbstractUser):
     social_thumb = models.URLField(null=True, blank=True)
     address = AddressField(null=True)
+    new_user = models.BooleanField(default=True)
     def __str__(self):
         return str(self.username)
