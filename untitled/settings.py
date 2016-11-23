@@ -38,7 +38,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = get_env_var('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # BUILDING variable allows you to not need JWT tokens
 BUILDING = False
@@ -247,13 +247,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 #STATIC_URL = '/static/'
-STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
+STATIC_URL = 'http://api.respondreact.com/static/static/'
 
 STATICFILES_DIRS = (
-    '/home/keubs/webapps/static/static',
+    '/home/keubs/webapps/static',
 )
 
-STATIC_ROOT = '/home/keubs/webapps/static'
+STATIC_ROOT = '/home/keubs/webapps/static/static'
 
 MEDIA_URL = ''
 MEDIA_ROOT = '/home/keubs/webapps/media'
