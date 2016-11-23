@@ -11,5 +11,5 @@ class CustomUserSerializer(serializers.ModelSerializer):
 	vote_count = serializers.ReadOnlyField()
 	class Meta:
 		model = CustomUser
-		fields = ('last_login', 'username', 'first_name', 'last_name', 'email', 'social_thumb', 'topic_count', 'action_count', 'vote_count', 'address', 'id')
+		fields = ('last_login', 'username', 'first_name', 'last_name', 'email', 'social_thumb', 'topic_count', 'action_count', 'vote_count', 'address', 'id', 'new_user')
 		read_only_fields = ('username',)
