@@ -66,7 +66,7 @@ class TopicList(APIView):
         # sort by score instead
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
         # if request.query_params.get('order_by') == 'score':
-        payload = sorted(payload, key=itemgetter('ranking'), reverse=True)
+        payload = multikeysort(payload, ['-ranking', '-created_on'])
 
         paginator = Paginator(payload, MAX_PAGE_SIZE) 
         page = request.GET.get('page')
@@ -123,6 +123,7 @@ class TopicListByTag(APIView):
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
             user = CustomUser.objects.get(id=int(topic.created_by.id))
+            actions = Action.objects.filter(topic=topic.id, approved=1).count()
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
@@ -138,6 +139,7 @@ class TopicListByTag(APIView):
                 'image_url': topic.image_url,
                 'scope': topic.scope,
                 'address' : topic.address,
+                'actions' : actions,
             }
             payload.append(content)
 
@@ -355,7 +357,7 @@ class ActionListByTopic(APIView):
         # sort by score instead
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
         # if request.query_params.get('order_by') == 'score':
-        payload = sorted(payload, key=itemgetter('score'), reverse=True)
+        payload = multikeysort(payload, ['-score', '-created_on'])
         serialized_actions = ActionSerializer(payload, many=True)
         return Response(serialized_actions.data)
 
@@ -502,3 +504,20 @@ def isActionOwner(topic_owner, action_owner):
     else:
         return False
 
+from operator import itemgetter as i
+from functools import cmp_to_key
+def multikeysort(items, columns):
+    comparers = [
+        ((i(col[1:].strip()), -1) if col.startswith('-') else (i(col.strip()), 1))
+        for col in columns
+    ]
+    def comparer(left, right):
+        comparer_iter = (
+            cmp(fn(left), fn(right)) * mult
+            for fn, mult in comparers
+        )
+        return next((result for result in comparer_iter if result), 0)
+    return sorted(items, key=cmp_to_key(comparer))
+
+def cmp(a, b):
+    return (a > b) - (a < b)     
