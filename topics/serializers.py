@@ -18,6 +18,8 @@ class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
     score = serializers.ReadOnlyField()
     username = serializers.ReadOnlyField()
     actions = serializers.ReadOnlyField()
+    ranking = serializers.ReadOnlyField()
+    
     class Meta:
         model = Topic
         # Fields = ('title', 'description', 'article_link', 'created_by', 'tags', 'score', 'image_url', 'username')

@@ -59,12 +59,14 @@ class TopicList(APIView):
                 'address' : topic.address,
             }
 
+            content['ranking'] = score + actions
+
             payload.append(content)
 
         # sort by score instead
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
         # if request.query_params.get('order_by') == 'score':
-        payload = sorted(payload, key=itemgetter('score'), reverse=True)
+        payload = sorted(payload, key=itemgetter('ranking'), reverse=True)
 
         paginator = Paginator(payload, MAX_PAGE_SIZE) 
         page = request.GET.get('page')
@@ -93,6 +95,7 @@ class TopicDetail(APIView):
             topic = Topic.objects.get(pk=pk)
             topic.tags = [{ 'slug':tag.slug, 'name': tag.name.title() } for tag in topic.tags.all()]
             score = topic.rating_likes - topic.rating_dislikes
+            user = CustomUser.objects.get(id=int(topic.created_by.id))
 
             serialized_topic = TopicDetailSerializer(topic)
             payload = {}
@@ -100,6 +103,8 @@ class TopicDetail(APIView):
                 payload[attr] = value
 
             payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
+            payload['username'] = user.username
+            
             try:
                 topic_address = Address.objects.get(pk=payload['address'])
                 address_serializer = AddressSerializer(topic_address)
