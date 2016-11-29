@@ -413,10 +413,11 @@ class ActionPost(APIView):
                 Response({'image':'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             # send email
-            import sendemail.emails as ev
-            user = action.created_by
-            email = ev.EmailMessage("noreply@respondreact.com",[user.email], user)
-            email.new_action(action.topic, action)
+            if topic.created_by != action.created_by:
+                import sendemail.emails as ev
+                user = topic.created_by
+                email = ev.EmailMessage("noreply@respondreact.com",[user.email], user)
+                email.new_action(action.topic, action)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

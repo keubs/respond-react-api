@@ -9,7 +9,7 @@ class EmailMessage(EmailMultiAlternatives):
 
 	def __init__(self, from_email, to_emails, user=None):
 		self.html_body = """
-		<a style="margin:0 auto; display: block; text-align: center" href="http://respondreact.com"><img style="width: 60px;" src="http://api.respondreact.com/static/logo-color.png" title="respond/react" /></a><br />
+		<a style="margin:0 auto; display: block; text-align: center" href="http://respondreact.com"><img style="width: 60px;" src="http://api.respondreact.com/static/static/images/logo-color.png" title="respond/react" /></a><br />
 		<p style="text-align: center">Don&apos;t just <strong>react</strong>, <em>respond</em>.</p>
 		<div style="border: solid 1px #666; padding: 25px 15px; max-width: 800px">
 			{interior}
