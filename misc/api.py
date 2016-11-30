@@ -50,9 +50,20 @@ class OpenGraphHelpers(APIView):
                 topic_serializer = TopicSerializer(topic)
                 return Response(topic_serializer.data, status=status.HTTP_409_CONFLICT)
             else:
+                topic = Topic.objects.get(pk=request.data['id'])
+
+                topic_actions = topic.action_set.filter(article_link=request.data['url'])
                 action = Action.objects.get(article_link=request.data['url'])
                 action_serializer = ActionSerializer(action)
-                return Response(action_serializer.data, status=status.HTTP_409_CONFLICT)
+
+                if topic_actions.count() > 0:
+                    return Response(action_serializer.data, status=status.HTTP_409_CONFLICT)    
+
+                else:
+                    action_topic = Topic.objects.get(pk=action.topic_id)
+                    topic_serializer = TopicSerializer(action_topic)
+                    return Response(topic_serializer.data, status=status.HTTP_300_MULTIPLE_CHOICES)
+                
 
         except (Topic.DoesNotExist, Action.DoesNotExist) as e:
             try:
