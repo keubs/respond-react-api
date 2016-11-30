@@ -1,4 +1,5 @@
 from django.core.files import File
+from django.conf import settings
 from django.db import models
 from customuser.models import CustomUser
 from django.core.validators import URLValidator
@@ -19,8 +20,8 @@ class Topic(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
-    image = models.ImageField(upload_to='media', max_length=512, blank=True, null=True)
-    image_url = models.URLField(max_length=512)
+    image = models.ImageField(upload_to='media', max_length=512, null=True, default="media/logo-color.png")
+    image_url = models.URLField(max_length=512, null=True, blank=True, default=settings.MEDIA_URL + "media/logo-color.png")
     scope = models.CharField(
         choices = SCOPE_CHOICES,
         max_length=9,
@@ -28,6 +29,11 @@ class Topic(models.Model):
     address = AddressField(null=True)
     def __str__(self):
         return str(self.title)
+
+    def save(self, *args, **kwargs):
+        if self.image_url == '':
+            self.image_url = self._meta.get_field('image_url').get_default()
+        super(Topic, self).save(*args, **kwargs)
 
 class Action(models.Model):
     SCOPE_CHOICES = [
@@ -50,7 +56,7 @@ class Action(models.Model):
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
     image = models.ImageField(upload_to='media', max_length=512, blank=True, null=True)
-    image_url = models.URLField(max_length=512)
+    image_url = models.URLField(max_length=512, null=True, default=settings.MEDIA_URL + "media/logo-color.png")
     scope = models.CharField(
         choices=SCOPE_CHOICES,
         max_length=9,
@@ -65,3 +71,8 @@ class Action(models.Model):
 
     def __str__(self):
         return str(self.title)
+
+    def save(self, *args, **kwargs):
+        if self.image_url == '':
+            self.image_url = self._meta.get_field('image_url').get_default()
+        super(Action, self).save(*args, **kwargs)

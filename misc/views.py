@@ -20,12 +20,15 @@ def jwt_response_payload_handler(token, user=None, request=None):
 
 
 def save_image_from_url(model, url):
-    logger = logging.getLogger(__name__)
-
-    r = requests.get(url)
-    # filename = parse.urlparse(url).path.split('/')[-1]
-    img_temp = NamedTemporaryFile(delete=True)
-    img_temp.write(r.content)
-    img_temp.flush()
-    filename, file_extension = os.path.splitext(url)
-    model.image.save(str(uuid.uuid1()) + '.' + file_extension, File(img_temp), save=True)
+    try:
+        # logger = logging.getLogger(__name__)
+        r = requests.get(url)
+        # filename = parse.urlparse(url).path.split('/')[-1]
+        img_temp = NamedTemporaryFile(delete=True)
+        img_temp.write(r.content)
+        img_temp.flush()
+        filename, file_extension = os.path.splitext(url)
+        newfilename = str(uuid.uuid1())
+        model.image.save(newfilename + file_extension, File(img_temp), save=True)
+    except Exception as e:
+        pass
