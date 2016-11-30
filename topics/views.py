@@ -22,7 +22,7 @@ def topic_details(request, pk):
 		      <meta property="og:image:height" content="{height}" />
 		      <meta property="og:image" content="{image}" />
 		      <meta property="og:site_name" content="Respond/React" />
-		      <meta preperty="og:url" content="http://dev.respondreact.com/topic/{pk}" />
+		      <meta property="og:url" content="http://dev.respondreact.com/topic/{pk}" />
 		  </head>
 		  <body>
 		  	<h1>{title}</h1>
