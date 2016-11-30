@@ -1,10 +1,10 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf.urls.static import static
-
 from django.conf import settings
 
 from topics import api as topic_api
+from topics import views as topic_views
 
 from rest_framework.urlpatterns import format_suffix_patterns
 from updown.views import AddRatingFromModel
@@ -73,5 +73,8 @@ urlpatterns = [
 
     url(r'api/users/$', customuser_viewset.CustomUserViewSet.as_view({'get': 'list'})),
     url(r'api/users/(?P<pk>[0-9]+)/update$', customuser_viewset.CustomUserViewSet.as_view({'post': 'update'})),
-    url(r'api/users/(?P<pk>[0-9]+)/$', customuser_viewset.CustomUserViewSet.as_view({'get': 'retrieve'}))
+    url(r'api/users/(?P<pk>[0-9]+)/$', customuser_viewset.CustomUserViewSet.as_view({'get': 'retrieve'})),
+
+    # non-api urls
+    url(r'topic/(?P<pk>[0-9]+)$', topic_views.topic_details, name='Topic Details')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
