@@ -79,7 +79,11 @@ class OpenGraphHelpers(APIView):
                     title = og['title']
                 else:
                     title = ''
-                return Response({'image' : og['image'], 'title' : title, 'description' : desc, 'tags' : tags}, status=status.HTTP_200_OK)
+                if 'image' in og:
+                    image = og['image']
+                else:
+                    image = ''
+                return Response({'image' : image, 'title' : title, 'description' : desc, 'tags' : tags}, status=status.HTTP_200_OK)
             except urllib.error.URLError:
                 return Response({'image':'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
             except KeyError as e:
