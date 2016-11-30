@@ -247,10 +247,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-# MEDIA_URL  = '/media/'
+MEDIA_URL  = 'http://media.respondreact.com:3100/'
 # STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
 
-MEDIA_ROOT = '/Users/kevincook/python/respondreact/respond-react-api/media'
+MEDIA_ROOT = '/Users/kevincook/python/respondreact/respond-react-api/'
 
 STATICFILES_DIRS = (
     '/Users/kevincook/python/respondreact/respond-react-api/static',
