@@ -40,7 +40,8 @@ class TopicList(APIView):
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
             user = CustomUser.objects.get(id=int(topic.created_by.id))
-            actions = Action.objects.filter(topic=topic.id, approved=1).count()
+            # actions = Action.objects.filter(topic=topic.id, approved=1).count()
+            actions = topic.action_set.filter(topic=topic.id, approved=1).count()
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
@@ -123,7 +124,8 @@ class TopicListByTag(APIView):
         for topic in topics:
             score = topic.rating_likes - topic.rating_dislikes
             user = CustomUser.objects.get(id=int(topic.created_by.id))
-            actions = Action.objects.filter(topic=topic.id, approved=1).count()
+            # actions = Action.objects.filter(topic=topic.id, approved=1).count()
+            actions = topic.action_set.filter(topic=topic.id, approved=1).count()
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
