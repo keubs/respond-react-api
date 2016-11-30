@@ -45,13 +45,12 @@ class GetUserFromToken(APIView):
 class OpenGraphHelpers(APIView):
     def post(self, request, format=None):
         try:
-            if request.data['type'] is 'topic':
+            if request.data['type'] == 'topic':
                 topic = Topic.objects.get(article_link=request.data['url'])
                 topic_serializer = TopicSerializer(topic)
                 return Response(topic_serializer.data, status=status.HTTP_409_CONFLICT)
             else:
                 topic = Topic.objects.get(pk=request.data['id'])
-
                 topic_actions = topic.action_set.filter(article_link=request.data['url'])
                 action = Action.objects.get(article_link=request.data['url'])
                 action_serializer = ActionSerializer(action)
@@ -67,7 +66,7 @@ class OpenGraphHelpers(APIView):
 
         except (Topic.DoesNotExist, Action.DoesNotExist) as e:
             try:
-                url=request.data['url']
+                url = request.data['url']
                 og = opengraph.OpenGraph(url)
                 tags = getTags(url)
 
