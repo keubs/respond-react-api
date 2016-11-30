@@ -21,11 +21,13 @@ def topic_details(request, pk):
 		      <meta property="og:image:width" content="{width}" />
 		      <meta property="og:image:height" content="{height}" />
 		      <meta property="og:image" content="{image}" />
+		      <meta property="og:site_name" content="Respond/React" />
+		      <meta preperty="og:url" content="http://dev.respondreact.com/topic/{pk}" />
 		  </head>
 		  <body>
 		  	<h1>{title}</h1>
 		  	<img src="{image}" />
 		  </body>
 		</html>
-		""".format(title="Get Involved | " + a.title, image=a.image.url, height=height, width=a.image.width)
+		""".format(title="Get Involved | " + a.title, image=a.image.url, height=height, width=a.image.width, pk=pk)
 	)
