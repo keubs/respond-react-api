@@ -4,3 +4,4 @@ logs/*
 .idea
 media/*
 conf.py
+mysql_backups
