@@ -1,3 +1,8 @@
+import logging
+from operator import itemgetter as i
+from functools import cmp_to_key
+from operator import itemgetter
+
 from .models import Topic, Action
 from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -16,7 +21,6 @@ from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt import utils
-from operator import itemgetter
 
 from misc import views as misc_views
 from customuser.models import CustomUser
@@ -24,7 +28,6 @@ from customuser.models import CustomUser
 from address.models import Address, Locality, State, Country
 from addressapi.serializers import AddressSerializer
 
-import logging
 from pprint import pprint
 
 logr = logging.getLogger(__name__)
@@ -271,7 +274,7 @@ class TopicDelete(APIView):
 
 class ActionListByTag(APIView):
     def get(self, request, tag, format=None):
-        actions = Action.objects.filter(tags__name__in=[tag])
+        actions = Action.objects.filter(tags__slug__in=[tag])
 
         payload = []
         for action in actions:
@@ -509,8 +512,6 @@ def isActionOwner(topic_owner, action_owner):
     else:
         return False
 
-from operator import itemgetter as i
-from functools import cmp_to_key
 def multikeysort(items, columns):
     comparers = [
         ((i(col[1:].strip()), -1) if col.startswith('-') else (i(col.strip()), 1))
