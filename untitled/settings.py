@@ -74,6 +74,7 @@ INSTALLED_APPS = (
     'address',
     'addressapi',
     'sendemail',
+    'linkfactory',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
