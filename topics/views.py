@@ -6,9 +6,9 @@ from .models import *
 # Create your views here.
 def topic_details(request, pk):
 	a = Topic.objects.get(pk=pk)
-	pprint(a.created_on)
 	width = a.image.width
 	height = a.image.height
+	date = a.created_on.isoformat()
 	return HttpResponse(
 		"""
 		<!doctype html>
@@ -22,6 +22,7 @@ def topic_details(request, pk):
 		      <meta property="og:image" content="{image}" />
 		      <meta property="og:image:width" content="{width}" />
 		      <meta property="og:image:height" content="{height}" />
+		      <meta property="og:pubdate" content="{date}" />
 		      <meta property="og:site_name" content="Respond/React" />
 		      <meta property="og:url" content="http://dev.respondreact.com/topic/{pk}" />
 		      <meta property="fb:app_id" name="fb_app_id" content="1513191525645232" />
@@ -33,5 +34,5 @@ def topic_details(request, pk):
 		  	<img src="{image}" />
 		  </body>
 		</html>
-		""".format(title="Get Involved | " + a.title, image=a.image.url, height=height, width=a.image.width, pk=pk)
+		""".format(title="Get Involved | " + a.title, image=a.image.url, height=height, width=a.image.width, pk=pk, date=date)
 	)
