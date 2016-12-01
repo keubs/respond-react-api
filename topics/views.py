@@ -26,7 +26,7 @@ def topic_details(request, pk):
 		      <meta property="og:site_name" content="Respond/React">
 		      <meta property="og:url" content="http://dev.respondreact.com/topic/{pk}">
 		      <meta property="fb:app_id" name="fb_app_id" content="1513191525645232">
-		      <meta content="article" property="og:type">
+		      <meta content="website" property="og:type">
 
 		  </head>
 		  <body>
