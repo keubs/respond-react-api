@@ -28,11 +28,11 @@ def topic_details(request, pk):
 		      <meta property="fb:app_id" name="fb_app_id" content="1513191525645232">
 		      <meta content="website" property="og:type">
 
-		      <meta property="twitter:card" content="summary" />
-		      <meta property="twitter:site" content="@keubs" />
-		      <meta property="twitter:title" content="{title}" />
-		      <meta property="twitter:image" content="{image}" />
-		      <meta property="twitter:url" content="http://dev.respondreact.com/topic/{pk}" />
+		      <meta name="twitter:card" content="summary" />
+		      <meta name="twitter:site" content="@keubs" />
+		      <meta name="twitter:title" content="{title}" />
+		      <meta name="twitter:image" content="{image}" />
+		      <meta name="twitter:url" content="http://dev.respondreact.com/topic/{pk}" />
 		  </head>
 		  <body>
 		  	<h1>{title}</h1>
