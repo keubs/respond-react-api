@@ -15,6 +15,7 @@ class Topic(models.Model):
         (u'worldwide',u'Worldwide'),
     ]
     title = models.CharField(max_length=512)
+    description = models.TextField()
     article_link = models.TextField(validators=[URLValidator()])
     created_by = models.ForeignKey(CustomUser)
     created_on = models.DateTimeField(auto_now_add=True)

@@ -17,6 +17,7 @@ def topic_details(request, pk):
 		      <meta http-equiv="content-type" content="text/html; charset=utf-8">
 		      <title>{title}</title>
 		      <meta property="og:title" content="{title}">
+		      <meta property="og:description" content="{description}">
 		      <meta property="og:image" content="{image}">
 		      <meta property="og:image:width" content="{width}">
 		      <meta property="og:image:height" content="{height}">
@@ -37,5 +38,5 @@ def topic_details(request, pk):
 		  	<img src="{image}" />
 		  </body>
 		</html>
-		""".format(title="Get Involved | " + a.title, image=a.image.url, height=height, width=a.image.width, pk=pk, date=date)
+		""".format(title="Get Involved | " + a.title, description=a.description, image=a.image.url, height=height, width=a.image.width, pk=pk, date=date)
 	)

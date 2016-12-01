@@ -45,6 +45,7 @@ class TopicList(APIView):
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
+                'description' : topic.description,
                 'article_link' : topic.article_link,
                 'created_on' : topic.created_on,
                 'score' : score,
@@ -129,6 +130,7 @@ class TopicListByTag(APIView):
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
+                'description' : topic.description,
                 'article_link' : topic.article_link,
                 'created_on' : topic.created_on,
                 'score' : score,
