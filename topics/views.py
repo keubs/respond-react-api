@@ -18,7 +18,7 @@ def topic_details(request, pk):
 		      <meta charset="utf-8">
 		      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		      <title>{title}</title>
-		      <meta property="og:title" content="{title}"/>
+		      <meta property="og:title" content="{title}" />
 		      <meta property="og:image" content="{image}" />
 		      <meta property="og:image:width" content="{width}" />
 		      <meta property="og:image:height" content="{height}" />
