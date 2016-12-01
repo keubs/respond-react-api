@@ -11,12 +11,10 @@ def topic_details(request, pk):
 	date = a.created_on.isoformat()
 	return HttpResponse(
 		"""
-		<!doctype html>
-		<html class="no-js">
-		  <head>
-		      <base href="/">
-		      <meta charset="utf-8">
-		      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<!DOCTYPE html>
+		<html>
+		<head>
+		      <meta http-equiv="content-type" content="text/html; charset=utf-8">
 		      <title>{title}</title>
 		      <meta property="og:title" content="{title}">
 		      <meta property="og:image" content="{image}">
