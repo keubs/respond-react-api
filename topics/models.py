@@ -7,6 +7,8 @@ from django.core.validators import URLValidator
 from updown.fields import RatingField
 from taggit.managers import TaggableManager
 from address.models import AddressField
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 
 class Topic(models.Model):
     SCOPE_CHOICES = [
@@ -22,6 +24,11 @@ class Topic(models.Model):
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
     image = models.ImageField(upload_to='media', max_length=512, null=True, default="media/logo-color.png")
+    topic_thumbnail = ImageSpecField(source='image',
+                                          processors=[ResizeToFill(404, 227)],
+                                          format='JPEG',
+                                          options={'quality': 100})
+
     image_url = models.URLField(max_length=512, null=True, blank=True, default=settings.MEDIA_URL + "media/logo-color.png")
     scope = models.CharField(
         choices = SCOPE_CHOICES,

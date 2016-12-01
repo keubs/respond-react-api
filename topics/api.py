@@ -45,6 +45,7 @@ class TopicList(APIView):
             user = CustomUser.objects.get(id=int(topic.created_by.id))
             # actions = Action.objects.filter(topic=topic.id, approved=1).count()
             actions = topic.action_set.filter(topic=topic.id, approved=1).count()
+            topic_thumbnail = topic.topic_thumbnail.url
             content = {
                 'id' : topic.id,
                 'title' : topic.title,
@@ -58,6 +59,7 @@ class TopicList(APIView):
                 'rating_dislikes' : topic.rating_dislikes,
                 'tags' : [{ 'slug':tag.slug, 'name': tag.name.title() } for tag in topic.tags.all()],
                 'image' : topic.image,
+                'thumbnail' : topic_thumbnail,
                 'image_url' : topic.image_url,
                 'actions' : actions,
                 'scope' : topic.scope,

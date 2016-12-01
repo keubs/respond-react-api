@@ -75,6 +75,7 @@ INSTALLED_APPS = (
     'addressapi',
     'sendemail',
     'linkfactory',
+    'imagekit',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

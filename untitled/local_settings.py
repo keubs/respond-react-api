@@ -73,6 +73,7 @@ INSTALLED_APPS = (
     'addressapi',
     'sendemail',
     'linkfactory',
+    'imagekit',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -250,14 +251,14 @@ STATIC_URL = '/static/'
 MEDIA_URL  = 'http://media.respondreact.com:3100/'
 # STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
 
-MEDIA_ROOT = '/Users/kevincook/python/respondreact/respond-react-api/'
+MEDIA_ROOT = '/Users/kevincook/python/respondreact/'
 
 STATICFILES_DIRS = (
     '/Users/kevincook/python/respondreact/respond-react-api/static',
 )
 
 MEDIAFILES_DIRS = (
-    '/Users/kevincook/python/respondreact/respond-react-api/media',
+    '/Users/kevincook/python/respondreact/media',
 )
 
 # @TODO eventually get whitelists working
