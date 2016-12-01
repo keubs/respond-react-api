@@ -61,7 +61,7 @@ class OpenGraphHelpers(APIView):
                 else:
                     action_topic = Topic.objects.get(pk=action.topic_id)
                     topic_serializer = TopicSerializer(action_topic)
-                    return Response(topic_serializer.data, status=status.HTTP_300_MULTIPLE_CHOICES)
+                    return Response(action_serializer.data, status=status.HTTP_200_OK)
                 
 
         except (Topic.DoesNotExist, Action.DoesNotExist) as e:
