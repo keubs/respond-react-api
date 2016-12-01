@@ -206,9 +206,10 @@ class TopicByScope(APIView):
                     INNER JOIN address_state ass ON al.state_id = ass.id 
                     INNER JOIN address_country ac ON ass.country_id = ac.id 
                     WHERE ac.id = {country} 
-                    AND tt.scope = 'national'
+                    AND ass.id <> {state}
+                    -- AND tt.scope = 'national'
                     ORDER BY RAND() LIMIT 1
-                """.format(country=country)
+                """.format(country=country, state=state)
 
             for topics in Topic.objects.raw(query):
                 topic_serializer = TopicSerializer(topics)
@@ -221,7 +222,7 @@ class TopicByScope(APIView):
                     INNER JOIN address_locality al ON aa.locality_id = al.id 
                     INNER JOIN address_state ass ON al.state_id = ass.id
                     WHERE ass.id = {state} 
-                    AND tt.scope = 'local'
+                    -- AND tt.scope = 'local'
                     ORDER BY RAND() LIMIT 1
                 """.format(state=state)
             for topic in Topic.objects.raw(query):
