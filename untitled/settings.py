@@ -35,7 +35,7 @@ SERVER_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_var('SECRET_KEY')
+SECRET_KEY = get_env_var('RR_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -99,7 +99,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 
-
 ROOT_URLCONF = 'untitled.urls'
 
 TEMPLATES = [
@@ -121,13 +120,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'untitled.wsgi.application'
 
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_env_var('DB_NAME'),
-        'USER': get_env_var('DB_USER'),
-        'PASSWORD': get_env_var('DB_PASSWORD'),
+        'NAME': get_env_var('RR_DB_NAME'),
+        'USER': get_env_var('RR_DB_USER'),
+        'PASSWORD': get_env_var('RR_DB_PASSWORD'),
         # 'ENGINE': 'django.db.backends.mysql',
         # 'NAME': 'respondreact',
         # 'USER': 'root',
@@ -173,19 +171,19 @@ AUTHENTICATION_BACKENDS = {
 }
 
 # Facebook configuration
-SOCIAL_AUTH_FACEBOOK_KEY = get_env_var('SOCIAL_AUTH_FACEBOOK_KEY')
-SOCIAL_AUTH_FACEBOOK_SECRET = get_env_var('SOCIAL_AUTH_FACEBOOK_SECRET')
+SOCIAL_AUTH_FACEBOOK_KEY = get_env_var('RR_SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = get_env_var('RR_SOCIAL_AUTH_FACEBOOK_SECRET')
 
 # Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = get_env_var('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = get_env_var('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = get_env_var('RR_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = get_env_var('RR_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 # Twitter configuration
-SOCIAL_AUTH_TWITTER_KEY = get_env_var('SOCIAL_AUTH_TWITTER_KEY')
-SOCIAL_AUTH_TWITTER_SECRET = get_env_var('SOCIAL_AUTH_TWITTER_SECRET')
+SOCIAL_AUTH_TWITTER_KEY = get_env_var('RR_SOCIAL_AUTH_TWITTER_KEY')
+SOCIAL_AUTH_TWITTER_SECRET = get_env_var('RR_SOCIAL_AUTH_TWITTER_SECRET')
 
 # NY Times configuration
-NY_TIMES_API_KEY = get_env_var('NY_TIMES_API_KEY')
+NY_TIMES_API_KEY = get_env_var('RR_NY_TIMES_API_KEY')
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook. Email is not sent by default, to get it, you must request the email permission:
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
@@ -194,7 +192,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email']
 SOCIAL_AUTH_ENABLED_BACKENDS = ('facebook', 'google')
 
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-  'fields': 'id, name, email'
+    'fields': 'id, name, email'
 }
 
 SOCIAL_AUTH_USER_MODEL = 'customuser.CustomUser'
@@ -240,7 +238,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-#STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 STATIC_URL = 'http://api.respondreact.com/static/static/'
 
 STATICFILES_DIRS = (
@@ -271,7 +269,7 @@ CORS_ORIGIN_WHITELIST = (
 # EMAIL_USE_TLS = False
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'The respond/react Team <noreply@respondreact.com>'
-EMAIL_HOST = get_env_var('EMAIL_HOST')
-EMAIL_HOST_USER = get_env_var('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = get_env_var('EMAIL_HOST_PASSWORD')
+EMAIL_HOST = get_env_var('RR_EMAIL_HOST')
+EMAIL_HOST_USER = get_env_var('RR_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = get_env_var('RR_EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
