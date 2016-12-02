@@ -123,27 +123,27 @@ WSGI_APPLICATION = 'untitled.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     },
-# }
-
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.mysql', 
-        # 'NAME': 'respondreactdb',
-        # 'USER': 'rr_dbuser',
-        # 'PASSWORD': '\MdD!tP<Qv}DA7{?',
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'respondreact',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
-    }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
 }
+
+# DATABASES = {
+#     'default': {
+#         # 'ENGINE': 'django.db.backends.mysql',
+#         # 'NAME': 'respondreactdb',
+#         # 'USER': 'rr_dbuser',
+#         # 'PASSWORD': '\MdD!tP<Qv}DA7{?',
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'respondreact2',
+#         'USER': 'root',
+#         'PASSWORD': 'root',
+#         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+#         'PORT': '3306',
+#     }
+# }
 
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
@@ -299,7 +299,7 @@ LOGGING = {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
             'filename':'logs/django_log.log',
-            'maxBytes':1024*1024*5, 
+            'maxBytes':1024*1024*5,
             'backupCount': 5,
             'formatter': 'standard'
         },
@@ -307,7 +307,7 @@ LOGGING = {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
             'filename':'logs/django_request.log',
-            'maxBytes':1024*1024*5, 
+            'maxBytes':1024*1024*5,
             'backupCount': 5,
             'formatter': 'standard',
         }
