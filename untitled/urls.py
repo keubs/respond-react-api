@@ -22,10 +22,12 @@ urlpatterns = [
         # actions
         url(
             r'^actions/submit$',
-            topic_api.ActionPost.as_view()),
+            topic_api.ActionPost.as_view(),
+            name="action_create"),
         url(
             r'^actions/(?P<pk>[0-9]+)/$',
-            topic_api.ActionDetailByTopic.as_view()),
+            topic_api.ActionDetailByTopic.as_view(),
+            name="action_topic_detail"),
         url(
             r'^actions/(?P<object_id>\d+)/rate/(?P<score>[\d\-]+)$',
             updown_api.RatingPost.as_view(), {
@@ -36,58 +38,74 @@ urlpatterns = [
             name="action_rating"),
         url(
             r'^actions/$',
-            topic_api.ActionList.as_view()),
+            topic_api.ActionList.as_view(),
+            name="action_list"),
         url(
             r'^actionsbytopic/$',
-            topic_api.ActionsForAllUserTopics.as_view()),
+            topic_api.ActionsForAllUserTopics.as_view(),
+            name="action_topic_list"),
         url(
             r'^actions/tag/(?P<tag>.*)/$',
-            topic_api.ActionListByTag.as_view()),
+            topic_api.ActionListByTag.as_view(),
+            name="action_tag_list"),
         url(
             r'^actions/unapproved/count/$',
-            topic_api.UnapprovedActionCount.as_view()),
+            topic_api.UnapprovedActionCount.as_view(),
+            name="action_unapproved_count"),
         url(
             r'^actions/unapproved/$',
-            topic_api.UnapprovedActions.as_view()),
+            topic_api.UnapprovedActions.as_view(),
+            name="action_unapproved_list"),
         url(
             r'^actions/(?P<pk>\d+)/approve/$',
-            topic_api.ApproveAction.as_view()),
+            topic_api.ApproveAction.as_view(),
+            name="action_approve"),
         url(
             r'^actions/(?P<pk>\d+)/delete/$',
-            topic_api.ActionDelete.as_view()),
+            topic_api.ActionDelete.as_view(),
+            name="action_delete"),
 
         # address
         url(
             r'^address/submit/$',
-            address_api.AddressPost.as_view()),
+            address_api.AddressPost.as_view(),
+            name="address_create"),
         url(
             r'^addresses/$',
-            address_api.AddressList.as_view()),
+            address_api.AddressList.as_view(),
+            name="address_list"),
         url(
             r'^addresses/(?P<pk>[0-9]+)$',
-            address_api.AddressList.as_view()),
+            address_api.AddressList.as_view(),
+            name="address_detail"),
 
         url(
             r'^geolocate/$',
-            misc_api.regionalGeolocateHelpers.as_view()),
+            misc_api.regionalGeolocateHelpers.as_view(),
+            name="geolocate"),
         url(
             r'^getopengraph/$',
-            misc_api.OpenGraphHelpers.as_view()),
+            misc_api.OpenGraphHelpers.as_view(),
+            name="open_graph"),
 
         url(
             r'^linkfactory/$',
-            linkfactory_api.ProcessLink.as_view()),
+            linkfactory_api.ProcessLink.as_view(),
+            name="link_factory"),
         url(
             r'^misc/token-auth/$',
-            misc_api.GetUserFromToken.as_view()),
+            misc_api.GetUserFromToken.as_view(),
+            name="token_user"),
 
         url(
             r'^nytimes/$',
-            misc_api.nyTimesAPIHelpers.as_view()),
+            misc_api.nyTimesAPIHelpers.as_view(),
+            name="nyt"),
 
         url(
             r'^token-auth/',
-            'rest_framework_jwt.views.obtain_jwt_token'),
+            'rest_framework_jwt.views.obtain_jwt_token',
+            name="jwt_token"),
 
         # topics
         url(
@@ -100,50 +118,65 @@ urlpatterns = [
             name="topic_rating"),
         url(
             r'^topics/$',
-            topic_api.TopicList.as_view()),
+            topic_api.TopicList.as_view(),
+            name="topic_list"),
         url(
             r'^topics/count$',
-            topic_api.TopicCount.as_view()),
+            topic_api.TopicCount.as_view(),
+            name="topic_count"),
         url(
             r'^topics/(?P<pk>[0-9]+)$',
-            topic_api.TopicDetail.as_view()),
+            topic_api.TopicDetail.as_view(),
+            name="topic_detail"),
         url(
             r'^topics/(?P<pk>[0-9]+)/delete$',
-            topic_api.TopicDelete.as_view()),
+            topic_api.TopicDelete.as_view(),
+            name="topic_delete"),
         url(
             r'^topics/tag/(?P<tag>.*)/$',
-            topic_api.TopicListByTag.as_view()),
+            topic_api.TopicListByTag.as_view(),
+            name="topic_tag_list"),
         url(
             r'^topics/(?P<pk>[0-9]+)/update$',
-            topic_api.TopicUpdate.as_view()),
+            topic_api.TopicUpdate.as_view(),
+            name="topic_update"),
         url(
             r'^topics/scope/(?P<scope>.*)/$',
-            topic_api.TopicByScope.as_view()),
+            topic_api.TopicByScope.as_view(),
+            name="topic_scope"),
         url(
             r'^topics/submit$',
-            topic_api.TopicPost.as_view()),
+            topic_api.TopicPost.as_view(),
+            name="topic_create"),
         url(
             r'^topics/(?P<pk>[0-9]+)/actions/$',
-            topic_api.ActionListByTopic.as_view()),
+            topic_api.ActionListByTopic.as_view(),
+            name="topic_action_list"),
         url(
             r'^topics/(?P<pk>[0-9]+)/actions/(?P<fk>[0-9]+)/$',
-            topic_api.ActionDetailByTopic.as_view()),
+            topic_api.ActionDetailByTopic.as_view(),
+            name="topic_action_detail"),
 
         # users
         url(
             r'^users/(?P<pk>.*)/topics/$',
-            topic_api.TopicListByUser.as_view()),
+            topic_api.TopicListByUser.as_view(),
+            name="user_topics"),
         url(
             r'users/$',
-            customuser_viewset.CustomUserViewSet.as_view({'get': 'list'})),
+            customuser_viewset.CustomUserViewSet.as_view({'get': 'list'}),
+            name="user_list"),
         url(
             r'users/(?P<pk>[0-9]+)/update$',
-            customuser_viewset.CustomUserViewSet.as_view({'post': 'update'})),
+            customuser_viewset.CustomUserViewSet.as_view({'post': 'update'}),
+            name="user_update"),
         url(
             r'users/(?P<pk>[0-9]+)/$',
-            customuser_viewset.CustomUserViewSet.as_view({'get': 'retrieve'})),
+            customuser_viewset.CustomUserViewSet.as_view({'get': 'retrieve'}),
+            name="user_detail"),
         url(
             r'^user/register/$',
-            misc_api.UserRegistration.as_view()),
+            misc_api.UserRegistration.as_view(),
+            name="user_register"),
     ]))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
