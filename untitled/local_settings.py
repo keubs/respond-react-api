@@ -25,7 +25,8 @@ def get_env_var(name):
             raise ImproperlyConfigured(
                 'The {0} environment variable must be defined.'.format(name))
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR         = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -251,14 +252,14 @@ STATIC_URL = '/static/'
 MEDIA_URL  = 'http://media.respondreact.com:3100/'
 # STATIC_URL = 'http://respondreact.keubs.webfactional.com/static/'
 
-MEDIA_ROOT = '/Users/kevincook/python/respondreact/'
+MEDIA_ROOT = PROJECT_BASE_DIR
 
 STATICFILES_DIRS = (
-    '/Users/kevincook/python/respondreact/respond-react-api/static',
+    BASE_DIR + '/static',
 )
 
 MEDIAFILES_DIRS = (
-    '/Users/kevincook/python/respondreact/media',
+    PROJECT_BASE_DIR + '/respondreact/media',
 )
 
 # @TODO eventually get whitelists working

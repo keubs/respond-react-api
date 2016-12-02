@@ -29,7 +29,7 @@ def get_env_var(name):
                 'The {0} environment variable must be defined.'.format(name))
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+SERVER_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -121,15 +121,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'untitled.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     },
-# }
 
 DATABASES = {
     'default': {
@@ -253,13 +244,13 @@ USE_TZ = True
 STATIC_URL = 'http://api.respondreact.com/static/static/'
 
 STATICFILES_DIRS = (
-    '/home/keubs/webapps/static',
+    SERVER_ROOT + '/static',
 )
 
-STATIC_ROOT = '/home/keubs/webapps/static/static'
+STATIC_ROOT = SERVER_ROOT + '/static/static'
 
 MEDIA_URL = 'http://media.respondreact.com/'
-MEDIA_ROOT = '/home/keubs/webapps/media'
+MEDIA_ROOT = SERVER_ROOT + '/media'
 
 # @TODO eventually get whitelists working
 CORS_ORIGIN_ALLOW_ALL = True
