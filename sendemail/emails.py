@@ -11,7 +11,7 @@ class EmailMessage(EmailMultiAlternatives):
 		self.html_body = """
 		<a style="margin:0 auto; display: block; text-align: center" href="http://respondreact.com"><img style="width: 60px;" src="http://api.respondreact.com/static/static/images/logo-color.png" title="respond/react" /></a><br />
 		<p style="text-align: center">Don&apos;t just <strong>react</strong>, <em>respond</em>.</p>
-		<div style="border: solid 1px #666; padding: 25px 15px; max-width: 800px">
+		<div style="border: solid 1px #666; padding: 25px 15px; max-width: 800px; margin: 0 auto;">
 			{interior}
 		</div>
 		{cta}
