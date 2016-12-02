@@ -41,5 +41,6 @@
 * `source ~/.venv/respondreact/bin/activate`
 * create a mysql database called respondreact: `CREATE DATABASE respondreact;`
 * `pip install -r requirements.txt`
+* `python manage.py migrate`
 * `python manage.py runserver 8100`
 * `python manage.py syncdb`
