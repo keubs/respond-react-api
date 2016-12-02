@@ -122,7 +122,7 @@ WSGI_APPLICATION = 'untitled.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': get_env_var('RR_DB_NAME'),
         'USER': get_env_var('RR_DB_USER'),
         'PASSWORD': get_env_var('RR_DB_PASSWORD'),
@@ -130,8 +130,8 @@ DATABASES = {
         # 'NAME': 'respondreact',
         # 'USER': 'root',
         # 'PASSWORD': 'root',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        #'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        #'PORT': '3306',
     }
 }
 
@@ -171,19 +171,19 @@ AUTHENTICATION_BACKENDS = {
 }
 
 # Facebook configuration
-SOCIAL_AUTH_FACEBOOK_KEY = get_env_var('RR_SOCIAL_AUTH_FACEBOOK_KEY')
-SOCIAL_AUTH_FACEBOOK_SECRET = get_env_var('RR_SOCIAL_AUTH_FACEBOOK_SECRET')
-
-# Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = get_env_var('RR_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = get_env_var('RR_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
-
-# Twitter configuration
-SOCIAL_AUTH_TWITTER_KEY = get_env_var('RR_SOCIAL_AUTH_TWITTER_KEY')
-SOCIAL_AUTH_TWITTER_SECRET = get_env_var('RR_SOCIAL_AUTH_TWITTER_SECRET')
-
-# NY Times configuration
-NY_TIMES_API_KEY = get_env_var('RR_NY_TIMES_API_KEY')
+#SOCIAL_AUTH_FACEBOOK_KEY = get_env_var('RR_SOCIAL_AUTH_FACEBOOK_KEY')
+#SOCIAL_AUTH_FACEBOOK_SECRET = get_env_var('RR_SOCIAL_AUTH_FACEBOOK_SECRET')
+#
+## Google configuration
+#SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = get_env_var('RR_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+#SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = get_env_var('RR_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+#
+## Twitter configuration
+#SOCIAL_AUTH_TWITTER_KEY = get_env_var('RR_SOCIAL_AUTH_TWITTER_KEY')
+#SOCIAL_AUTH_TWITTER_SECRET = get_env_var('RR_SOCIAL_AUTH_TWITTER_SECRET')
+#
+## NY Times configuration
+#NY_TIMES_API_KEY = get_env_var('RR_NY_TIMES_API_KEY')
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook. Email is not sent by default, to get it, you must request the email permission:
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
@@ -269,7 +269,7 @@ CORS_ORIGIN_WHITELIST = (
 # EMAIL_USE_TLS = False
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'The respond/react Team <noreply@respondreact.com>'
-EMAIL_HOST = get_env_var('RR_EMAIL_HOST')
-EMAIL_HOST_USER = get_env_var('RR_EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = get_env_var('RR_EMAIL_HOST_PASSWORD')
+#EMAIL_HOST = get_env_var('RR_EMAIL_HOST')
+#EMAIL_HOST_USER = get_env_var('RR_EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = get_env_var('RR_EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
