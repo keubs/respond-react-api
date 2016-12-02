@@ -1,5 +1,5 @@
-## Build & Backend setup
-# Ideal file structure
+# Build & Backend setup
+## Ideal file structure
 
 |_ _ respond-react/
 
@@ -11,7 +11,7 @@
 
 |_ _ media
 
-# Requirements:
+## Requirements:
 * PYTHON 3.4.1 https://www.python.org/downloads/release/python-341/
 * MySQL
 * pip (should come with python)
