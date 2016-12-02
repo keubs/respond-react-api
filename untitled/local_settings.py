@@ -33,7 +33,7 @@ BASE_DIR         = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_var('SECRET_KEY')
+SECRET_KEY = get_env_var('RR_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -181,19 +181,19 @@ AUTHENTICATION_BACKENDS = {
 }
 
 # Facebook configuration
-SOCIAL_AUTH_FACEBOOK_KEY = get_env_var('SOCIAL_AUTH_FACEBOOK_KEY')
-SOCIAL_AUTH_FACEBOOK_SECRET = get_env_var('SOCIAL_AUTH_FACEBOOK_SECRET')
+SOCIAL_AUTH_FACEBOOK_KEY = get_env_var('RR_SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = get_env_var('RR_SOCIAL_AUTH_FACEBOOK_SECRET')
 
 # Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = get_env_var('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = get_env_var('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = get_env_var('RR_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = get_env_var('RR_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 # Twitter configuration
-SOCIAL_AUTH_TWITTER_KEY = get_env_var('SOCIAL_AUTH_TWITTER_KEY')
-SOCIAL_AUTH_TWITTER_SECRET = get_env_var('SOCIAL_AUTH_TWITTER_SECRET')
+SOCIAL_AUTH_TWITTER_KEY = get_env_var('RR_SOCIAL_AUTH_TWITTER_KEY')
+SOCIAL_AUTH_TWITTER_SECRET = get_env_var('RR_SOCIAL_AUTH_TWITTER_SECRET')
 
 # NY Times configuration
-NY_TIMES_API_KEY = get_env_var('NY_TIMES_API_KEY')
+NY_TIMES_API_KEY = get_env_var('RR_NY_TIMES_API_KEY')
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook. Email is not sent by default, to get it, you must request the email permission:
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
