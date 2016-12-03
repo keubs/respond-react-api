@@ -109,6 +109,7 @@ class TopicDetail(APIView):
             for attr, value in serialized_topic.data.items():
                 payload[attr] = value
 
+            payload['action_count'] = topic.action_set.filter(approved=1).count()
             payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
             payload['username'] = user.username
             
