@@ -64,7 +64,7 @@ class Action(models.Model):
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
     image = models.ImageField(upload_to='media', max_length=512, blank=True, null=True)
-    image_url = models.URLField(max_length=512, null=True, default=settings.MEDIA_URL + "media/logo-color.png")
+    image_url = models.URLField(max_length=512, null=True, blank=True, default=settings.MEDIA_URL + "media/logo-color.png")
     scope = models.CharField(
         choices=SCOPE_CHOICES,
         max_length=9,
