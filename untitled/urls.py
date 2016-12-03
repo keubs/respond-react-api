@@ -79,6 +79,7 @@ urlpatterns = [
             address_api.AddressList.as_view(),
             name="address_detail"),
 
+        # misc
         url(
             r'^geolocate/$',
             misc_api.regionalGeolocateHelpers.as_view(),
