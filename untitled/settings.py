@@ -69,6 +69,7 @@ INSTALLED_APPS = (
     'customuser',
     'taggit_serializer',
     'opengraph',
+    'oauth2_provider',
     'social.apps.django_app.default',
     'rest_social_auth',
     'address',

@@ -18,6 +18,7 @@ urlpatterns = [
         r'topic/(?P<pk>[0-9]+)$',
         topic_views.topic_details,
         name='topic_details'),
+    # API urls
     url(r'^v1/', include([
         # actions
         url(
@@ -69,7 +70,7 @@ urlpatterns = [
         url(
             r'^address/submit/$',
             address_api.AddressPost.as_view(),
-            name="address_create"),
+            name="address_create_update"),
         url(
             r'^addresses/$',
             address_api.AddressList.as_view(),

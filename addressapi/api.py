@@ -6,18 +6,18 @@ from .serializers import AddressSerializer, CountrySerializer, LocalitySerialize
 from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
-from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
 
 from annoying.functions import get_object_or_None
+
 
 class AddressPost(APIView):
     def post(self, request, format=None):
         if 'country' in request.data:
             countryObj = get_object_or_None(Country, name=request.data['country'], code=request.data['country_code'])
             country_serializer = CountrySerializer(countryObj, data={'name': request.data['country'], 'code': request.data['country_code']})
-            
+
             if country_serializer.is_valid():
                 country = country_serializer.save()
             else:
@@ -27,7 +27,7 @@ class AddressPost(APIView):
             if len(request.data['state_code']) <= 3:
                 state_code = request.data['state_code']
             else:
-                state_code = request.data['state_code'][0:2]    
+                state_code = request.data['state_code'][0:2]
             stateObj = get_object_or_None(State, name=request.data['state'], code=state_code, country=country.id)
             state_serializer = StateSerializer(stateObj, data={'name': request.data['state'], 'code': state_code, 'country': country.id})
 
@@ -46,15 +46,16 @@ class AddressPost(APIView):
             else:
                 return Response(locality_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
         lid = locality.id if locality else None
+        # @todo if `latitude`, `longitude`, `raw` and `formatted` don't exist in
+        # the payload, this throws an exception instead of returning a 400.
         addressObj = get_object_or_None(Address, latitude=request.data['latitude'], longitude=request.data['longitude'], raw=request.data['formatted'])
         address_serializer = AddressSerializer(addressObj, data={
-                    'raw': request.data['raw'], 
-                    'latitude': request.data['latitude'], 
-                    'longitude': request.data['longitude'], 
-                    'locality': lid
-                    })
+            'raw': request.data['raw'],
+            'latitude': request.data['latitude'],
+            'longitude': request.data['longitude'],
+            'locality': lid
+        })
 
         if addressObj is None:
             stat = status.HTTP_201_CREATED
@@ -70,7 +71,6 @@ class AddressPost(APIView):
 
 class AddressList(APIView):
     def get(self, request, format=None, pk=None):
-        
         if pk is not None:
             address = get_object_or_404(Address, pk=pk)
             serialized_address = AddressSerializerGet(address, many=False)
