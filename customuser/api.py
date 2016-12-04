@@ -5,14 +5,11 @@ from .serializers import CustomUserSerializer
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import detail_route
-from rest_framework.permissions import IsAuthenticated
 
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework_jwt import utils 
+from rest_framework_jwt import utils
 from topics.models import Topic, Action
-from address.models import Locality
 from updown.models import Vote
+
 
 class CustomUserViewSet(viewsets.ViewSet):
     def list(self, request):
@@ -21,11 +18,10 @@ class CustomUserViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        queryset = CustomUser.objects.all()
         topic_count = Topic.objects.filter(created_by=pk).count()
         action_count = Action.objects.filter(created_by=pk).count()
         vote_count = Vote.objects.filter(user_id=pk, score=1).count()
-        user = get_object_or_404(queryset, pk=pk)
+        user = get_object_or_404(CustomUser, pk=pk)
         user.topic_count = topic_count
         user.action_count = action_count
         user.vote_count = vote_count
@@ -34,8 +30,6 @@ class CustomUserViewSet(viewsets.ViewSet):
 
     def update(self, request, pk=None):
         if request.auth is not None:
-            permission_classes = (IsAuthenticated, )
-            authentication_classes = (JSONWebTokenAuthentication, )
             user_id = utils.jwt_decode_handler(request.auth)
             user_id = user_id['user_id']
             if user_id == int(pk):
