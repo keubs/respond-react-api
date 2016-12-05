@@ -18,6 +18,7 @@ urlpatterns = [
         r'topic/(?P<pk>[0-9]+)$',
         topic_views.topic_details,
         name='topic_details'),
+
     # API urls
     url(r'^v1/', include([
         # actions
@@ -82,14 +83,9 @@ urlpatterns = [
 
         # misc
         url(
-            r'^geolocate/$',
-            misc_api.regionalGeolocateHelpers.as_view(),
-            name="geolocate"),
-        url(
             r'^getopengraph/$',
             misc_api.OpenGraphHelpers.as_view(),
             name="open_graph"),
-
         url(
             r'^linkfactory/$',
             linkfactory_api.ProcessLink.as_view(),
@@ -101,12 +97,10 @@ urlpatterns = [
             r'^misc/token-auth/$',
             misc_api.GetUserFromToken.as_view(),
             name="token_user"),
-
         url(
             r'^nytimes/$',
             misc_api.nyTimesAPIHelpers.as_view(),
             name="nyt"),
-
         url(
             r'^token-auth/',
             'rest_framework_jwt.views.obtain_jwt_token',
