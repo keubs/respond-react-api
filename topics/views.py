@@ -5,10 +5,15 @@ from pprint import pprint
 from .models import *
 # Create your views here.
 def topic_details(request, pk):
-	a = Topic.objects.get(pk=pk)
-	width = a.image.width
-	height = a.image.height
-	date = a.created_on.isoformat()
+	topic = Topic.objects.get(pk=pk)
+	width = topic.image.width
+	height = topic.image.height
+	date = topic.created_on.isoformat()
+	count = topic.action_set.filter(approved=1).count()
+	if count <= 1:
+		title = "Get Involved | " + topic.title
+	if count > 1:
+		title = str(count) + " Ways to get Involved | " + topic.title
 	return HttpResponse(
 		"""
 		<!DOCTYPE html>
@@ -38,5 +43,5 @@ def topic_details(request, pk):
 		  	<img src="{image}" />
 		  </body>
 		</html>
-		""".format(title="Get Involved | " + a.title, description=a.description, image=a.image.url, height=height, width=a.image.width, pk=pk, date=date)
+		""".format(title=title, description=topic.description, image=topic.image.url, height=height, width=topic.image.width, pk=pk, date=date)
 	)
