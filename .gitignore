@@ -5,3 +5,4 @@ logs/*
 media/*
 conf.py
 mysql_backups
+db.sqlite3
