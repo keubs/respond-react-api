@@ -6,3 +6,4 @@ media/*
 conf.py
 mysql_backups
 db.sqlite3
+local_settings.py
