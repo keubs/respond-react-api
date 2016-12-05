@@ -95,6 +95,9 @@ urlpatterns = [
             linkfactory_api.ProcessLink.as_view(),
             name="link_factory"),
         url(
+            r'^login/',
+            include('rest_social_auth.urls_jwt')),
+        url(
             r'^misc/token-auth/$',
             misc_api.GetUserFromToken.as_view(),
             name="token_user"),
