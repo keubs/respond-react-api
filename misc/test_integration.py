@@ -7,6 +7,15 @@ from topics.factories import TopicFactory
 from untitled.testing import BaseAPITestCase
 
 
+# class MiscApiNyTimesApiHelpersTestCase(BaseAPITestCase):
+#
+#     def test_post_ok(self):
+#         # @todo mock the NYT request for testing
+#         payload = {"url": "http://www.google.com/"}
+#         response = self.client.post(reverse("nyt"), data=payload)
+#         self.assertEqual(response.status_code, 200)
+
+
 class MiscApiOpenGraphHelpersTestCase(BaseAPITestCase):
 
     def test_post_ok(self):
