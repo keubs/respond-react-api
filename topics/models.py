@@ -23,7 +23,8 @@ class Topic(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
-    image = models.ImageField(upload_to='media', max_length=512, null=True, default="media/logo-color.png")
+    image = models.ImageField(
+        upload_to='media', max_length=512, null=True, default="media/logo-color.png")
     topic_thumbnail = ImageSpecField(
         source='image',
         processors=[ResizeToFill(404, 227)],

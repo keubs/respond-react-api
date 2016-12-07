@@ -1,7 +1,11 @@
+from io import BytesIO
 import json
+from PIL import Image
+import sys
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
 
 from rest_framework.test import APITestCase
@@ -31,3 +35,12 @@ class BaseAPITestCase(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
 
         return user
+
+    def create_test_image(
+            self, name="test.png", ext="png", size=(1, 1), color=(256, 0, 0)):
+        image_file = BytesIO()
+        image = Image.new("RGBA", size, color)
+        image.save(image_file, ext)
+        image_file.seek(0)
+        return InMemoryUploadedFile(
+            image_file, None, name, "image/png", sys.getsizeof(image_file), None)
