@@ -229,11 +229,28 @@ class TopicByScope(APIView):
                     -- AND tt.scope = 'local'
                     ORDER BY RAND() LIMIT 1
                 """.format(state=state)
-            for topic in Topic.objects.raw(query):
-                user = CustomUser.objects.get(id=int(topic.created_by.id))
-                topic.username = user.username
-                topic_serializer = TopicSerializer(topic)
-                return Response(topic_serializer.data, status=status.HTTP_200_OK)
+            topics = Topic.objects.raw(query)
+            try:
+                for topic in topics:
+                    user = CustomUser.objects.get(id=int(topic.created_by.id))
+                    topic.username = user.username
+                    topic_serializer = TopicSerializer(topic)
+                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
+            except:
+                query = """
+                    SELECT tt.* FROM topics_topic tt
+                        INNER JOIN address_address aa ON tt.address_id = aa.id
+                        INNER JOIN address_locality al ON aa.locality_id = al.id
+                        INNER JOIN address_state ass ON al.state_id = ass.id
+                        -- WHERE ass.id = 19
+                        -- AND tt.scope = 'local'
+                        ORDER BY RAND() LIMIT 1
+                    """.format(state=state)
+                for topic in topics:
+                    user = CustomUser.objects.get(id=int(topic.created_by.id))
+                    topic.username = user.username
+                    topic_serializer = TopicSerializer(topic)
+                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
         elif scope == 'worldwide':
             query = """
