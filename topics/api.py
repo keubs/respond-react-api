@@ -32,6 +32,7 @@ from pprint import pprint
 
 logr = logging.getLogger(__name__)
 MAX_PAGE_SIZE = 10
+
 class TopicList(APIView):
 
     def get(self, request, format=None):
@@ -214,8 +215,10 @@ class TopicByScope(APIView):
                     ORDER BY RAND() LIMIT 1
                 """.format(country=country, state=state)
 
-            for topics in Topic.objects.raw(query):
-                topic_serializer = TopicSerializer(topics)
+            for topic in Topic.objects.raw(query):
+                user = CustomUser.objects.get(id=int(topic.created_by.id))
+                topic.username = user.username
+                topic_serializer = TopicSerializer(topic)
                 return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
         elif scope == 'local':
@@ -229,8 +232,10 @@ class TopicByScope(APIView):
                     ORDER BY RAND() LIMIT 1
                 """.format(state=state)
             for topic in Topic.objects.raw(query):
-                    topic_serializer = TopicSerializer(topic)
-                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
+                user = CustomUser.objects.get(id=int(topic.created_by.id))
+                topic.username = user.username
+                topic_serializer = TopicSerializer(topic)
+                return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
         elif scope == 'worldwide':
             query = """
@@ -243,8 +248,10 @@ class TopicByScope(APIView):
                 ORDER BY RAND() LIMIT 1
             """.format(country=country)
 
-            for topics in Topic.objects.raw(query):
-                    topic_serializer = TopicSerializer(topics)
+            for topic in Topic.objects.raw(query):
+                    user = CustomUser.objects.get(id=int(topic.created_by.id))
+                    topic.username = user.username
+                    topic_serializer = TopicSerializer(topic)
                     return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
 @permission_classes((IsOwnerOrReadOnly, ))
