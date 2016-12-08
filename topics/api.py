@@ -28,10 +28,6 @@ from addressapi.serializers import AddressSerializer
 logr = logging.getLogger(__name__)
 MAX_PAGE_SIZE = 10
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 class TopicList(APIView):
 
     def get(self, request, format=None):
