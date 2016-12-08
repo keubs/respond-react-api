@@ -25,8 +25,6 @@ from customuser.models import CustomUser
 from address.models import Address, Locality, State, Country
 from addressapi.serializers import AddressSerializer
 
-from pprint import pprint
-
 logr = logging.getLogger(__name__)
 MAX_PAGE_SIZE = 10
 
@@ -181,8 +179,6 @@ class TopicCount(APIView):
 
     def get(self, request, format=None):
         count = Topic.objects.all().count()
-        # count = len(topics)
-
         return Response({'count': count}, status=status.HTTP_200_OK)
 
 
@@ -257,7 +253,6 @@ class TopicUpdate(APIView):
 
     def put(self, request, pk, format=None):
         topic = get_object_or_404(Topic, pk=pk)
-        pprint(request.data)
         self.check_object_permissions(self.request, topic)
         serializer = TopicSerializer(topic, data=request.data, partial=True)
         if serializer.is_valid():
