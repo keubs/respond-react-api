@@ -101,7 +101,7 @@ class AddRatingView(object):
         # return Response
 
     def invalid_rating_response(self, request, context):
-        return Response({"response":"Invalid rating value."}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"response":"Invalid rating value."}, status=status.HTTP_409_CONFLICT)
         # response = HttpResponse('Invalid rating value.')
         # response.status_code = 403
         # return Response
