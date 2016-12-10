@@ -1,4 +1,5 @@
 import json
+import random
 
 from django.core.urlresolvers import reverse
 
@@ -10,6 +11,8 @@ from untitled.testing import BaseAPITestCase
 class TopicApiTestCase(BaseAPITestCase):
 
     def setUp(self):
+        # @todo this doesn't need to run on every test...
+        # use helpers instead
         image = self.create_test_image()
         self.user = CustomUserFactory.create()
         self.topic = TopicFactory.create(created_by=self.user, image=image)
@@ -80,3 +83,28 @@ class TopicApiUpdateTestCase(TopicApiTestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content.decode("utf-8"))
         self.assertEqual(data["title"], new_title)
+
+
+class TopicListByUser(TopicApiTestCase):
+
+    def test_get_ok(self):
+        response = self.client.get(
+            reverse("user_topics", kwargs={"pk": self.user.id}))
+        content = self.get_content(response)
+        self.assertEqual(len(content), 1)
+
+
+class TopicPost(TopicApiTestCase):
+
+    def test_post_ok(self):
+        payload = {
+            "article_link": "http://test.com/",
+            "scope": "something",
+            "scope": random.choice(["local", "national", "worldwide"]),
+            "title": "test",
+            "description": "testing",
+            "tags": '["test_tag"]'
+        }
+        self.authenticate()
+        response = self.client.post(reverse("topic_create"), data=payload)
+        self.assertEqual(response.status_code, 201)
