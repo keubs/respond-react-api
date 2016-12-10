@@ -1,5 +1,3 @@
-import json
-
 from django.core.urlresolvers import reverse
 
 from customuser.factories import CustomUserFactory
@@ -41,5 +39,17 @@ class MiscApiTokenUserTestCase(BaseAPITestCase):
         user = self.authenticate()
         response = self.client.post(reverse("token_user"), data={})
         self.assertEqual(response.status_code, 200)
-        user_id = json.loads(response.content.decode("utf-8"))["user_id"]
+        user_id = self.get_content(response)["user_id"]
         self.assertEqual(user.id, user_id)
+
+
+class UserRegistrationTestCase(BaseAPITestCase):
+
+    def test_post_ok(self):
+        payload = {
+            "email": "test@test.com",
+            "username": "tester",
+            "password": "testerzz"
+        }
+        response = self.client.post(reverse("user_register"), data=payload)
+        self.assertEqual(response.status_code, 201)

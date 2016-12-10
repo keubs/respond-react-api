@@ -1,4 +1,4 @@
-import json
+import random
 
 from django.core.urlresolvers import reverse
 
@@ -10,6 +10,8 @@ from untitled.testing import BaseAPITestCase
 class TopicApiTestCase(BaseAPITestCase):
 
     def setUp(self):
+        # @todo this doesn't need to run on every test...
+        # use helpers instead
         image = self.create_test_image()
         self.user = CustomUserFactory.create()
         self.topic = TopicFactory.create(created_by=self.user, image=image)
@@ -20,8 +22,7 @@ class TopicApiCountTestCase(TopicApiTestCase):
     def test_get_ok(self):
         response = self.client.get(reverse("topic_count"))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            1, json.loads(response.content.decode("utf-8"))["count"])
+        self.assertEqual(1, self.get_content(response)["count"])
 
 
 class TopicApiDeleteTestCase(TopicApiTestCase):
@@ -41,8 +42,8 @@ class TopicApiDetailTestCase(TopicApiTestCase):
         response = self.client.get(
             reverse("topic_detail", kwargs={"pk": self.topic.id}))
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content.decode("utf-8"))
-        self.assertEqual(data["created_by"], self.topic.created_by.id)
+        self.assertEqual(
+            self.get_content(response)["created_by"], self.topic.created_by.id)
 
 
 class TopicApiListTestCase(TopicApiTestCase):
@@ -50,8 +51,7 @@ class TopicApiListTestCase(TopicApiTestCase):
     def test_get_ok(self):
         response = self.client.get(reverse("topic_list"))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            1, len(json.loads(response.content.decode("utf-8"))))
+        self.assertEqual(1, len(self.get_content(response)))
 
 
 class TopicApiTagListTestCase(TopicApiTestCase):
@@ -63,8 +63,7 @@ class TopicApiTagListTestCase(TopicApiTestCase):
         response = self.client.get(
             reverse("topic_tag_list", kwargs={"tag": name}))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            1, len(json.loads(response.content.decode("utf-8"))))
+        self.assertEqual(1, len(self.get_content(response)))
 
 
 class TopicApiUpdateTestCase(TopicApiTestCase):
@@ -78,5 +77,29 @@ class TopicApiUpdateTestCase(TopicApiTestCase):
             reverse("topic_update", kwargs={"pk": self.topic.id}),
             data=payload)
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content.decode("utf-8"))
-        self.assertEqual(data["title"], new_title)
+        self.assertEqual(self.get_content(response)["title"], new_title)
+
+
+class TopicListByUser(TopicApiTestCase):
+
+    def test_get_ok(self):
+        response = self.client.get(
+            reverse("user_topics", kwargs={"pk": self.user.id}))
+        content = self.get_content(response)
+        self.assertEqual(len(content), 1)
+
+
+class TopicPost(TopicApiTestCase):
+
+    def test_post_ok(self):
+        payload = {
+            "article_link": "http://test.com/",
+            "scope": "something",
+            "scope": random.choice(["local", "national", "worldwide"]),
+            "title": "test",
+            "description": "testing",
+            "tags": '["test_tag"]'
+        }
+        self.authenticate()
+        response = self.client.post(reverse("topic_create"), data=payload)
+        self.assertEqual(response.status_code, 201)
