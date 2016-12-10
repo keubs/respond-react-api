@@ -1,5 +1,3 @@
-import json
-
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 
@@ -13,7 +11,7 @@ class UserListTestCase(BaseAPITestCase):
         CustomUserFactory.create()
         response = self.client.get(reverse("user_list"))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(json.loads(response.content.decode("utf-8"))), 1)
+        self.assertEqual(len(self.get_content(response)), 1)
 
 
 class UserUpdateTestCase(BaseAPITestCase):
@@ -26,8 +24,8 @@ class UserUpdateTestCase(BaseAPITestCase):
         response = self.client.post(
             reverse("user_update", kwargs={"pk": user.id}), data=payload)
         self.assertEqual(response.status_code, 200)
-        first_name = json.loads(response.content.decode("utf-8"))["first_name"]
-        self.assertEqual(first_name, payload["first_name"])
+        self.assertEqual(
+            self.get_content(response)["first_name"], payload["first_name"])
 
 
 class UserDetailTestCase(BaseAPITestCase):

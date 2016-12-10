@@ -1,5 +1,3 @@
-import json
-
 from django.core.urlresolvers import reverse
 
 from .factories import LinkFactory, LinkTypeFactory
@@ -19,4 +17,4 @@ class LinkFactoryApiTestCase(BaseAPITestCase):
         self.authenticate()
         response = self.client.post(reverse("link_factory"), data=payload)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(json.loads(response.content.decode("utf-8"))), 1)
+        self.assertEqual(len(self.get_content(response)), 1)
