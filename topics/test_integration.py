@@ -80,6 +80,42 @@ class TopicApiUpdateTestCase(TopicApiTestCase):
         self.assertEqual(self.get_content(response)["title"], new_title)
 
 
+class ActionApprove(TopicApiTestCase):
+
+    def test_post_ok(self):
+        action = ActionFactory.create(
+            created_by=self.user,
+            topic=self.topic)
+        self.authenticate()
+        response = self.client.post(
+            reverse("action_approve", kwargs={"pk": action.id}))
+        self.assertEqual(response.status_code, 200)
+
+
+class ActionDelete(TopicApiTestCase):
+
+    def test_delete_ok(self):
+        action = ActionFactory.create(
+            created_by=self.user,
+            topic=self.topic)
+        self.authenticate()
+        response = self.client.delete(
+            reverse("action_delete", kwargs={"pk": action.id}))
+        self.assertEqual(response.status_code, 204)
+
+
+class ActionList(TopicApiTestCase):
+
+    def test_get_ok(self):
+        for i in range(2):
+            ActionFactory.create(
+                created_by=self.user,
+                topic=self.topic)
+        response = self.client.get(reverse("action_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(self.get_content(response)), 2)
+
+
 class ActionListByTopic(TopicApiTestCase):
 
     def test_get_ok(self):
@@ -91,6 +127,32 @@ class ActionListByTopic(TopicApiTestCase):
             reverse("topic_action_list", kwargs={"pk": self.topic.id}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(self.get_content(response)), 1)
+
+
+class UnapprovedActions(TopicApiTestCase):
+
+    def test_post_ok(self):
+        ActionFactory.create(
+            approved=False,
+            created_by=self.user,
+            topic=self.topic)
+        self.authenticate(self.user)
+        response = self.client.get(reverse("action_unapproved_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(self.get_content(response)), 1)
+
+
+class UnapprovedActionCount(TopicApiTestCase):
+
+    def test_post_ok(self):
+        ActionFactory.create(
+            approved=False,
+            created_by=self.user,
+            topic=self.topic)
+        self.authenticate(self.user)
+        response = self.client.get(reverse("action_unapproved_count"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.get_content(response)["count"], 1)
 
 
 class TopicListByUser(TopicApiTestCase):
