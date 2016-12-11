@@ -2,8 +2,6 @@ import re
 import urllib
 import requests
 import urllib.request
-import json
-# import random
 
 from opengraph import opengraph
 from rest_framework import status
@@ -12,13 +10,16 @@ from rest_framework.response import Response
 
 from rest_framework_jwt import utils
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.conf import settings
 from .serializers import UserSerializer
 
 from topics.models import Topic, Action
 from topics.serializers import TopicSerializer, ActionSerializer
+
+
+User = get_user_model()
 
 
 class UserRegistration(APIView):
@@ -102,16 +103,6 @@ class nyTimesAPIHelpers(APIView):
             return Response(response)
         except KeyError:
             return Response({"error": "invalid data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class geolocationHelpers(APIView):
-    def post(self, request, format=None):
-        gmapurl = 'http://maps.googleapis.com/maps/api/geocode/json?address=' + request.data['zip']
-        response = urllib.request.urlopen(gmapurl)
-        content = response.read()
-        data = json.loads(content.decode("utf8"))
-
-        return Response(data['results'][0]['geometry']['location'], status=status.HTTP_200_OK)
 
 
 def getTags(url):
