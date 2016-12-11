@@ -249,11 +249,11 @@ class TopicByScope(APIView):
             for topic in topics:
                 payload = {}
                 user = CustomUser.objects.get(id=int(topic.created_by.id))
-
+                score = topic.rating_likes - topic.rating_dislikes
                 payload = {
                     'title'           : topic.title,
                     'id'              : topic.id,
-                    # 'image'           : topic.image.url,
+                    'score'           : score,
                     'created_by'      : topic.created_by.id,
                     'username'        : user.username,
                     'created_on'      : topic.created_on,
