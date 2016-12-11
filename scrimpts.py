@@ -41,3 +41,20 @@ for a in onlyfiles:
     continue
 
 print(i)
+
+
+# get votes 
+me = CustomUser.objects.get(pk=2)
+arr = []
+topics = Topic.objects.filter(created_by=me)
+for topic in topics:
+  arr.append(topic.id)
+
+votes = 0
+for id in arr:
+  topic_votes = Vote.objects.filter(object_id=id)
+  for topic_vote in topic_votes:
+    votes = votes +1
+
+votes
+votes.count
