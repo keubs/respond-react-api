@@ -189,6 +189,7 @@ class TopicByScope(APIView):
         # hardcoded defaults to US and Cali
         country = 5
         state = 2
+        limit = 1
 
         if request.auth:
             user_id = UserIdFromToken(request.auth)
@@ -202,6 +203,9 @@ class TopicByScope(APIView):
                 state = state.id
                 country = country.id
 
+        if 'limit' in request.query_params.keys():
+            limit = int(request.query_params['limit'])
+
         if scope == 'national':
             query = """
                 SELECT tt.* FROM topics_topic tt
@@ -212,14 +216,8 @@ class TopicByScope(APIView):
                     WHERE ac.id = {country}
                     AND ass.id <> {state}
                     -- AND tt.scope = 'national'
-                    ORDER BY RAND() LIMIT 1
-                """.format(country=country, state=state)
-
-            for topic in Topic.objects.raw(query):
-                user = CustomUser.objects.get(id=int(topic.created_by.id))
-                topic.username = user.username
-                topic_serializer = TopicSerializer(topic)
-                return Response(topic_serializer.data, status=status.HTTP_200_OK)
+                    ORDER BY RAND() LIMIT {limit}
+                """.format(country=country, state=state, limit=limit)
 
         elif scope == 'local':
             query = """
@@ -229,30 +227,8 @@ class TopicByScope(APIView):
                     INNER JOIN address_state ass ON al.state_id = ass.id
                     WHERE ass.id = {state}
                     -- AND tt.scope = 'local'
-                    ORDER BY RAND() LIMIT 1
-                """.format(state=state)
-            topics = Topic.objects.raw(query)
-            try:
-                for topic in topics:
-                    user = CustomUser.objects.get(id=int(topic.created_by.id))
-                    topic.username = user.username
-                    topic_serializer = TopicSerializer(topic)
-                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
-            except:
-                query = """
-                    SELECT tt.* FROM topics_topic tt
-                        INNER JOIN address_address aa ON tt.address_id = aa.id
-                        INNER JOIN address_locality al ON aa.locality_id = al.id
-                        INNER JOIN address_state ass ON al.state_id = ass.id
-                        -- WHERE ass.id = 19
-                        -- AND tt.scope = 'local'
-                        ORDER BY RAND() LIMIT 1
-                    """.format(state=state)
-                for topic in topics:
-                    user = CustomUser.objects.get(id=int(topic.created_by.id))
-                    topic.username = user.username
-                    topic_serializer = TopicSerializer(topic)
-                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
+                    ORDER BY RAND() LIMIT {limit}
+                """.format(state=state, limit=limit)
 
         elif scope == 'worldwide':
             query = """
@@ -262,14 +238,40 @@ class TopicByScope(APIView):
                 INNER JOIN address_state ass ON al.state_id = ass.id
                 INNER JOIN address_country ac ON ass.country_id = ac.id
                 WHERE ac.id <> {country}
-                ORDER BY RAND() LIMIT 1
-            """.format(country=country)
+                ORDER BY RAND() LIMIT {limit}
+            """.format(country=country, limit=limit)
 
+        topics = Topic.objects.raw(query)
+
+        if 'limit' in request.query_params.keys():
+            payload_arr = []
+
+            for topic in topics:
+                payload = {}
+                user = CustomUser.objects.get(id=int(topic.created_by.id))
+
+                payload = {
+                    'title'           : topic.title,
+                    'id'              : topic.id,
+                    # 'image'           : topic.image.url,
+                    'created_by'      : topic.created_by.id,
+                    'username'        : user.username,
+                    'created_on'      : topic.created_on,
+                    'tags'            : [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()],
+                    'action_count'    : topic.action_set.count(),
+                    'thumbnail' : topic.topic_thumbnail.url
+                }
+
+                payload_arr.append(payload)
+            return Response(payload_arr, status=status.HTTP_200_OK)
+
+        else:
             for topic in Topic.objects.raw(query):
-                    user = CustomUser.objects.get(id=int(topic.created_by.id))
-                    topic.username = user.username
-                    topic_serializer = TopicSerializer(topic)
-                    return Response(topic_serializer.data, status=status.HTTP_200_OK)
+                user = CustomUser.objects.get(id=int(topic.created_by.id))
+                topic.username = user.username
+                topic_serializer = TopicSerializer(topic)
+                return Response(topic_serializer.data, status=status.HTTP_200_OK)
+
 
 
 @permission_classes((IsOwnerOrReadOnly, ))
