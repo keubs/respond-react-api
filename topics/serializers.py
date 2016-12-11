@@ -1,17 +1,20 @@
-from .models import Topic, Action
-
 from rest_framework import serializers
 from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
+
+from .models import Action, Topic
+
 
 class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
     score = serializers.ReadOnlyField()
     username = serializers.ReadOnlyField()
     tags = TagListSerializerField()
     address_raw = serializers.ReadOnlyField()
+
     class Meta:
         model = Action
         # Fields = ('title', 'description', 'article_link', 'created_on', 'created_by', 'topic', 'tags', 'score', 'image_url', 'username', 'scope', 'address', 'start_date_time')
         many = True
+
 
 class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
@@ -20,10 +23,12 @@ class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
     actions = serializers.ReadOnlyField()
     ranking = serializers.ReadOnlyField()
     thumbnail = serializers.ReadOnlyField()
+
     class Meta:
         model = Topic
         # Fields = ('title', 'description', 'article_link', 'created_by', 'tags', 'score', 'image_url', 'username')
         many = True
+
 
 class TopicDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
@@ -31,6 +36,7 @@ class TopicDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
     image = serializers.FileField()
     actions = ActionSerializer(many=True, read_only=True)
     action_count = serializers.ReadOnlyField()
+
     class Meta:
         model = Topic
         # Fields = ('title', 'article_link', 'created_by', 'created_on', 'tags', 'score', 'image', 'actions')
