@@ -3,7 +3,7 @@ import random
 from django.core.urlresolvers import reverse
 
 from customuser.factories import CustomUserFactory
-from topics.factories import TopicFactory
+from topics.factories import ActionFactory, TopicFactory
 from untitled.testing import BaseAPITestCase
 
 
@@ -80,6 +80,19 @@ class TopicApiUpdateTestCase(TopicApiTestCase):
         self.assertEqual(self.get_content(response)["title"], new_title)
 
 
+class ActionListByTopic(TopicApiTestCase):
+
+    def test_get_ok(self):
+        ActionFactory.create(
+            approved=True,
+            created_by=self.user,
+            topic=self.topic)
+        response = self.client.get(
+            reverse("topic_action_list", kwargs={"pk": self.topic.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(self.get_content(response)), 1)
+
+
 class TopicListByUser(TopicApiTestCase):
 
     def test_get_ok(self):
@@ -103,3 +116,9 @@ class TopicPost(TopicApiTestCase):
         self.authenticate()
         response = self.client.post(reverse("topic_create"), data=payload)
         self.assertEqual(response.status_code, 201)
+
+
+class TopicByScope(TopicApiTestCase):
+
+    def test_get_ok(self):
+        pass
