@@ -1,17 +1,32 @@
 from django.core.urlresolvers import reverse
 
+import mock
+
 from customuser.factories import CustomUserFactory
 from topics.factories import TopicFactory
 from untitled.testing import BaseAPITestCase
 
 
-# class MiscApiNyTimesApiHelpersTestCase(BaseAPITestCase):
-#
-#     def test_post_ok(self):
-#         # @todo mock the NYT request for testing
-#         payload = {"url": "http://www.google.com/"}
-#         response = self.client.post(reverse("nyt"), data=payload)
-#         self.assertEqual(response.status_code, 200)
+class MockResponse(object):
+
+    def __init__(self, json_data, status_code):
+        self.content = json_data
+        self.status_code = status_code
+
+    def json(self):
+        return self.content
+
+
+class MiscApiNyTimesApiHelpersTestCase(BaseAPITestCase):
+
+    def mock_nyt_get(self):
+        return MockResponse({"response": "testing"}, 200)
+
+    @mock.patch("requests.get", mock.Mock(side_effect=mock_nyt_get))
+    def test_post_ok(self):
+        payload = {"url": "http://www.google.com/"}
+        response = self.client.post(reverse("nyt"), data=payload)
+        self.assertEqual(response.status_code, 200)
 
 
 class MiscApiOpenGraphHelpersTestCase(BaseAPITestCase):
