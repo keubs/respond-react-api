@@ -38,5 +38,8 @@ class BaseAPITestCase(APITestCase):
         return InMemoryUploadedFile(
             image_file, None, name, "image/png", sys.getsizeof(image_file), None)
 
+    def dump_response(self, response):
+        print("{0}".format(self.get_content(response)))
+
     def get_content(self, response):
         return json.loads(response.content.decode("utf-8"))

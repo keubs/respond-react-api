@@ -28,6 +28,7 @@ from addressapi.serializers import AddressSerializer
 logr = logging.getLogger(__name__)
 MAX_PAGE_SIZE = 10
 
+
 class TopicList(APIView):
 
     def get(self, request, format=None):
@@ -420,8 +421,8 @@ class ActionsForAllUserTopics(APIView):
         # user_id = 3
         topics = Topic.objects.filter(created_by=user_id)
 
+        actions = []
         for topic in topics:
-            actions = []
             topic_actions = Action.objects.filter(topic_id=topic.id)
 
             if topic_actions.count() > 0:

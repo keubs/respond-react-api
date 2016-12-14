@@ -151,10 +151,6 @@ urlpatterns = [
             r'^topics/(?P<pk>[0-9]+)/actions/$',
             topic_api.ActionListByTopic.as_view(),
             name="topic_action_list"),
-        url(
-            r'^topics/(?P<pk>[0-9]+)/actions/(?P<fk>[0-9]+)/$',
-            topic_api.ActionDetailByTopic.as_view(),
-            name="topic_action_detail"),
 
         # users
         url(
