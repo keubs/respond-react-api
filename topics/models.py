@@ -62,8 +62,8 @@ class Action(models.Model):
     article_link = models.TextField(validators=[URLValidator()])
     created_by = models.ForeignKey(CustomUser)
     created_on = models.DateTimeField(auto_now_add=True)
-    start_date_time = models.DateTimeField(null=True)
-    end_date_time = models.DateTimeField(null=True)
+    start_date_time = models.DateTimeField(null=True, blank=True)
+    end_date_time = models.DateTimeField(null=True, blank=True)
     topic = models.ForeignKey(Topic)
     rating = RatingField(can_change_vote=True)
     tags = TaggableManager()
@@ -76,9 +76,10 @@ class Action(models.Model):
     respond_react = models.CharField(
         choices=RESPOND_REACT,
         max_length=7,
-        null=True
+        null=True,
+        blank=True
     )
-    address = AddressField(null=True)
+    address = AddressField(null=True, blank=True)
     approved = models.BooleanField(default=False)
 
     def __str__(self):
@@ -87,4 +88,8 @@ class Action(models.Model):
     def save(self, *args, **kwargs):
         if self.image_url == '':
             self.image_url = self._meta.get_field('image_url').get_default()
+        super(Action, self).save(*args, **kwargs)
+
+        if not self.address:
+            self.address = None
         super(Action, self).save(*args, **kwargs)

@@ -377,6 +377,7 @@ class ActionListByTopic(APIView):
                 'article_link': action.article_link,
                 'created_on': action.created_on,
                 'start_date_time': action.start_date_time,
+                'end_date_time': action.end_date_time,
                 'score': score,
                 'topic': action.topic,
                 'username': user.username,
