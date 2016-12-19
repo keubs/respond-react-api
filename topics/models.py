@@ -90,6 +90,6 @@ class Action(models.Model):
             self.image_url = self._meta.get_field('image_url').get_default()
         super(Action, self).save(*args, **kwargs)
 
-        if not self.address:
-            self.address = None
-        super(Action, self).save(*args, **kwargs)
+        # if not self.address:
+        #     self.address = None
+        # super(Action, self).save(*args, **kwargs)
