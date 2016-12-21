@@ -13,9 +13,10 @@ from rest_framework_jwt import utils
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.conf import settings
-from .serializers import UserSerializer
+from .serializers import TagSerializer, UserSerializer
 
 from topics.models import Topic, Action
+from taggit.models import Tag
 from topics.serializers import TopicSerializer, ActionSerializer
 
 
@@ -45,6 +46,22 @@ class GetUserFromToken(APIView):
         except Exception as e:
             return Response({"error": e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class MostPopularTags(APIView):
+    def get(self, request):
+        query = """
+            SELECT tt.id, COUNT(*), tt.slug, tt.name 
+                FROM taggit_taggeditem tti 
+                INNER JOIN taggit_tag tt 
+                    ON tti.tag_id = tt.id 
+                WHERE tti.content_type_id = 8 
+                GROUP BY tt.slug, tt.name 
+                ORDER BY count(*) DESC 
+                LIMIT 0, 10
+            """
+        popular_tags = Tag.objects.raw(query)
+        serialized_tags = TagSerializer(popular_tags, many=True)
+
+        return Response(serialized_tags.data, status=status.HTTP_200_OK)
 
 class OpenGraphHelpers(APIView):
     def post(self, request, format=None):
@@ -97,12 +114,14 @@ class OpenGraphHelpers(APIView):
 
 class nyTimesAPIHelpers(APIView):
     def post(self, request, format=None):
-        try:
-            dictionary = requests.get('http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("' + request.data['url'] + '")&api-key=' + settings.NY_TIMES_API_KEY).json()
-            response = dictionary['response']
-            return Response(response)
-        except KeyError:
-            return Response({"error": "invalid data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # try:
+        dictionary = requests.get('http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("' + request.data['url'] + '")&api-key=' + settings.NY_TIMES_API_KEY).json()
+        from pprint import pprint
+        pprint(dictionary)
+        response = dictionary['response']
+        return Response(response)
+        # except KeyError:
+            # return Response({"error": "invalid data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def getTags(url):

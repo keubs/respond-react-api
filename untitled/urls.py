@@ -106,6 +106,11 @@ urlpatterns = [
             'rest_framework_jwt.views.obtain_jwt_token',
             name="jwt_token"),
 
+        url(
+            r'^popular-tags',
+            misc_api.MostPopularTags.as_view(),
+            name="popular_tags"),
+
         # topics
         url(
             r'^topics/(?P<object_id>\d+)/rate/(?P<score>[\d\-]+)$',
