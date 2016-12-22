@@ -4,7 +4,7 @@ from .factories import LinkFactory, LinkTypeFactory
 from untitled.testing import BaseAPITestCase
 
 
-class LinkFactoryApiTestCase(BaseAPITestCase):
+class ProcessLinkTestCase(BaseAPITestCase):
 
     def test_post_ok(self):
         url = "http://test.com"

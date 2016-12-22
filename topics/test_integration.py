@@ -20,7 +20,7 @@ class TopicApiTestCase(BaseAPITestCase):
         return random.choice(["local", "national", "worldwide"])
 
 
-class TopicApiCountTestCase(TopicApiTestCase):
+class TopicCountTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         response = self.client.get(reverse("topic_count"))
@@ -28,7 +28,7 @@ class TopicApiCountTestCase(TopicApiTestCase):
         self.assertEqual(1, self.get_content(response)["count"])
 
 
-class TopicApiDeleteTestCase(TopicApiTestCase):
+class TopicDeleteTestCase(TopicApiTestCase):
 
     def test_delete_ok(self):
         # @todo i'm deleting a topic with a different user than the one that
@@ -39,7 +39,7 @@ class TopicApiDeleteTestCase(TopicApiTestCase):
         self.assertEqual(response.status_code, 204)
 
 
-class TopicApiDetailTestCase(TopicApiTestCase):
+class TopicDetailTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         response = self.client.get(
@@ -49,7 +49,7 @@ class TopicApiDetailTestCase(TopicApiTestCase):
             self.get_content(response)["created_by"], self.topic.created_by.id)
 
 
-class TopicApiListTestCase(TopicApiTestCase):
+class TopicListTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         response = self.client.get(reverse("topic_list"))
@@ -57,7 +57,7 @@ class TopicApiListTestCase(TopicApiTestCase):
         self.assertEqual(1, len(self.get_content(response)))
 
 
-class TopicApiTagListTestCase(TopicApiTestCase):
+class TopicListByTagTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         name = "test_tag"
@@ -69,7 +69,7 @@ class TopicApiTagListTestCase(TopicApiTestCase):
         self.assertEqual(1, len(self.get_content(response)))
 
 
-class TopicApiUpdateTestCase(TopicApiTestCase):
+class TopicUpdateTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         new_title = "new_title"
@@ -83,7 +83,7 @@ class TopicApiUpdateTestCase(TopicApiTestCase):
         self.assertEqual(self.get_content(response)["title"], new_title)
 
 
-class ActionApprove(TopicApiTestCase):
+class ApproveActionTestCase(TopicApiTestCase):
 
     def test_post_ok(self):
         action = ActionFactory.create(
@@ -95,7 +95,7 @@ class ActionApprove(TopicApiTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class ActionCreate(TopicApiTestCase):
+class ActionPostTestCase(TopicApiTestCase):
 
     def test_post_ok(self):
         # @todo view throws if `topic` doesn't exist
@@ -112,7 +112,7 @@ class ActionCreate(TopicApiTestCase):
         self.assertEqual(response.status_code, 201)
 
 
-class ActionDelete(TopicApiTestCase):
+class ActionDeleteTestCase(TopicApiTestCase):
 
     def test_delete_ok(self):
         action = ActionFactory.create(
@@ -124,7 +124,7 @@ class ActionDelete(TopicApiTestCase):
         self.assertEqual(response.status_code, 204)
 
 
-class ActionDetailByTopic(TopicApiTestCase):
+class ActionDetailByTopicTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         action = ActionFactory.create(
@@ -136,7 +136,7 @@ class ActionDetailByTopic(TopicApiTestCase):
         self.assertEqual(self.get_content(response)["id"], action.id)
 
 
-class ActionsForAllUserTopics(TopicApiTestCase):
+class ActionsForAllUserTopicsTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         for i in range(2):
@@ -149,7 +149,7 @@ class ActionsForAllUserTopics(TopicApiTestCase):
         self.assertEqual(len(self.get_content(response)), 2)
 
 
-class ActionList(TopicApiTestCase):
+class ActionListTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         for i in range(2):
@@ -162,7 +162,7 @@ class ActionList(TopicApiTestCase):
         self.assertEqual(len(self.get_content(response)), 2)
 
 
-class ActionListByTag(TopicApiTestCase):
+class ActionListByTagTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         tag = "test_tag"
@@ -179,7 +179,7 @@ class ActionListByTag(TopicApiTestCase):
         self.assertEqual(len(self.get_content(response)), 2)
 
 
-class ActionListByTopic(TopicApiTestCase):
+class ActionListByTopicTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         ActionFactory.create(
@@ -192,7 +192,7 @@ class ActionListByTopic(TopicApiTestCase):
         self.assertEqual(len(self.get_content(response)), 1)
 
 
-class UnapprovedActions(TopicApiTestCase):
+class UnapprovedActionsTestCase(TopicApiTestCase):
 
     def test_post_ok(self):
         ActionFactory.create(
@@ -205,7 +205,7 @@ class UnapprovedActions(TopicApiTestCase):
         self.assertEqual(len(self.get_content(response)), 1)
 
 
-class UnapprovedActionCount(TopicApiTestCase):
+class UnapprovedActionCountTestCase(TopicApiTestCase):
 
     def test_post_ok(self):
         ActionFactory.create(
@@ -218,7 +218,7 @@ class UnapprovedActionCount(TopicApiTestCase):
         self.assertEqual(self.get_content(response)["count"], 1)
 
 
-class TopicListByUser(TopicApiTestCase):
+class TopicListByUserTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         response = self.client.get(
@@ -227,7 +227,7 @@ class TopicListByUser(TopicApiTestCase):
         self.assertEqual(len(content), 1)
 
 
-class TopicPost(TopicApiTestCase):
+class TopicPostTestCase(TopicApiTestCase):
 
     def test_post_ok(self):
         payload = {
@@ -242,7 +242,7 @@ class TopicPost(TopicApiTestCase):
         self.assertEqual(response.status_code, 201)
 
 
-class TopicByScope(TopicApiTestCase):
+class TopicByScopeTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
         pass

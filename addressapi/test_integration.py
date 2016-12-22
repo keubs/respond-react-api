@@ -7,24 +7,21 @@ from .factories import AddressFactory
 from untitled.testing import BaseAPITestCase
 
 
-class AddressApiListTestCase(BaseAPITestCase):
+class AddressListTestCase(BaseAPITestCase):
 
-    def test_get_ok(self):
+    def test_get_list_ok(self):
         AddressFactory.create()
         response = self.client.get(reverse("address_list"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(json.loads(response.content.decode("utf-8"))), 1)
 
-
-class AddressApiDetailTestCase(BaseAPITestCase):
-
-    def test_get_ok(self):
+    def test_get_detail_ok(self):
         obj = AddressFactory.create()
         response = self.client.get(reverse("address_detail", kwargs={"pk": obj.id}))
         self.assertEqual(response.status_code, 200)
 
 
-class AddressApiCreateUpdateTestCase(BaseAPITestCase):
+class AddressPostTestCase(BaseAPITestCase):
 
     def test_post_create_ok(self):
         payload = AddressFactory.attributes()

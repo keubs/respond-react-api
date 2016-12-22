@@ -17,7 +17,7 @@ class MockResponse(object):
         return self.content
 
 
-class MiscApiNyTimesApiHelpersTestCase(BaseAPITestCase):
+class NyTimesApiHelpersTestCase(BaseAPITestCase):
 
     def mock_nyt_get(self):
         return MockResponse({"response": "testing"}, 200)
@@ -29,7 +29,7 @@ class MiscApiNyTimesApiHelpersTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class MiscApiOpenGraphHelpersTestCase(BaseAPITestCase):
+class OpenGraphHelpersTestCase(BaseAPITestCase):
 
     def test_post_ok(self):
         # @todo response is a 500, instead of a 400, if the following
@@ -46,7 +46,7 @@ class MiscApiOpenGraphHelpersTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class MiscApiTokenUserTestCase(BaseAPITestCase):
+class GetUserFromTokenTestCase(BaseAPITestCase):
 
     # @todo this doesn't create or update anything, so it should probably use GET
     # instead of POST

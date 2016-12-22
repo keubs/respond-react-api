@@ -4,7 +4,7 @@ from topics.factories import TopicFactory
 from untitled.testing import BaseAPITestCase
 
 
-class RatingPost(BaseAPITestCase):
+class RatingPostTestCase(BaseAPITestCase):
 
     def test_post_ok(self):
         payload = {}
