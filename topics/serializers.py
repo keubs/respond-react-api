@@ -12,7 +12,7 @@ class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Action
-        # Fields = ('title', 'description', 'article_link', 'created_on', 'created_by', 'topic', 'tags', 'score', 'image_url', 'username', 'scope', 'address', 'start_date_time')
+        Fields = ('title', 'description', 'article_link', 'created_on', 'created_by', 'topic', 'tags', 'score', 'image_url', 'username', 'scope', 'address', 'start_date_time')
         many = True
 
 
@@ -23,7 +23,8 @@ class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
     actions = serializers.ReadOnlyField()
     ranking = serializers.ReadOnlyField()
     thumbnail = serializers.ReadOnlyField()
-
+    banner = serializers.ReadOnlyField()
+    
     class Meta:
         model = Topic
         # Fields = ('title', 'description', 'article_link', 'created_by', 'tags', 'score', 'image_url', 'username')
