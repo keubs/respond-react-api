@@ -20,6 +20,10 @@ class TopicApiTestCase(BaseAPITestCase):
             image=self.create_image(),
             **kwargs)
 
+    def create_topic_and_action(self):
+        topic = self.create_topic()
+        return (topic, self.create_action(topic=topic, user=topic.created_by))
+
     def get_random_scope(self):
         return random.choice(["local", "national", "worldwide"])
 
@@ -97,8 +101,7 @@ class TopicUpdateTestCase(TopicApiTestCase):
 class ApproveActionTestCase(TopicApiTestCase):
 
     def test_post_ok(self):
-        topic = self.create_topic()
-        action = self.create_action(topic=topic, user=topic.created_by)
+        (topic, action) = self.create_topic_and_action()
         self.authenticate()
         response = self.client.post(
             reverse("action_approve", kwargs={"pk": action.id}))
@@ -125,8 +128,7 @@ class ActionPostTestCase(TopicApiTestCase):
 class ActionDeleteTestCase(TopicApiTestCase):
 
     def test_delete_ok(self):
-        topic = self.create_topic()
-        action = self.create_action(topic=topic, user=topic.created_by)
+        (topic, action) = self.create_topic_and_action()
         self.authenticate()
         response = self.client.delete(
             reverse("action_delete", kwargs={"pk": action.id}))
@@ -136,8 +138,7 @@ class ActionDeleteTestCase(TopicApiTestCase):
 class ActionDetailByTopicTestCase(TopicApiTestCase):
 
     def test_get_ok(self):
-        topic = self.create_topic()
-        action = self.create_action(topic=topic, user=topic.created_by)
+        (topic, action) = self.create_topic_and_action()
         response = self.client.get(
             reverse("action_topic_detail", kwargs={"pk": action.id}))
         self.assertEqual(response.status_code, 200)
