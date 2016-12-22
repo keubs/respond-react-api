@@ -2,7 +2,6 @@ import random
 
 from django.core.urlresolvers import reverse
 
-from customuser.factories import CustomUserFactory
 from topics.factories import ActionFactory, TopicFactory
 from untitled.testing import BaseAPITestCase
 
@@ -11,13 +10,13 @@ class TopicApiTestCase(BaseAPITestCase):
 
     def create_action(self, **kwargs):
         return ActionFactory.create(
-            created_by=kwargs.pop("user", CustomUserFactory.create()),
+            created_by=kwargs.pop("user", self.create_user()),
             topic=kwargs.pop("topic", self.create_topic()),
             **kwargs)
 
     def create_topic(self, **kwargs):
         return TopicFactory.create(
-            created_by=kwargs.pop("user", CustomUserFactory.create()),
+            created_by=kwargs.pop("user", self.create_user()),
             image=self.create_image(),
             **kwargs)
 

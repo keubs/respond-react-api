@@ -1,19 +1,18 @@
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 
-from .factories import CustomUserFactory
 from untitled.testing import BaseAPITestCase
 
 
 class CustomUserViewSetTestCase(BaseAPITestCase):
 
     def test_get_detail_ok(self):
-        obj = CustomUserFactory.create()
+        obj = self.create_user()
         response = self.client.get(reverse("user_detail", kwargs={"pk": obj.id}))
         self.assertEqual(response.status_code, 200)
 
     def test_get_list_ok(self):
-        CustomUserFactory.create()
+        self.create_user()
         response = self.client.get(reverse("user_list"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(self.get_content(response)), 1)

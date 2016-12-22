@@ -2,7 +2,6 @@ from django.core.urlresolvers import reverse
 
 import mock
 
-from customuser.factories import CustomUserFactory
 from topics.factories import TopicFactory
 from untitled.testing import BaseAPITestCase
 
@@ -34,7 +33,7 @@ class OpenGraphHelpersTestCase(BaseAPITestCase):
     def test_post_ok(self):
         # @todo response is a 500, instead of a 400, if the following
         # payload attributes don't exist
-        user = CustomUserFactory.create()
+        user = self.create_user()
         topic = TopicFactory.create(created_by=user)
         payload = {
             "id": topic.id,

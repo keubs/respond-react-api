@@ -18,7 +18,7 @@ class BaseAPITestCase(APITestCase):
         Creates and then authenticates a new user.
         '''
         if user is None:
-            user = CustomUserFactory.create()
+            user = self.create_user()
 
         response = self.client.post(reverse('jwt_token'), {
             'username': user.username,
@@ -37,6 +37,9 @@ class BaseAPITestCase(APITestCase):
         image_file.seek(0)
         return InMemoryUploadedFile(
             image_file, None, name, "image/png", sys.getsizeof(image_file), None)
+
+    def create_user(self):
+        return CustomUserFactory.create()
 
     def dump_response(self, response):
         print("{0}".format(self.get_content(response)))
