@@ -31,12 +31,6 @@ class Topic(models.Model):
         format='JPEG',
         options={'quality': 100})
 
-    topic_banner = ImageSpecField(
-        source='image',
-        processors=[ResizeToFill(837, 330)],
-        format='JPEG',
-        options={'quality': 100})
-
     image_url = models.URLField(max_length=512, null=True, blank=True, default=settings.MEDIA_URL + "media/logo-color.png")
     scope = models.CharField(
         choices=SCOPE_CHOICES,
@@ -87,11 +81,6 @@ class Action(models.Model):
     )
     address = AddressField(null=True, blank=True)
     approved = models.BooleanField(default=False)
-    action_thumbnail = ImageSpecField(
-        source='image',
-        processors=[ResizeToFill(404, 227)],
-        format='JPEG',
-        options={'quality': 100})
 
     def __str__(self):
         return str(self.title)
