@@ -29,7 +29,7 @@ class BaseAPITestCase(APITestCase):
 
         return user
 
-    def create_test_image(
+    def create_image(
             self, name="test.png", ext="png", size=(1, 1), color=(256, 0, 0)):
         image_file = BytesIO()
         image = Image.new("RGBA", size, color)
