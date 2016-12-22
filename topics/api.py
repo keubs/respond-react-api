@@ -276,7 +276,6 @@ class TopicByScope(APIView):
                 return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
 
-
 @permission_classes((IsOwnerOrReadOnly, ))
 class TopicUpdate(APIView):
 
@@ -300,9 +299,13 @@ class TopicDelete(APIView):
 
     def delete(self, request, pk, format=None):
         topic = get_object_or_404(Topic, pk=pk)
+        user_id = UserIdFromToken(request.auth)
 
-        topic.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if topic.created_by.id == user_id:
+            topic.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class ActionListByTag(APIView):
@@ -483,8 +486,15 @@ class ActionDelete(APIView):
 
     def delete(self, request, pk, format=None):
         action = get_object_or_404(Action, pk=pk)
-        action.delete()
+        topic = get_object_or_404(Topic, pk=action.topic_id)
+        user_id = UserIdFromToken(request.auth)
 
+        if action.created_by.id == user_id:
+            action.delete()
+        elif topic.created_by.id == user_id:
+            action.delete()
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
