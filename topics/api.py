@@ -1,4 +1,6 @@
 import logging
+
+from datetime import datetime
 from operator import itemgetter as i
 from functools import cmp_to_key
 from operator import itemgetter
@@ -101,7 +103,6 @@ class TopicDetail(APIView):
             topic = Topic.objects.get(pk=pk)
             topic.tags = [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()]
             user = CustomUser.objects.get(id=int(topic.created_by.id))
-
             serialized_topic = TopicDetailSerializer(topic)
             payload = {}
             for attr, value in serialized_topic.data.items():
@@ -110,6 +111,7 @@ class TopicDetail(APIView):
             payload['action_count'] = topic.action_set.filter(approved=1).count()
             payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
             payload['username'] = user.username
+            payload['banner'] = topic.topic_banner.url
 
             try:
                 topic_address = Address.objects.get(pk=payload['address'])
@@ -362,6 +364,7 @@ class ActionListByTopic(APIView):
             actions = paginator.page(paginator.num_pages)
 
         payload = []
+        expired = []
         for action in actions:
             score = action.rating_likes - action.rating_dislikes
             user = CustomUser.objects.get(id=int(action.created_by.id))
@@ -393,12 +396,21 @@ class ActionListByTopic(APIView):
                 'address_raw': raw,
                 'approved': action.approved,
             }
-            payload.append(content)
+
+            if action.end_date_time is not None:
+                if datetime.now() > action.end_date_time.replace(tzinfo=None):
+                    expired.append(content)
+                else:
+                    payload.append(content)
+            else:
+                payload.append(content)
 
         # sort by score instead
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
         # if request.query_params.get('order_by') == 'score':
+
         payload = multikeysort(payload, ['-score', '-created_on'])
+        payload = payload + expired
         serialized_actions = ActionSerializer(payload, many=True)
         return Response(serialized_actions.data)
 
