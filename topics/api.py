@@ -72,7 +72,11 @@ class TopicList(APIView):
         # sort by score instead
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
         # if request.query_params.get('order_by') == 'score':
-        payload = multikeysort(payload, ['-ranking', '-created_on'])
+
+        if request.GET.get('order_by') == 'time':
+            payload = multikeysort(payload, ['-created_on'])
+        else:
+            payload = multikeysort(payload, ['-ranking', '-created_on'])
 
         paginator = Paginator(payload, MAX_PAGE_SIZE)
         page = request.GET.get('page')
