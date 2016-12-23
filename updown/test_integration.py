@@ -12,4 +12,4 @@ class RatingPostTestCase(BaseAPITestCase):
         response = self.client.post(
             reverse("topic_rating", kwargs={"object_id": topic.id, "score": 1}),
             data={})
-        self.assertEqual(response.status_code, 201)
+        self.assert_post_ok(response)

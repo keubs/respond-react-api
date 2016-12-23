@@ -13,6 +13,22 @@ from customuser.factories import CustomUserFactory
 
 class BaseAPITestCase(APITestCase):
 
+    def assert_delete_ok(self, response):
+        self.assertEqual(response.status_code, 204)
+
+    def assert_get_ok(self, response, **kwargs):
+        count = kwargs.get("count", None)
+        self.assertEqual(response.status_code, 200)
+        if count is not None:
+            self.assertEqual(len(self.get_content(response)), count)
+
+    def assert_post_ok(self, response, **kwargs):
+        code = 200 if kwargs.get("update", False) else 201
+        self.assertEqual(response.status_code, code)
+
+    def assert_put_ok(self, response):
+        self.assertEqual(response.status_code, 200)
+
     def authenticate(self, user=None):
         '''
         Creates and then authenticates a new user.

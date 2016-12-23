@@ -33,8 +33,7 @@ class TopicCountTestCase(TopicApiTestCase):
     def test_get_ok(self):
         self.create_topic()
         response = self.client.get(reverse("topic_count"))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(1, self.get_content(response)["count"])
+        self.assert_get_ok(response, count=1)
 
 
 class TopicDeleteTestCase(TopicApiTestCase):
@@ -46,7 +45,7 @@ class TopicDeleteTestCase(TopicApiTestCase):
         self.authenticate()
         response = self.client.delete(
             reverse("topic_delete", kwargs={"pk": topic.id}))
-        self.assertEqual(response.status_code, 204)
+        self.assert_delete_ok(response)
 
 
 class TopicDetailTestCase(TopicApiTestCase):
@@ -55,7 +54,7 @@ class TopicDetailTestCase(TopicApiTestCase):
         topic = self.create_topic()
         response = self.client.get(
             reverse("topic_detail", kwargs={"pk": topic.id}))
-        self.assertEqual(response.status_code, 200)
+        self.assert_get_ok(response)
         self.assertEqual(
             self.get_content(response)["created_by"], topic.created_by.id)
 
@@ -65,8 +64,7 @@ class TopicListTestCase(TopicApiTestCase):
     def test_get_ok(self):
         self.create_topic()
         response = self.client.get(reverse("topic_list"))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(1, len(self.get_content(response)))
+        self.assert_get_ok(response, count=1)
 
 
 class TopicListByTagTestCase(TopicApiTestCase):
@@ -79,13 +77,12 @@ class TopicListByTagTestCase(TopicApiTestCase):
         topic.save()
         response = self.client.get(
             reverse("topic_tag_list", kwargs={"tag": name}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(1, len(self.get_content(response)))
+        self.assert_get_ok(response, count=1)
 
 
 class TopicUpdateTestCase(TopicApiTestCase):
 
-    def test_get_ok(self):
+    def test_put_ok(self):
         topic = self.create_topic()
         new_title = "new_title"
         payload = {"title": new_title}
@@ -94,7 +91,7 @@ class TopicUpdateTestCase(TopicApiTestCase):
         response = self.client.put(
             reverse("topic_update", kwargs={"pk": topic.id}),
             data=payload)
-        self.assertEqual(response.status_code, 200)
+        self.assert_put_ok(response)
         self.assertEqual(self.get_content(response)["title"], new_title)
 
 
@@ -105,7 +102,7 @@ class ApproveActionTestCase(TopicApiTestCase):
         self.authenticate()
         response = self.client.post(
             reverse("action_approve", kwargs={"pk": action.id}))
-        self.assertEqual(response.status_code, 200)
+        self.assert_post_ok(response, update=True)
 
 
 class ActionPostTestCase(TopicApiTestCase):
@@ -122,7 +119,7 @@ class ActionPostTestCase(TopicApiTestCase):
         }
         self.authenticate()
         response = self.client.post(reverse("action_create"), data=payload)
-        self.assertEqual(response.status_code, 201)
+        self.assert_post_ok(response)
 
 
 class ActionDeleteTestCase(TopicApiTestCase):
@@ -132,7 +129,7 @@ class ActionDeleteTestCase(TopicApiTestCase):
         self.authenticate()
         response = self.client.delete(
             reverse("action_delete", kwargs={"pk": action.id}))
-        self.assertEqual(response.status_code, 204)
+        self.assert_delete_ok(response)
 
 
 class ActionDetailByTopicTestCase(TopicApiTestCase):
@@ -141,7 +138,7 @@ class ActionDetailByTopicTestCase(TopicApiTestCase):
         (topic, action) = self.create_topic_and_action()
         response = self.client.get(
             reverse("action_topic_detail", kwargs={"pk": action.id}))
-        self.assertEqual(response.status_code, 200)
+        self.assert_get_ok(response)
         self.assertEqual(self.get_content(response)["id"], action.id)
 
 
@@ -153,8 +150,7 @@ class ActionsForAllUserTopicsTestCase(TopicApiTestCase):
             self.create_action(topic=topic, user=topic.created_by)
         self.authenticate(user=topic.created_by)
         response = self.client.get(reverse("action_topic_list"))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(self.get_content(response)), 2)
+        self.assert_get_ok(response, count=2)
 
 
 class ActionListTestCase(TopicApiTestCase):
@@ -164,9 +160,7 @@ class ActionListTestCase(TopicApiTestCase):
         for i in range(2):
             self.create_action(topic=topic, user=topic.created_by)
         response = self.client.get(reverse("action_list"))
-        # @todo abstract away the request and status code assertion
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(self.get_content(response)), 2)
+        self.assert_get_ok(response, count=2)
 
 
 class ActionListByTagTestCase(TopicApiTestCase):
@@ -181,8 +175,7 @@ class ActionListByTagTestCase(TopicApiTestCase):
 
         response = self.client.get(
             reverse("action_tag_list", kwargs={"tag": tag}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(self.get_content(response)), 2)
+        self.assert_get_ok(response, count=2)
 
 
 class ActionListByTopicTestCase(TopicApiTestCase):
@@ -195,8 +188,7 @@ class ActionListByTopicTestCase(TopicApiTestCase):
             approved=True)
         response = self.client.get(
             reverse("topic_action_list", kwargs={"pk": topic.id}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(self.get_content(response)), 1)
+        self.assert_get_ok(response, count=1)
 
 
 class UnapprovedActionsTestCase(TopicApiTestCase):
@@ -209,8 +201,7 @@ class UnapprovedActionsTestCase(TopicApiTestCase):
             approved=False)
         self.authenticate(topic.created_by)
         response = self.client.get(reverse("action_unapproved_list"))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(self.get_content(response)), 1)
+        self.assert_get_ok(response, count=1)
 
 
 class UnapprovedActionCountTestCase(TopicApiTestCase):
@@ -223,8 +214,7 @@ class UnapprovedActionCountTestCase(TopicApiTestCase):
             approved=False)
         self.authenticate(topic.created_by)
         response = self.client.get(reverse("action_unapproved_count"))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.get_content(response)["count"], 1)
+        self.assert_get_ok(response, count=1)
 
 
 class TopicListByUserTestCase(TopicApiTestCase):
@@ -233,8 +223,7 @@ class TopicListByUserTestCase(TopicApiTestCase):
         topic = self.create_topic()
         response = self.client.get(
             reverse("user_topics", kwargs={"pk": topic.created_by.id}))
-        content = self.get_content(response)
-        self.assertEqual(len(content), 1)
+        self.assert_get_ok(response, count=1)
 
 
 class TopicPostTestCase(TopicApiTestCase):
@@ -249,7 +238,7 @@ class TopicPostTestCase(TopicApiTestCase):
         }
         self.authenticate()
         response = self.client.post(reverse("topic_create"), data=payload)
-        self.assertEqual(response.status_code, 201)
+        self.assert_post_ok(response)
 
 
 class TopicByScopeTestCase(TopicApiTestCase):

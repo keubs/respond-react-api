@@ -16,5 +16,6 @@ class ProcessLinkTestCase(BaseAPITestCase):
 
         self.authenticate()
         response = self.client.post(reverse("link_factory"), data=payload)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(self.get_content(response)), 1)
+        # @todo not sure why this post returns a 200 when creating a record
+        # instead of a 201
+        self.assert_get_ok(response, count=1)

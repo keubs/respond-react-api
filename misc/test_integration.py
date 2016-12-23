@@ -25,7 +25,7 @@ class NyTimesApiHelpersTestCase(BaseAPITestCase):
     def test_post_ok(self):
         payload = {"url": "http://www.google.com/"}
         response = self.client.post(reverse("nyt"), data=payload)
-        self.assertEqual(response.status_code, 200)
+        self.assert_get_ok(response)
 
 
 class OpenGraphHelpersTestCase(BaseAPITestCase):
@@ -66,4 +66,4 @@ class UserRegistrationTestCase(BaseAPITestCase):
             "password": "testerzz"
         }
         response = self.client.post(reverse("user_register"), data=payload)
-        self.assertEqual(response.status_code, 201)
+        self.assert_post_ok(response)
