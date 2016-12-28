@@ -358,7 +358,7 @@ class ActionListByTopic(APIView):
         # rewrite payload to include 'score' value
         actions = Action.objects.filter(topic_id=pk, approved=1)
 
-        paginator = Paginator(actions, MAX_PAGE_SIZE)
+        paginator = Paginator(actions, 20)
         page = request.GET.get('action_page')
 
         try:
