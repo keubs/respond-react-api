@@ -1,11 +1,10 @@
 import logging
 
+
 from datetime import datetime
-from operator import itemgetter as i
-from functools import cmp_to_key
-from operator import itemgetter
 
 from .models import Topic, Action
+from . import utils
 from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerializer
 from .permissions import IsOwnerOrReadOnly
 
@@ -19,7 +18,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework_jwt import utils
 
 from misc import views as misc_views
 from customuser.models import CustomUser
@@ -74,9 +72,9 @@ class TopicList(APIView):
         # if request.query_params.get('order_by') == 'score':
 
         if request.GET.get('order_by') == 'time':
-            payload = multikeysort(payload, ['-created_on'])
+            payload = utils.multikeysort(payload, ['-created_on'])
         else:
-            payload = multikeysort(payload, ['-ranking', '-created_on'])
+            payload = utils.multikeysort(payload, ['-ranking', '-created_on'])
 
         paginator = Paginator(payload, MAX_PAGE_SIZE)
         page = request.GET.get('page')
@@ -169,7 +167,7 @@ class TopicPost(APIView):
     authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, format=None):
-        user_id = UserIdFromToken(request.auth)
+        user_id = utils.user_id_from_token(request.auth)
         request.data['created_by'] = user_id
         serializer = TopicSerializer(data=request.data)
 
@@ -199,7 +197,7 @@ class TopicByScope(APIView):
         limit = 1
 
         if request.auth:
-            user_id = UserIdFromToken(request.auth)
+            user_id = utils.user_id_from_token(request.auth)
             user = CustomUser.objects.get(id=int(user_id))
             if user.address_id is not None:
                 address = Address.objects.get(id=user.address_id)
@@ -303,7 +301,7 @@ class TopicDelete(APIView):
 
     def delete(self, request, pk, format=None):
         topic = get_object_or_404(Topic, pk=pk)
-        user_id = UserIdFromToken(request.auth)
+        user_id = utils.user_id_from_token(request.auth)
 
         if topic.created_by.id == user_id:
             topic.delete()
@@ -416,7 +414,7 @@ class ActionListByTopic(APIView):
         # @TODO score should probably be returned in the model, and thus sorted on a db-level
         # if request.query_params.get('order_by') == 'score':
 
-        payload = multikeysort(payload, ['-score', '-created_on'])
+        payload = utils.multikeysort(payload, ['-score', '-created_on'])
         payload = payload + expired
         serialized_actions = ActionSerializer(payload, many=True)
         return Response(serialized_actions.data)
@@ -437,7 +435,7 @@ class ActionsForAllUserTopics(APIView):
     authentication_classes = (JSONWebTokenAuthentication, )
 
     def get(self, request, format=None):
-        user_id = UserIdFromToken(request.auth)
+        user_id = utils.user_id_from_token(request.auth)
         # user_id = 3
         topics = Topic.objects.filter(created_by=user_id)
 
@@ -458,12 +456,12 @@ class ActionPost(APIView):
     authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, format=None):
-        user_id = UserIdFromToken(request.auth)
+        user_id = utils.user_id_from_token(request.auth)
 
         request.data['created_by'] = user_id
 
         topic = Topic.objects.get(pk=request.data['topic'])
-        request.data['approved'] = isActionOwner(topic.created_by.id, request.data['created_by'])
+        request.data['approved'] = utils.is_action_owner(topic.created_by.id, request.data['created_by'])
         serializer = ActionSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -491,7 +489,7 @@ class ActionDelete(APIView):
     def delete(self, request, pk, format=None):
         action = get_object_or_404(Action, pk=pk)
         topic = get_object_or_404(Topic, pk=action.topic_id)
-        user_id = UserIdFromToken(request.auth)
+        user_id = utils.user_id_from_token(request.auth)
 
         if action.created_by.id == user_id:
             action.delete()
@@ -507,7 +505,7 @@ class UnapprovedActionCount(APIView):
     authentication_classes = (JSONWebTokenAuthentication, )
 
     def get(self, request, format=None):
-        user_id = UserIdFromToken(request.auth)
+        user_id = utils.user_id_from_token(request.auth)
 
         topics = Topic.objects.filter(created_by=user_id)
         count = 0
@@ -525,7 +523,7 @@ class UnapprovedActions(APIView):
     authentication_classes = (JSONWebTokenAuthentication, )
 
     def get(self, request, format=None):
-        user_id = UserIdFromToken(request.auth)
+        user_id = utils.user_id_from_token(request.auth)
         topics = Topic.objects.filter(created_by=user_id)
         topic_list = []
         for topic in topics:
@@ -559,36 +557,3 @@ class ApproveAction(APIView):
         email.action_approved(action.topic, action)
 
         return Response(action_serializer.data, status=status.HTTP_200_OK)
-
-
-def UserIdFromToken(token):
-    user_id = utils.jwt_decode_handler(token)
-    user_id = user_id['user_id']
-
-    return user_id
-
-
-def isActionOwner(topic_owner, action_owner):
-    if topic_owner == action_owner:
-        return True
-    else:
-        return False
-
-
-def multikeysort(items, columns):
-    comparers = [
-        ((i(col[1:].strip()), -1) if col.startswith('-') else (i(col.strip()), 1))
-        for col in columns
-    ]
-
-    def comparer(left, right):
-        comparer_iter = (
-            cmp(fn(left), fn(right)) * mult
-            for fn, mult in comparers
-        )
-        return next((result for result in comparer_iter if result), 0)
-    return sorted(items, key=cmp_to_key(comparer))
-
-
-def cmp(a, b):
-    return (a > b) - (a < b)
