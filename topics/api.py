@@ -9,7 +9,10 @@ from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerialize
 from .permissions import IsOwnerOrReadOnly
 
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -170,6 +173,13 @@ class TopicPost(APIView):
     def post(self, request, format=None):
         user_id = utils.user_id_from_token(request.auth)
         request.data['created_by'] = user_id
+
+        val = URLValidator()
+        try:
+            val(request.data['image_url'])
+        except ValidationError as e:
+            request.data['image_url'] = ''
+
         serializer = TopicSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -179,6 +189,8 @@ class TopicPost(APIView):
             except KeyError:
                 Response({'image': 'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -463,6 +475,13 @@ class ActionPost(APIView):
 
         topic = Topic.objects.get(pk=request.data['topic'])
         request.data['approved'] = utils.is_action_owner(topic.created_by.id, request.data['created_by'])
+
+        val = URLValidator()
+        try:
+            val(request.data['image_url'])
+        except ValidationError as e:
+            request.data['image_url'] = ''
+
         serializer = ActionSerializer(data=request.data)
 
         if serializer.is_valid():
