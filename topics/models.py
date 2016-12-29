@@ -42,7 +42,7 @@ class Topic(models.Model):
         choices=SCOPE_CHOICES,
         max_length=9,
     )
-    address = AddressField(null=True)
+    address = AddressField(null=True, blank=True)
 
     def __str__(self):
         return str(self.title)
