@@ -105,8 +105,14 @@ class OpenGraphHelpers(APIView):
                     image = ''
                 return Response({'image': image, 'title': title, 'description': desc, 'tags': tags}, status=status.HTTP_200_OK)
             except urllib.error.URLError:
+                import sendemail.emails as ev
+                email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
+                email.basic_message('Link Error', 'URL: ' + request.data['url'])
                 return Response({'image': 'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
             except KeyError:
+                import sendemail.emails as ev
+                email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
+                email.basic_message('Link Error', 'URL: ' + request.data['url'])
                 return Response({'image': 'Not Found'}, status=status.HTTP_404_NOT_FOUND)
             # except:
             #     return Response({'response':'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
@@ -114,14 +120,27 @@ class OpenGraphHelpers(APIView):
 
 class nyTimesAPIHelpers(APIView):
     def post(self, request, format=None):
-        # try:
-        dictionary = requests.get('http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("' + request.data['url'] + '")&api-key=' + settings.NY_TIMES_API_KEY).json()
-        from pprint import pprint
-        pprint(dictionary)
-        response = dictionary['response']
-        return Response(response)
-        # except KeyError:
-            # return Response({"error": "invalid data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        try:
+            dictionary = requests.get('http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("' + request.data['url'] + '")&api-key=' + settings.NY_TIMES_API_KEY).json()
+
+            if 'response' in dictionary:
+                response = dictionary['response']
+                if len(response['docs']) == 0:
+                    import sendemail.emails as ev
+                    email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
+                    email.basic_message('NY Times Error - Article not found', 'URL: ' + request.data['url'])
+                    return Response({'article': 'Not Found'}, status=status.HTTP_404_NOT_FOUND)
+                return Response(response)
+            else:
+                import sendemail.emails as ev
+                email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
+                email.basic_message('NY Times Error.', 'URL: ' + request.data['url'])
+                return Response({"error": "invalid data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            import sendemail.emails as ev
+            email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
+            email.basic_message('NY Times Error', 'URL: ' + request.data['url'] + '\nBODY: ' + str(e))
+            return Response({"error": "invalid data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def getTags(url):

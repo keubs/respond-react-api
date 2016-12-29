@@ -4,6 +4,7 @@ from django.template.loader import get_template
 from django.template import Context
 from customuser.models import CustomUser
 
+
 # Create your views here.
 class EmailMessage(EmailMultiAlternatives):
 
@@ -21,11 +22,13 @@ class EmailMessage(EmailMultiAlternatives):
 		self.to_emails = to_emails
 		self.user = user
 
-	def basic_message(self, subject, txt_body, html_body, from_email, to_emails):
+	def basic_message(self, subject, body):
 		# subject, from_email, to = 'hello', 'noreply@respondreact.com', 'kevinac4@gmail.com'
-		text_content = 'This is an important message.'
-		html_content = '<p>This is an <strong>important</strong> message.</p>'
-		self.send(txt_body, html_body)
+		self.subject = subject
+		self.txt_body = body
+		self.html_body = body
+		print(body)
+		self.send()
 
 	def new_user(self):
 		self.subject = "Welcome to respond/react"
