@@ -61,7 +61,7 @@ def getUpvotes(me):
     content_type_id = ContentType.objects.get_for_model(Topic).id
     votes = 0
     for id in arr:
-        topic_votes = Vote.objects.filter(object_id=id, content_type_id=content_type_id)
+        topic_votes = Vote.objects.filter(object_id=id, content_type_id=content_type_id).exclude(user_id=me.id)
         for topic_vote in topic_votes:
             votes = votes + 1
 
@@ -72,7 +72,7 @@ def getUpvotes(me):
 
     content_type_id = ContentType.objects.get_for_model(Action).id
     for id in arr:
-        action_votes = Vote.objects.filter(object_id=id, content_type_id=content_type_id)
+        action_votes = Vote.objects.filter(object_id=id, content_type_id=content_type_id).exclude(user_id=me.id)
         for action_vote in action_votes:
             votes = votes + 1
 
