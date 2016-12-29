@@ -63,7 +63,8 @@ class TopicList(APIView):
                 'address': topic.address,
             }
 
-            content['ranking'] = score + actions
+            score = utils.Scoring(topic)
+            content['ranking'] = score.add_all_points()
 
             payload.append(content)
 
