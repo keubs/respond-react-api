@@ -2,6 +2,7 @@ import logging
 
 
 from datetime import datetime
+from operator import itemgetter
 
 from .models import Topic, Action
 from . import utils
