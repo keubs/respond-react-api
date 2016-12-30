@@ -14,33 +14,32 @@ class EmailMessage(EmailMultiAlternatives):
 		<p style="text-align: center">Don&apos;t just <strong>react</strong>, <em>respond</em>.</p>
 		<div style="border: solid 1px #666; padding: 25px 15px; max-width: 800px; margin: 0 auto;">
 			{interior}
+			{cta}
 		</div>
-		{cta}
 		"""
 
 		self.from_email = from_email
 		self.to_emails = to_emails
 		self.user = user
 
-	def basic_message(self, subject, body):
+	def basic_message(self, body):
 		# subject, from_email, to = 'hello', 'noreply@respondreact.com', 'kevinac4@gmail.com'
-		self.subject = subject
-		self.txt_body = body
+		self.text_body = body
 		self.html_body = body
-		print(body)
 		self.send()
 
 	def new_user(self):
 		self.subject = "Welcome to respond/react"
 		self.txt_body = """
 		http://respondreact.com\n\n
-		Welcome to respond/react!\nNow is the time to get yourself - and others - involved in your community.
-		"""
+		Welcome to respond/react {first_name}!\nNow is the time to get yourself - and others - involved in your community.
+		""".format(first_name=self.user.first_name, user_id=self.user.id)
 
-		html_interior = "<p>Welcome to respond/react!<br />Now is the time to get yourself - and others - involved in your community.</p>"
+		html_interior = "<p>Welcome to respond/react {first_name}!<br />Now is the time to get yourself - and others - involved in your community.</p>".format(first_name=self.user.first_name)
 		cta = """
-		<p><a style="padding: 20px 40px; display: inline-block; background: #30bad7; color: #FFF; text-decoration: none; margin: 20px 0;" href="http://respondreact.com/">Get Started Now</a></p>
-		"""
+		<p><a style="padding: 20px 40px; display: inline-block; background: #30bad7; color: #FFF; text-decoration: none; margin: 20px 0 0;" href="http://respondreact.com/user/{user_id}">Get Started Now</a></p>
+		""".format(user_id=self.user.id)
+
 		self.html_body = self.html_body.format(interior=html_interior, cta=cta)
 
 		self.send()
