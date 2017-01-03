@@ -376,17 +376,17 @@ class ActionListByTopic(APIView):
         # rewrite payload to include 'score' value
         actions = Action.objects.filter(topic_id=pk, approved=1)
 
-        paginator = Paginator(actions, 20)
-        page = request.GET.get('action_page')
+        # paginator = Paginator(actions, 20)
+        # page = request.GET.get('action_page')
 
-        try:
-            actions = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            actions = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            actions = paginator.page(paginator.num_pages)
+        # try:
+        #     actions = paginator.page(page)
+        # except PageNotAnInteger:
+        #     # If page is not an integer, deliver first page.
+        #     actions = paginator.page(1)
+        # except EmptyPage:
+        #     # If page is out of range (e.g. 9999), deliver last page of results.
+        #     actions = paginator.page(paginator.num_pages)
 
         payload = []
         expired = []
