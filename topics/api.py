@@ -185,6 +185,12 @@ class TopicPost(APIView):
 
         if serializer.is_valid():
             model = serializer.save()
+
+            # Email admins
+            import sendemail.emails as ev
+            email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
+            email.basic_message('New Topic: ' + model.title, 'http://respondreact.com/topic/' + str(model.id))
+            
             try:
                 misc_views.save_image_from_url(model, request.data['image_url'])
             except KeyError:
@@ -493,12 +499,14 @@ class ActionPost(APIView):
                 Response({'image': 'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             # send email
+            import sendemail.emails as ev
             if topic.created_by != action.created_by:
-                import sendemail.emails as ev
                 user = topic.created_by
                 email = ev.EmailMessage("noreply@respondreact.com", [user.email], user)
                 email.new_action(action.topic, action)
 
+            email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
+            email.basic_message('New action: ' + action.title, 'http://respondreact.com/topic/' + str(action.topic.id))
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

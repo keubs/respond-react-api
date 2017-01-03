@@ -22,9 +22,10 @@ class EmailMessage(EmailMultiAlternatives):
 		self.to_emails = to_emails
 		self.user = user
 
-	def basic_message(self, body):
+	def basic_message(self, subject, body):
 		# subject, from_email, to = 'hello', 'noreply@respondreact.com', 'kevinac4@gmail.com'
-		self.text_body = body
+		self.subject = subject
+		self.txt_body = body
 		self.html_body = body
 		self.send()
 
@@ -88,7 +89,6 @@ class EmailMessage(EmailMultiAlternatives):
 
 	def action_declined(self):
 		pass
-
 
 	def send(self):
 		msg = EmailMultiAlternatives(self.subject, self.txt_body, self.from_email, self.to_emails)
