@@ -520,9 +520,14 @@ class ActionDelete(APIView):
         topic = get_object_or_404(Topic, pk=action.topic_id)
         user_id = utils.user_id_from_token(request.auth)
 
+        import sendemail.emails as ev
         if action.created_by.id == user_id:
+            email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
+            email.basic_message('Action deleted.', 'Action Title: ' + action.title + ' Topic: ' + topic.title + ' URL: ' + 'http://respondreact.com/topic/' + str(topic.id))
             action.delete()
         elif topic.created_by.id == user_id:
+            email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
+            email.basic_message('Action deleted.', 'Action Title: ' + action.title + ' Topic: ' + topic.title + ' URL: ' + 'http://respondreact.com/topic/' + str(topic.id))
             action.delete()
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
