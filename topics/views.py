@@ -15,7 +15,7 @@ def home(request):
 		      <title>respond/react | Don't just react, respond.</title>
 		      <meta property="og:title" content="respond/react | Don't just react, respond.">
 		      <meta property="og:description" content="respond/react is removing the excuse you can't help the people you read about in the news">
-		      <meta property="og:image" content="{media_url}/media/rr_1024.jpg">
+		      <meta property="og:image" content="{media_url}media/rr_1024.jpg">
 		      <meta property="og:image:width" content="1200">
 		      <meta property="og:image:height" content="1200">
 		      <meta property="og:site_name" content="Respond/React">
@@ -26,12 +26,12 @@ def home(request):
 		      <meta name="twitter:card" content="summary" />
 		      <meta name="twitter:site" content="@keubs" />
 		      <meta name="twitter:title" content="respond/react | Don't just react, respond." />
-		      <meta name="twitter:image" content="{media_url}/media/rr_1024.jpg" />
+		      <meta name="twitter:image" content="{media_url}media/rr_1024.jpg" />
 		      <meta name="twitter:url" content="http://respondreact.com/" />
 		  </head>
 		  <body>
 		  	<h1>respond/react | Don't just react, respond.</h1>
-		  	<img src="{media_url}/media/rr_1024.jpg" />
+		  	<img src="{media_url}media/rr_1024.jpg" />
 		  </body>
 		</html>
 		""".format(media_url=settings.MEDIA_URL))
