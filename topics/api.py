@@ -6,7 +6,7 @@ from operator import itemgetter
 
 from .models import Topic, Action
 from . import utils
-from .serializers import TopicSerializer, ActionSerializer, TopicDetailSerializer
+from .serializers import ActionSerializer, TopicSerializer, TopicDetailSerializer
 from .permissions import IsOwnerOrReadOnly
 
 from django.shortcuts import get_object_or_404
@@ -241,7 +241,7 @@ class TopicByScope(APIView):
                     WHERE ac.id = {country}
                     AND ass.id <> {state}
                     -- AND tt.scope = 'national'
-                    ORDER BY RAND() LIMIT {limit}
+                    ORDER BY RANDOM() LIMIT {limit}
                 """.format(country=country, state=state, limit=limit)
 
         elif scope == 'local':
@@ -252,7 +252,7 @@ class TopicByScope(APIView):
                     INNER JOIN address_state ass ON al.state_id = ass.id
                     WHERE ass.id = {state}
                     -- AND tt.scope = 'local'
-                    ORDER BY RAND() LIMIT {limit}
+                    ORDER BY RANDOM() LIMIT {limit}
                 """.format(state=state, limit=limit)
 
         elif scope == 'worldwide':
@@ -263,7 +263,7 @@ class TopicByScope(APIView):
                 INNER JOIN address_state ass ON al.state_id = ass.id
                 INNER JOIN address_country ac ON ass.country_id = ac.id
                 WHERE ac.id <> {country}
-                ORDER BY RAND() LIMIT {limit}
+                ORDER BY RANDOM() LIMIT {limit}
             """.format(country=country, limit=limit)
 
         topics = Topic.objects.raw(query)
@@ -523,11 +523,11 @@ class ActionDelete(APIView):
         import sendemail.emails as ev
         if action.created_by.id == user_id:
             email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
-            email.basic_message('Action deleted.', 'Action Title: ' + action.title + ' Topic: ' + topic.title + ' URL: ' + 'http://respondreact.com/topic/' + str(topic.id))
+            email.basic_message('Action deleted.', 'Action Title: ' + action.title + ' | Topic: ' + topic.title + ' URL: ' + 'http://respondreact.com/topic/' + str(topic.id))
             action.delete()
         elif topic.created_by.id == user_id:
             email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
-            email.basic_message('Action deleted.', 'Action Title: ' + action.title + ' Topic: ' + topic.title + ' URL: ' + 'http://respondreact.com/topic/' + str(topic.id))
+            email.basic_message('Action deleted.', 'Action Title: ' + action.title + ' | Topic: ' + topic.title + ' URL: ' + 'http://respondreact.com/topic/' + str(topic.id))
             action.delete()
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)

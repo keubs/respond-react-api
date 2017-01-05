@@ -46,6 +46,7 @@ class GetUserFromToken(APIView):
         except Exception as e:
             return Response({"error": e.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 class MostPopularTags(APIView):
     def get(self, request):
         query = """
@@ -54,14 +55,15 @@ class MostPopularTags(APIView):
                 INNER JOIN taggit_tag tt 
                     ON tti.tag_id = tt.id 
                 WHERE tti.content_type_id = 8 
-                GROUP BY tt.slug, tt.name 
+                GROUP BY tt.slug, tt.name, tt.id
                 ORDER BY count(*) DESC 
-                LIMIT 0, 10
+                LIMIT 10;
             """
         popular_tags = Tag.objects.raw(query)
         serialized_tags = TagSerializer(popular_tags, many=True)
 
         return Response(serialized_tags.data, status=status.HTTP_200_OK)
+
 
 class OpenGraphHelpers(APIView):
     def post(self, request, format=None):
