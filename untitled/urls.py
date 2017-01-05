@@ -12,6 +12,10 @@ from topics import views as topic_views
 from updown import api as updown_api
 
 urlpatterns = [
+    url(
+        r'^$',
+        topic_views.home,
+        name='home'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     url(
