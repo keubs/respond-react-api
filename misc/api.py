@@ -131,7 +131,6 @@ class OpenGraphHelpers(APIView):
                 else:
                     article_link = ''
 
-                print(article_link)
                 return Response({'image': image, 'title': title, 'description': desc, 'tags': tags, 'article_link': article_link}, status=status.HTTP_200_OK)
             except urllib.error.URLError:
                 import sendemail.emails as ev
