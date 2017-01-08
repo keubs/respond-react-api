@@ -4,10 +4,12 @@ import requests
 import urllib.request
 
 from opengraph import opengraph
+
+from annoying.functions import get_object_or_None
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
 from rest_framework_jwt import utils
 
 from django.contrib.auth import get_user_model
@@ -105,7 +107,32 @@ class OpenGraphHelpers(APIView):
                     image = og['image']
                 else:
                     image = ''
-                return Response({'image': image, 'title': title, 'description': desc, 'tags': tags}, status=status.HTTP_200_OK)
+
+                if 'url' in og:
+                    article_link = og['url']
+                else:
+                    image = ''
+
+                if 'url' in og:
+                    article_link = og['url']
+                    # need to check if og.url url exists in DB to help reduce dupes
+                    if request.data['type'] == 'topic':
+                        topic = get_object_or_None(Topic, article_link=article_link)
+
+                        if topic is not None:
+                            return Response(status=status.HTTP_409_CONFLICT)
+
+                    if request.data['type'] == 'action':
+                        topic = Topic.objects.get(pk=request.data['id'])
+                        action = get_object_or_None(topic.action_set, article_link=article_link, approved=True)
+
+                        if action is not None:
+                            return Response(status=status.HTTP_409_CONFLICT)
+                else:
+                    article_link = ''
+
+                print(article_link)
+                return Response({'image': image, 'title': title, 'description': desc, 'tags': tags, 'article_link': article_link}, status=status.HTTP_200_OK)
             except urllib.error.URLError:
                 import sendemail.emails as ev
                 email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
