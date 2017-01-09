@@ -142,8 +142,10 @@ class OpenGraphHelpers(APIView):
                 email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
                 email.basic_message('Link Error', 'URL: ' + request.data['url'])
                 return Response({'image': 'Not Found'}, status=status.HTTP_404_NOT_FOUND)
-            # except:
-            #     return Response({'response':'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
+            except Exception as e:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class nyTimesAPIHelpers(APIView):
