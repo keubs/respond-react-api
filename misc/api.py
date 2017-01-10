@@ -151,7 +151,7 @@ class OpenGraphHelpers(APIView):
 class nyTimesAPIHelpers(APIView):
     def post(self, request, format=None):
         try:
-            url = re.sub("https://", "http://", request.get['url'])
+            url = re.sub("https://", "http://", request.data['url'])
             dictionary = requests.get("""
                 http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("{url}")&api-key={NY_TIMES_API_KEY}).json()
                 """.format(url=url, NY_TIMES_API_KEY=settings.NY_TIMES_API_KEY))
