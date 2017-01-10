@@ -151,7 +151,10 @@ class OpenGraphHelpers(APIView):
 class nyTimesAPIHelpers(APIView):
     def post(self, request, format=None):
         try:
-            dictionary = requests.get('http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("' + request.data['url'] + '")&api-key=' + settings.NY_TIMES_API_KEY).json()
+            url = re.sub("https://", "http://", request.get['url'])
+            dictionary = requests.get("""
+                http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("{url}")&api-key={NY_TIMES_API_KEY}).json()
+                """.format(url=url, NY_TIMES_API_KEY=settings.NY_TIMES_API_KEY))
 
             if 'response' in dictionary:
                 response = dictionary['response']

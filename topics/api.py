@@ -161,8 +161,12 @@ class TopicListByTag(APIView):
                 'address': topic.address,
                 'actions': actions,
             }
+
+            score = utils.Scoring(topic)
+            content['ranking'] = score.add_all_points()
             payload.append(content)
 
+        payload = utils.multikeysort(payload, ['-ranking', '-created_on'])
         serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
