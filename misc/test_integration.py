@@ -2,7 +2,6 @@ from django.core.urlresolvers import reverse
 
 import mock
 
-from customuser.factories import CustomUserFactory
 from topics.factories import TopicFactory
 from untitled.testing import BaseAPITestCase
 
@@ -17,7 +16,7 @@ class MockResponse(object):
         return self.content
 
 
-class MiscApiNyTimesApiHelpersTestCase(BaseAPITestCase):
+class NyTimesApiHelpersTestCase(BaseAPITestCase):
 
     def mock_nyt_get(self):
         return MockResponse({"response": "testing"}, 200)
@@ -26,15 +25,15 @@ class MiscApiNyTimesApiHelpersTestCase(BaseAPITestCase):
     def test_post_ok(self):
         payload = {"url": "http://www.google.com/"}
         response = self.client.post(reverse("nyt"), data=payload)
-        self.assertEqual(response.status_code, 200)
+        self.assert_get_ok(response)
 
 
-class MiscApiOpenGraphHelpersTestCase(BaseAPITestCase):
+class OpenGraphHelpersTestCase(BaseAPITestCase):
 
     def test_post_ok(self):
         # @todo response is a 500, instead of a 400, if the following
         # payload attributes don't exist
-        user = CustomUserFactory.create()
+        user = self.create_user()
         topic = TopicFactory.create(created_by=user)
         payload = {
             "id": topic.id,
@@ -46,7 +45,7 @@ class MiscApiOpenGraphHelpersTestCase(BaseAPITestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class MiscApiTokenUserTestCase(BaseAPITestCase):
+class GetUserFromTokenTestCase(BaseAPITestCase):
 
     # @todo this doesn't create or update anything, so it should probably use GET
     # instead of POST
@@ -67,4 +66,4 @@ class UserRegistrationTestCase(BaseAPITestCase):
             "password": "testerzz"
         }
         response = self.client.post(reverse("user_register"), data=payload)
-        self.assertEqual(response.status_code, 201)
+        self.assert_post_ok(response)

@@ -13,12 +13,28 @@ from customuser.factories import CustomUserFactory
 
 class BaseAPITestCase(APITestCase):
 
+    def assert_delete_ok(self, response):
+        self.assertEqual(response.status_code, 204)
+
+    def assert_get_ok(self, response, **kwargs):
+        count = kwargs.get("count", None)
+        self.assertEqual(response.status_code, 200)
+        if count is not None:
+            self.assertEqual(len(self.get_content(response)), count)
+
+    def assert_post_ok(self, response, **kwargs):
+        code = 200 if kwargs.get("update", False) else 201
+        self.assertEqual(response.status_code, code)
+
+    def assert_put_ok(self, response):
+        self.assertEqual(response.status_code, 200)
+
     def authenticate(self, user=None):
         '''
         Creates and then authenticates a new user.
         '''
         if user is None:
-            user = CustomUserFactory.create()
+            user = self.create_user()
 
         response = self.client.post(reverse('jwt_token'), {
             'username': user.username,
@@ -29,7 +45,7 @@ class BaseAPITestCase(APITestCase):
 
         return user
 
-    def create_test_image(
+    def create_image(
             self, name="test.png", ext="png", size=(1, 1), color=(256, 0, 0)):
         image_file = BytesIO()
         image = Image.new("RGBA", size, color)
@@ -37,6 +53,9 @@ class BaseAPITestCase(APITestCase):
         image_file.seek(0)
         return InMemoryUploadedFile(
             image_file, None, name, "image/png", sys.getsizeof(image_file), None)
+
+    def create_user(self):
+        return CustomUserFactory.create()
 
     def dump_response(self, response):
         print("{0}".format(self.get_content(response)))
