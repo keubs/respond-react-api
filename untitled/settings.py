@@ -38,7 +38,7 @@ SERVER_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os
 SECRET_KEY = get_env_var('RR_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # BUILDING variable allows you to not need JWT tokens
 BUILDING = False
@@ -123,7 +123,8 @@ WSGI_APPLICATION = 'untitled.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        #'ENGINE': 'django.db.backends.mysql',
+	'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': get_env_var('RR_DB_NAME'),
         'USER': get_env_var('RR_DB_USER'),
         'PASSWORD': get_env_var('RR_DB_PASSWORD'),
@@ -131,8 +132,8 @@ DATABASES = {
         # 'NAME': 'respondreact',
         # 'USER': 'root',
         # 'PASSWORD': 'root',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'HOST': '',   # Or an IP Address that your DB is hosted on
+        'PORT': '',
     }
 }
 
