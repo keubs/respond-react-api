@@ -19,13 +19,13 @@ class MockResponse(object):
 class NyTimesApiHelpersTestCase(BaseAPITestCase):
 
     def mock_nyt_get(self):
-        return MockResponse({"response": "testing"}, 200)
+        return MockResponse({"response": {"docs": "testing"}}, 200)
 
     @mock.patch("requests.get", mock.Mock(side_effect=mock_nyt_get))
     def test_post_ok(self):
         payload = {"url": "http://www.google.com/"}
         response = self.client.post(reverse("nyt"), data=payload)
-# @todo fix this        self.assert_get_ok(response)
+        self.assert_get_ok(response)
 
 
 class OpenGraphHelpersTestCase(BaseAPITestCase):
