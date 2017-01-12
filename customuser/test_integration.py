@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 
-from untitled.testing import BaseAPITestCase
+from utils.testing import BaseAPITestCase
 
 
 class CustomUserViewSetTestCase(BaseAPITestCase):

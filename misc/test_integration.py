@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 import mock
 
 from topics.factories import TopicFactory
-from untitled.testing import BaseAPITestCase
+from utils.testing import BaseAPITestCase
 
 
 class MockResponse(object):

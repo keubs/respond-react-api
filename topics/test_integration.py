@@ -3,7 +3,7 @@ import random
 from django.core.urlresolvers import reverse
 
 from topics.factories import ActionFactory, TopicFactory
-from untitled.testing import BaseAPITestCase
+from utils.testing import BaseAPITestCase
 
 
 class TopicApiTestCase(BaseAPITestCase):

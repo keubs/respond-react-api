@@ -10,7 +10,6 @@ from .serializers import ActionSerializer, TopicSerializer, TopicDetailSerialize
 from .permissions import IsOwnerOrReadOnly
 
 from django.shortcuts import get_object_or_404
-from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
@@ -19,7 +18,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes
 
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
@@ -182,7 +180,7 @@ class TopicPost(APIView):
         val = URLValidator()
         try:
             val(request.data['image_url'])
-        except ValidationError as e:
+        except ValidationError:
             request.data['image_url'] = ''
 
         serializer = TopicSerializer(data=request.data)
@@ -194,7 +192,7 @@ class TopicPost(APIView):
             import utils.emails as ev
             email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
             email.basic_message('New Topic: ' + model.title, 'http://respondreact.com/topic/' + str(model.id))
-            
+
             try:
                 misc_views.save_image_from_url(model, request.data['image_url'])
             except KeyError:
@@ -280,15 +278,15 @@ class TopicByScope(APIView):
                 user = CustomUser.objects.get(id=int(topic.created_by.id))
                 score = topic.rating_likes - topic.rating_dislikes
                 payload = {
-                    'title'           : topic.title,
-                    'id'              : topic.id,
-                    'score'           : score,
-                    'created_by'      : topic.created_by.id,
-                    'username'        : user.username,
-                    'created_on'      : topic.created_on,
-                    'tags'            : [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()],
-                    'action_count'    : topic.action_set.count(),
-                    'thumbnail'       : topic.topic_thumbnail.url
+                    'title': topic.title,
+                    'id': topic.id,
+                    'score': score,
+                    'created_by': topic.created_by.id,
+                    'username': user.username,
+                    'created_on': topic.created_on,
+                    'tags': [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()],
+                    'action_count': topic.action_set.count(),
+                    'thumbnail': topic.topic_thumbnail.url
                 }
 
                 payload_arr.append(payload)
@@ -303,8 +301,8 @@ class TopicByScope(APIView):
                 return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
 
-@permission_classes((IsOwnerOrReadOnly, ))
 class TopicUpdate(APIView):
+    permission_classes = (IsOwnerOrReadOnly,)
 
     def put(self, request, pk, format=None):
         topic = get_object_or_404(Topic, pk=pk)
@@ -491,7 +489,7 @@ class ActionPost(APIView):
         val = URLValidator()
         try:
             val(request.data['image_url'])
-        except ValidationError as e:
+        except ValidationError:
             request.data['image_url'] = ''
 
         serializer = ActionSerializer(data=request.data)

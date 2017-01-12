@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 
 from .factories import AddressFactory
-from untitled.testing import BaseAPITestCase
+from utils.testing import BaseAPITestCase
 
 
 class AddressListTestCase(BaseAPITestCase):
