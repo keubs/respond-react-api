@@ -21,8 +21,6 @@ class EmailMessage(EmailMultiAlternatives):
 		self.from_email = from_email
 		self.to_emails = to_emails
 		self.user = user
-		from pprint import pprint
-		pprint(user)
 
 	def basic_message(self, subject, body):
 		# subject, from_email, to = 'hello', 'noreply@respondreact.com', 'kevinac4@gmail.com'
