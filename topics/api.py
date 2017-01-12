@@ -288,7 +288,7 @@ class TopicByScope(APIView):
                     'created_on'      : topic.created_on,
                     'tags'            : [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()],
                     'action_count'    : topic.action_set.count(),
-                    'thumbnail' : topic.topic_thumbnail.url
+                    'thumbnail'       : topic.topic_thumbnail.url
                 }
 
                 payload_arr.append(payload)
@@ -296,6 +296,7 @@ class TopicByScope(APIView):
 
         else:
             for topic in Topic.objects.raw(query):
+                topic.thumbnail = topic.topic_thumbnail.url
                 user = CustomUser.objects.get(id=int(topic.created_by.id))
                 topic.username = user.username
                 topic_serializer = TopicSerializer(topic)
