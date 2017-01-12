@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import datetime
 
@@ -29,7 +28,7 @@ def get_env_var(name):
                 'The {0} environment variable must be defined.'.format(name))
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SERVER_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+SERVER_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -37,21 +36,7 @@ SERVER_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_env_var('RR_SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-# BUILDING variable allows you to not need JWT tokens
-BUILDING = False
-
-ALLOWED_HOSTS = [
-    '127.0.0.1:8000',
-    '.keubs.webfaction.com',
-    'respondreact.com',
-    'api.respondreact.com',
-]
-
-
-# Application definition
+ADMINS = [('Kevin Cook', 'kevin@respondreact.com')]
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -98,7 +83,6 @@ MIDDLEWARE_CLASSES = (
     # 'misc.middleware.SocialAuthExceptionMiddleware',
 )
 
-
 ROOT_URLCONF = 'untitled.urls'
 
 TEMPLATES = [
@@ -119,26 +103,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'untitled.wsgi.application'
 
-
 DATABASES = {
     'default': {
-         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        #'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': get_env_var('RR_DB_NAME'),
         'USER': get_env_var('RR_DB_USER'),
         'PASSWORD': get_env_var('RR_DB_PASSWORD'),
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': 'respondreact',
-        # 'USER': 'root',
-        # 'PASSWORD': 'root',
         'HOST': '',   # Or an IP Address that your DB is hosted on
         'PORT': '',
     }
 }
-
-CORS_ORIGIN_WHITELIST = (
-    'localhost:3000',
-)
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -147,29 +121,19 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
-
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.FileUploadParser',
     ),
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 AUTHENTICATION_BACKENDS = {
-    # Django
     'django.contrib.auth.backends.ModelBackend',
-
-    # Facebook OAuth2
     'social.backends.facebook.FacebookAppOAuth2',
     'social.backends.facebook.FacebookOAuth2',
-
-    # Google Oauth2
     'social.backends.google.GoogleOAuth2',
-
-    # Twitter
-    'social.backends.twitter.TwitterOAuth',  # OAuth1.0
-
+    'social.backends.twitter.TwitterOAuth',
 }
 
 # Facebook configuration
@@ -235,43 +199,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.8/howto/static-files/
-
-# STATIC_URL = '/static/'
-STATIC_URL = 'http://api.respondreact.com/static/static/'
-
-STATICFILES_DIRS = (
-    SERVER_ROOT + '/static',
-)
-
-STATIC_ROOT = SERVER_ROOT + '/static/static'
-
-MEDIA_URL = 'http://media.respondreact.com/'
-MEDIA_ROOT = SERVER_ROOT + '/media'
-
-# @TODO eventually get whitelists working
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = False
-CORS_ORIGIN_WHITELIST = (
-    'http://squ.ad:3000',
-    'http://squ.ad:8100',
-    'http://respondreact.com:3000',
-    'http://respondreact.com',
-    'http://respondreact.com:8100',
-    'http://api.respondreaact.com',
-)
-
-# EMAIL_HOST = '127.0.0.1'
-# EMAIL_HOST_USER = ''
-# EMAIL_HOST_PASSWORD = ''
-# EMAIL_PORT = 1025
-# EMAIL_USE_TLS = False
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'The respond/react Team <noreply@respondreact.com>'
-EMAIL_HOST = get_env_var('RR_EMAIL_HOST')
-EMAIL_HOST_USER = get_env_var('RR_EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = get_env_var('RR_EMAIL_HOST_PASSWORD')
-EMAIL_PORT = 587
