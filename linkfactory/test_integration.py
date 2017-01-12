@@ -4,7 +4,7 @@ from .factories import LinkFactory, LinkTypeFactory
 from untitled.testing import BaseAPITestCase
 
 
-class LinkFactoryApiTestCase(BaseAPITestCase):
+class ProcessLinkTestCase(BaseAPITestCase):
 
     def test_post_ok(self):
         url = "http://test.com"
@@ -16,5 +16,6 @@ class LinkFactoryApiTestCase(BaseAPITestCase):
 
         self.authenticate()
         response = self.client.post(reverse("link_factory"), data=payload)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(self.get_content(response)), 1)
+        # @todo not sure why this post returns a 200 when creating a record
+        # instead of a 201
+        self.assert_get_ok(response, count=1)
