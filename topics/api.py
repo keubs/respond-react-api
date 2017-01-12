@@ -191,7 +191,7 @@ class TopicPost(APIView):
             model = serializer.save()
 
             # Email admins
-            import sendemail.emails as ev
+            import utils.emails as ev
             email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
             email.basic_message('New Topic: ' + model.title, 'http://respondreact.com/topic/' + str(model.id))
             
@@ -504,7 +504,7 @@ class ActionPost(APIView):
                 Response({'image': 'did not save correctly, please retry'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             # send email
-            import sendemail.emails as ev
+            import utils.emails as ev
             if topic.created_by != action.created_by:
                 user = topic.created_by
                 email = ev.EmailMessage("noreply@respondreact.com", [user.email], user)
@@ -525,7 +525,7 @@ class ActionDelete(APIView):
         topic = get_object_or_404(Topic, pk=action.topic_id)
         user_id = utils.user_id_from_token(request.auth)
 
-        import sendemail.emails as ev
+        import utils.emails as ev
         if action.created_by.id == user_id:
             email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
             email.basic_message('Action deleted.', 'Action Title: ' + action.title + ' | Topic: ' + topic.title + ' URL: ' + 'http://respondreact.com/topic/' + str(topic.id))
@@ -590,7 +590,7 @@ class ApproveAction(APIView):
         action_serializer = ActionSerializer(action)
 
         # send email
-        import sendemail.emails as ev
+        import utils.emails as ev
         user = action.created_by
         email = ev.EmailMessage("noreply@respondreact.com", [user.email], user)
         email.action_approved(action.topic, action)

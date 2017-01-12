@@ -8,6 +8,6 @@ def email_user(strategy, details, *args, **kwargs):
 		pass
 	else:
 		# send email
-		import sendemail.emails as ev
+		import utils.emails as ev
 		email = ev.EmailMessage("noreply@respondreact.com", [details['email']], details)
 		email.new_user()

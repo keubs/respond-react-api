@@ -74,7 +74,6 @@ INSTALLED_APPS = (
     'rest_social_auth',
     'address',
     'addressapi',
-    'sendemail',
     'linkfactory',
     'imagekit',
 )
