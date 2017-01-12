@@ -123,7 +123,8 @@ WSGI_APPLICATION = 'untitled.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #'ENGINE': 'django.db.backends.mysql',
         'NAME': get_env_var('RR_DB_NAME'),
         'USER': get_env_var('RR_DB_USER'),
         'PASSWORD': get_env_var('RR_DB_PASSWORD'),
@@ -131,8 +132,8 @@ DATABASES = {
         # 'NAME': 'respondreact',
         # 'USER': 'root',
         # 'PASSWORD': 'root',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'HOST': '',   # Or an IP Address that your DB is hosted on
+        'PORT': '',
     }
 }
 
