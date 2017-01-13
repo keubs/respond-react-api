@@ -3,7 +3,7 @@ import random
 from django.core.urlresolvers import reverse
 
 from topics.factories import ActionFactory, TopicFactory
-from untitled.testing import BaseAPITestCase
+from utils.testing import BaseAPITestCase
 
 
 class TopicApiTestCase(BaseAPITestCase):
@@ -42,7 +42,7 @@ class TopicDeleteTestCase(TopicApiTestCase):
         # @todo i'm deleting a topic with a different user than the one that
         # created the topic. bug?
         topic = self.create_topic()
-        self.authenticate()
+        self.authenticate(topic.created_by)
         response = self.client.delete(
             reverse("topic_delete", kwargs={"pk": topic.id}))
         self.assert_delete_ok(response)
@@ -109,9 +109,11 @@ class ActionPostTestCase(TopicApiTestCase):
 
     def test_post_ok(self):
         # @todo view throws if `topic` doesn't exist
+        link = "https://test.com"
         payload = {
-            "article_link": "https://test.com",
+            "article_link": link,
             "description": "testing",
+            "image_url": link,
             "scope": self.get_random_scope(),
             "tags": ["test_tag"],
             "title": "test title",
@@ -126,7 +128,7 @@ class ActionDeleteTestCase(TopicApiTestCase):
 
     def test_delete_ok(self):
         (topic, action) = self.create_topic_and_action()
-        self.authenticate()
+        self.authenticate(action.created_by)
         response = self.client.delete(
             reverse("action_delete", kwargs={"pk": action.id}))
         self.assert_delete_ok(response)
@@ -229,12 +231,14 @@ class TopicListByUserTestCase(TopicApiTestCase):
 class TopicPostTestCase(TopicApiTestCase):
 
     def test_post_ok(self):
+        link = "https://test.com"
         payload = {
-            "article_link": "http://test.com/",
-            "scope": self.get_random_scope(),
-            "title": "test",
+            "article_link": link,
             "description": "testing",
-            "tags": '["test_tag"]'
+            "image_url": link,
+            "scope": self.get_random_scope(),
+            "tags": '["test_tag"]',
+            "title": "test",
         }
         self.authenticate()
         response = self.client.post(reverse("topic_create"), data=payload)

@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 
 from .factories import LinkFactory, LinkTypeFactory
-from untitled.testing import BaseAPITestCase
+from utils.testing import BaseAPITestCase
 
 
 class ProcessLinkTestCase(BaseAPITestCase):

@@ -52,13 +52,13 @@ class GetUserFromToken(APIView):
 class MostPopularTags(APIView):
     def get(self, request):
         query = """
-            SELECT tt.id, COUNT(*), tt.slug, tt.name 
-                FROM taggit_taggeditem tti 
-                INNER JOIN taggit_tag tt 
-                    ON tti.tag_id = tt.id 
-                WHERE tti.content_type_id = 8 
+            SELECT tt.id, COUNT(*), tt.slug, tt.name
+                FROM taggit_taggeditem tti
+                INNER JOIN taggit_tag tt
+                    ON tti.tag_id = tt.id
+                WHERE tti.content_type_id = 8
                 GROUP BY tt.slug, tt.name, tt.id
-                ORDER BY count(*) DESC 
+                ORDER BY count(*) DESC
                 LIMIT 10;
             """
         popular_tags = Tag.objects.raw(query)
@@ -133,18 +133,18 @@ class OpenGraphHelpers(APIView):
 
                 return Response({'image': image, 'title': title, 'description': desc, 'tags': tags, 'article_link': article_link}, status=status.HTTP_200_OK)
             except urllib.error.URLError:
-                import sendemail.emails as ev
+                import utils.emails as ev
                 email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
                 email.basic_message('Link Error', 'URL: ' + request.data['url'])
                 return Response({'image': 'Invalid URL'}, status=status.HTTP_404_NOT_FOUND)
             except KeyError:
-                import sendemail.emails as ev
+                import utils.emails as ev
                 email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
                 email.basic_message('Link Error', 'URL: ' + request.data['url'])
                 return Response({'image': 'Not Found'}, status=status.HTTP_404_NOT_FOUND)
-            except Exception as e:
+            except Exception:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
+        except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -153,24 +153,24 @@ class nyTimesAPIHelpers(APIView):
         try:
             url = re.sub("https://", "http://", request.data['url'])
             dictionary = requests.get("""
-                http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("{url}")&api-key={NY_TIMES_API_KEY}).json()
-                """.format(url=url, NY_TIMES_API_KEY=settings.NY_TIMES_API_KEY))
+                http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=web_url:("{url}")&api-key={NY_TIMES_API_KEY})
+                """.format(url=url, NY_TIMES_API_KEY=settings.NY_TIMES_API_KEY)).json()
 
             if 'response' in dictionary:
                 response = dictionary['response']
                 if len(response['docs']) == 0:
-                    import sendemail.emails as ev
+                    import utils.emails as ev
                     email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
                     email.basic_message('NY Times Error - Article not found', 'URL: ' + request.data['url'])
                     return Response({'article': 'Not Found'}, status=status.HTTP_404_NOT_FOUND)
                 return Response(response)
             else:
-                import sendemail.emails as ev
+                import utils.emails as ev
                 email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
                 email.basic_message('NY Times Error.', 'URL: ' + request.data['url'])
                 return Response({"error": "invalid data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
-            import sendemail.emails as ev
+            import utils.emails as ev
             email = ev.EmailMessage("noreply@respondreact.com", ['kevin@respondreact.com'])
             email.basic_message('NY Times Error', 'URL: ' + request.data['url'] + '\nBODY: ' + str(e))
             return Response({"error": "invalid data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

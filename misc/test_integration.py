@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 import mock
 
 from topics.factories import TopicFactory
-from untitled.testing import BaseAPITestCase
+from utils.testing import BaseAPITestCase
 
 
 class MockResponse(object):
@@ -19,7 +19,7 @@ class MockResponse(object):
 class NyTimesApiHelpersTestCase(BaseAPITestCase):
 
     def mock_nyt_get(self):
-        return MockResponse({"response": "testing"}, 200)
+        return MockResponse({"response": {"docs": "testing"}}, 200)
 
     @mock.patch("requests.get", mock.Mock(side_effect=mock_nyt_get))
     def test_post_ok(self):
