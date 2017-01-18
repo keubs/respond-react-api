@@ -1,8 +1,11 @@
+import time
+
 from operator import itemgetter as i
 from functools import cmp_to_key
 
 from rest_framework_jwt import utils
 
+MAX_TIMESCORE = 150
 
 def user_id_from_token(token):
     user_id = utils.jwt_decode_handler(token)
@@ -41,7 +44,6 @@ class Scoring():
     def __init__(self, topic):
         self.topic = topic
 
-
 # Each upvote counts as 10 points
     def get_topic_score(self):
         return self.topic.rating_likes * 10
@@ -59,19 +61,27 @@ class Scoring():
         return i
 
     """
-     Topic created within 1 day, 10 points
-     Topic created within 1 week, 5 points
-     Topic created within 1 month, 3 points
-     Topic created within 1 year, 1 point
+     Topic created within x days, y points
+     Topic created within x weeks, y points
+     Topic created within x months, y points
+     Topic created within x years, y points
     """
-    def get_object_newness():
-        pass
-
+    def get_object_newness(self):
+        """
+            Here's the fun part. The primary equation is 10^{-.15x} * a.
+            10 = the slope (rate of change) of the score
+            1.5 = the threshold before 14 days drops the score below 1 point
+            x  = the amount of time (in decimal days) elapsed
+            MAX_TIMESCORE = the maximum value you can achieve from time-scoring
+            Shoutout to @howespt. You crazy for this one!
+        """
+        score = 10 ** (-.15 * ((time.time() - int(time.mktime(self.topic.created_on.timetuple()))) * .000011574074)) * MAX_TIMESCORE
+        return score
     """
-     Action created within 1 day, 10 points
-     Action created within 1 week, 5 points
-     Action created within 1 month, 3 points
-     Action created within 1 year, 1 point
+     Action created within x days, y points
+     Action created within x weeks, y points
+     Action created within x months, y points
+     Action created within x years, y points
     """
     def get_actions_newness_score():
         pass
@@ -82,4 +92,4 @@ class Scoring():
 
     # Summated points
     def add_all_points(self):
-        return self.get_topic_score() + self.get_action_count() + self.get_actions_upvotes()
+        return self.get_topic_score() + self.get_action_count() + self.get_actions_upvotes() + self.get_object_newness()
