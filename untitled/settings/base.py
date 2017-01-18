@@ -13,19 +13,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 import datetime
 
-from django.core.exceptions import ImproperlyConfigured
-
-
-def get_env_var(name):
-    try:
-        return os.environ[name]
-    except KeyError:
-        try:
-            from conf import CONF
-            return CONF[name]
-        except (KeyError, Exception):
-            raise ImproperlyConfigured(
-                'The {0} environment variable must be defined.'.format(name))
+from utils.env import get_env_var
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SERVER_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
