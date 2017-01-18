@@ -5,7 +5,7 @@ from functools import cmp_to_key
 
 from rest_framework_jwt import utils
 
-MAX_TIMESCORE = 150
+MAX_TIMESCORE = 300
 
 def user_id_from_token(token):
     user_id = utils.jwt_decode_handler(token)
