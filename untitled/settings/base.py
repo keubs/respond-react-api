@@ -16,7 +16,7 @@ import datetime
 from utils.env import get_env_var
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SERVER_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
+SERVER_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
