@@ -188,3 +188,5 @@ USE_L10N = True
 
 USE_TZ = True
 
+MEDIA_ROOT = SERVER_ROOT + '/media'
+MEDIA_URL = 'http://media.respondreact.com/'

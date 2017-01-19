@@ -5,6 +5,7 @@ db_name="respondreact"
 pm="python manage.py"
 port="8100"
 prefix="RR:"
+settings=" --settings=untitled.settings.dev"
 
 build() {
   echo "${prefix} build started" && dropdb ${db_name} && createdb ${db_name}
@@ -18,19 +19,27 @@ build() {
 }
 
 makemigrations() {
-  echo "${prefix} makemigrations started" && ${pm} makemigrations && echo "${prefix} makemigrations finished"
+  echo "${prefix} makemigrations started"
+  ${pm} makemigrations ${settings}
+  echo "${prefix} makemigrations finished"
 }
 
 migrate() {
-  echo "${prefix} migrate started" && ${pm} migrate && echo "${prefix} migrate finished"
+  echo "${prefix} migrate started"
+  ${pm} migrate ${settings}
+  echo "${prefix} migrate finished"
 }
 
 runserver() {
-  echo "${prefix} runserver started" && ${pm} runserver ${port} && echo "${prefix} runserver finished"
+  echo "${prefix} runserver started"
+  ${pm} runserver ${port} ${settings}
+  echo "${prefix} runserver finished"
 }
 
 test() {
-  echo "${prefix} test started" && ${pm} test && echo "${prefix} test finished"
+  echo "${prefix} test started"
+  ${pm} test --settings=untitled.settings.test
+  echo "${prefix} test finished"
 }
 
 source $activate

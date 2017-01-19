@@ -15,8 +15,5 @@ EMAIL_HOST_USER = get_env_var("RR_EMAIL_HOST_USER")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-MEDIA_ROOT = SERVER_ROOT + '/media'
-MEDIA_URL = 'http://media.respondreact.com/'
-
 STATIC_ROOT = SERVER_ROOT + '/static/static'
 STATIC_URL = 'http://api.respondreact.com/static/static/'
