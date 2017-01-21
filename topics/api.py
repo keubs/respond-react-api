@@ -1,5 +1,5 @@
 import logging
-
+import operator
 
 from datetime import datetime
 from operator import itemgetter
@@ -79,16 +79,8 @@ class TopicList(APIView):
         else:
             payload = utils.multikeysort(payload, ['-ranking', '-created_on'])
 
-        paginator = Paginator(payload, MAX_PAGE_SIZE)
         page = request.GET.get('page')
-        try:
-            payload = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            payload = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            payload = paginator.page(paginator.num_pages)
+        payload = utils.paginate(payload, page)
         serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
@@ -216,7 +208,7 @@ class TopicByScope(APIView):
         # hardcoded defaults to US and Cali
         country = 5
         state = 2
-        limit = 1
+        limit = ''
 
         if request.auth:
             user_id = utils.user_id_from_token(request.auth)
@@ -231,11 +223,11 @@ class TopicByScope(APIView):
                 country = country.id
 
         if 'limit' in request.query_params.keys():
-            limit = int(request.query_params['limit'])
+            limit = "ORDER BY RANDOM() LIMIT " + request.query_params['limit']
 
         if scope == 'national':
             query = """
-                SELECT tt.* FROM topics_topic tt
+                SELECT tt.*, aa.* FROM topics_topic tt
                     INNER JOIN address_address aa ON tt.address_id = aa.id
                     INNER JOIN address_locality al ON aa.locality_id = al.id
                     INNER JOIN address_state ass ON al.state_id = ass.id
@@ -243,29 +235,29 @@ class TopicByScope(APIView):
                     WHERE ac.id = {country}
                     AND ass.id <> {state}
                     -- AND tt.scope = 'national'
-                    ORDER BY RANDOM() LIMIT {limit}
+                    {limit}
                 """.format(country=country, state=state, limit=limit)
 
         elif scope == 'local':
             query = """
-                SELECT tt.* FROM topics_topic tt
+                SELECT tt.*, aa.* FROM topics_topic tt
                     INNER JOIN address_address aa ON tt.address_id = aa.id
                     INNER JOIN address_locality al ON aa.locality_id = al.id
                     INNER JOIN address_state ass ON al.state_id = ass.id
                     WHERE ass.id = {state}
                     -- AND tt.scope = 'local'
-                    ORDER BY RANDOM() LIMIT {limit}
+                    {limit}
                 """.format(state=state, limit=limit)
 
         elif scope == 'worldwide':
             query = """
-            SELECT tt.* FROM topics_topic tt
+            SELECT tt.*, aa.* FROM topics_topic tt
                 INNER JOIN address_address aa ON tt.address_id = aa.id
                 INNER JOIN address_locality al ON aa.locality_id = al.id
                 INNER JOIN address_state ass ON al.state_id = ass.id
                 INNER JOIN address_country ac ON ass.country_id = ac.id
                 WHERE ac.id <> {country}
-                ORDER BY RANDOM() LIMIT {limit}
+                {limit}
             """.format(country=country, limit=limit)
 
         topics = Topic.objects.raw(query)
@@ -286,19 +278,34 @@ class TopicByScope(APIView):
                     'created_on': topic.created_on,
                     'tags': [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()],
                     'action_count': topic.action_set.count(),
-                    'thumbnail': topic.topic_thumbnail.url
+                    'thumbnail': topic.topic_thumbnail.url,
+                    'state': topic.address.locality.state.name
                 }
 
                 payload_arr.append(payload)
+
             return Response(payload_arr, status=status.HTTP_200_OK)
 
         else:
+            payload = []
             for topic in Topic.objects.raw(query):
                 topic.thumbnail = topic.topic_thumbnail.url
                 user = CustomUser.objects.get(id=int(topic.created_by.id))
                 topic.username = user.username
-                topic_serializer = TopicSerializer(topic)
-                return Response(topic_serializer.data, status=status.HTTP_200_OK)
+                score = utils.Scoring(topic)
+                topic.ranking = score.add_all_points()
+                topic.tags = [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()]
+                payload.append(topic)
+
+            if request.GET.get('order_by') == 'time':
+                payload = utils.multikeysort(payload, ['-created_on'])
+            else:
+                payload = sorted(payload, key=operator.attrgetter('ranking'), reverse=True)
+
+            # page = request.GET.get('page')
+            # payload = utils.paginate(payload, page)
+            topic_serializer = TopicSerializer(payload, many=True)
+            return Response(topic_serializer.data, status=status.HTTP_200_OK)
 
 
 class TopicUpdate(APIView):

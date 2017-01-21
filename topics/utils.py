@@ -3,9 +3,12 @@ import time
 from operator import itemgetter as i
 from functools import cmp_to_key
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework_jwt import utils
 
 MAX_TIMESCORE = 300
+MAX_PAGE_SIZE = 10
+
 
 def user_id_from_token(token):
     user_id = utils.jwt_decode_handler(token)
@@ -34,6 +37,19 @@ def multikeysort(items, columns):
         )
         return next((result for result in comparer_iter if result), 0)
     return sorted(items, key=cmp_to_key(comparer))
+
+
+def paginate(payload, page):
+    paginator = Paginator(payload, MAX_PAGE_SIZE)
+    try:
+        payload = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        payload = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        payload = paginator.page(paginator.num_pages)
+    return payload
 
 
 def cmp(a, b):

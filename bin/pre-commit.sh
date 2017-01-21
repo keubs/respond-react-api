@@ -1,6 +1,6 @@
 #!/bin/bash
 
-activate="${HOME}/.venv/rr/bin/activate"
+activate="${HOME}/.venv/respondreact/bin/activate"
 
 git stash -q --keep-index
 source ${activate} && python manage.py test --settings=untitled.settings.test
