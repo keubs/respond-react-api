@@ -27,6 +27,8 @@ SECRET_KEY = get_env_var('RR_SECRET_KEY')
 ADMINS = [('Kevin Cook', 'kevin@respondreact.com')]
 
 INSTALLED_APPS = (
+    "jet.dashboard",
+    "jet",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
