@@ -1,7 +1,5 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.conf.urls.static import static
-from django.conf import settings
 
 from addressapi import api as address_api
 from customuser import api as customuser_viewset
@@ -16,8 +14,12 @@ urlpatterns = [
         r'^$',
         topic_views.home,
         name='home'),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^grappelli/',
+        include("grappelli.urls")),
+    url(r'^admin/',
+        include(admin.site.urls)),
+    url(r'^o/',
+        include('oauth2_provider.urls', namespace='oauth2_provider')),
     url(
         r'topic/(?P<pk>[0-9]+)$',
         topic_views.topic_details,
@@ -183,5 +185,4 @@ urlpatterns = [
             misc_api.UserRegistration.as_view(),
             name="user_register"),
     ]))
-] 
-#+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
