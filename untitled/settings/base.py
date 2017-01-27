@@ -27,6 +27,7 @@ SECRET_KEY = get_env_var('RR_SECRET_KEY')
 ADMINS = [('Kevin Cook', 'kevin@respondreact.com')]
 
 INSTALLED_APPS = (
+    "grappelli",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -190,3 +191,5 @@ USE_TZ = True
 
 MEDIA_ROOT = SERVER_ROOT + '/media'
 MEDIA_URL = 'http://media.respondreact.com/'
+
+GRAPPELLI_ADMIN_TITLE = "respond/react"

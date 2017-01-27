@@ -1,31 +1,96 @@
 from django.contrib import admin
-from django.contrib.admin import SimpleListFilter
-from address.models import *
 
-class UnidentifiedListFilter(SimpleListFilter):
-    title = 'unidentified'
-    parameter_name = 'unidentified'
+from .models import Address, Country, Locality, State
 
-    def lookups(self, request, model_admin):
-        return (('unidentified', 'unidentified'),)
 
-    def queryset(self, request, queryset):
-        if self.value() == 'unidentified':
-            return queryset.filter(locality=None)
-
-@admin.register(Country)
-class CountryAdmin(admin.ModelAdmin):
-    search_fields = ('name', 'code')
-
-@admin.register(State)
-class StateAdmin(admin.ModelAdmin):
-    search_fields = ('name', 'code')
-
-@admin.register(Locality)
-class LocalityAdmin(admin.ModelAdmin):
-    search_fields = ('name', 'postal_code')
-
-@admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
-    search_fields = ('name',)
-    list_filter = (UnidentifiedListFilter,)
+    fieldsets = (
+        (None, {
+            "fields": (
+                "formatted",
+                "latitude",
+                "locality",
+                "longitude",
+                "raw",
+                "route",
+                "street_number",
+            )
+        }),
+        ("Meta", {
+            "classes": ("grp-collapse",),
+            "fields": ("id",)
+        })
+    )
+    list_display = ("id", "formatted",)
+    list_filter = ()
+    readonly_fields = (
+        "id",)
+    search_fields = ("street_number", "route", "raw", "formatted",)
+
+
+class CountryAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            "fields": (
+                "code",
+                "name",
+            )
+        }),
+        ("Meta", {
+            "classes": ("grp-collapse",),
+            "fields": ("id",)
+        })
+    )
+    list_display = ("id", "name", "code",)
+    list_filter = ()
+    readonly_fields = (
+        "id",)
+    search_fields = ("code", "name",)
+
+
+class LocalityAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            "fields": (
+                "name",
+                "postal_code",
+                "state",
+            )
+        }),
+        ("Meta", {
+            "classes": ("grp-collapse",),
+            "fields": ("id",)
+        })
+    )
+    list_display = ("id", "name", "state", "postal_code",)
+    list_filter = ("state",)
+    readonly_fields = (
+        "id",)
+    search_fields = ("name", "postal_code",)
+
+
+class StateAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            "fields": (
+                "code",
+                "country",
+                "name",
+            )
+        }),
+        ("Meta", {
+            "classes": ("grp-collapse",),
+            "fields": ()
+        })
+    )
+    list_display = ("id", "name", "code", "country",)
+    list_filter = ("country",)
+    readonly_fields = (
+        "id",)
+    search_fields = ("name", "code",)
+
+
+admin.site.register(Address, AddressAdmin)
+admin.site.register(Country, CountryAdmin)
+admin.site.register(Locality, LocalityAdmin)
+admin.site.register(State, StateAdmin)
