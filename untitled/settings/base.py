@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'addressapi',
     'linkfactory',
     'imagekit',
+    "utils",
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
