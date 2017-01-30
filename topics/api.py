@@ -498,7 +498,9 @@ class ActionPost(APIView):
             val(request.data['image_url'])
         except ValidationError:
             request.data['image_url'] = ''
-
+        except:
+            request.data['image_url'] = ''
+            
         serializer = ActionSerializer(data=request.data)
 
         if serializer.is_valid():
