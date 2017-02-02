@@ -35,52 +35,15 @@ class TopicList(APIView):
 
     def get(self, request, format=None):
 
-        # rewrite payload to include 'score' value
-        topics = Topic.objects.all().order_by('-created_on')
-
-        payload = []
-        for topic in topics:
-            score = topic.rating_likes - topic.rating_dislikes
-            user = CustomUser.objects.get(id=int(topic.created_by.id))
-            # actions = Action.objects.filter(topic=topic.id, approved=1).count()
-            actions = topic.action_set.filter(topic=topic.id, approved=1).count()
-            topic_thumbnail = topic.topic_thumbnail.url
-            content = {
-                'id': topic.id,
-                'title': topic.title,
-                'description': topic.description,
-                'article_link': topic.article_link,
-                'created_on': topic.created_on,
-                'score': score,
-                'created_by': topic.created_by,
-                'username': user.username,
-                'rating_likes': topic.rating_likes,
-                'rating_dislikes': topic.rating_dislikes,
-                'tags': [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()],
-                'image': topic.image,
-                'thumbnail': topic_thumbnail,
-                'image_url': topic.image_url,
-                'actions': actions,
-                'scope': topic.scope,
-                'address': topic.address,
-            }
-
-            score = utils.Scoring(topic)
-            content['ranking'] = score.add_all_points()
-
-            payload.append(content)
-
-        # sort by score instead
-        # @TODO score should probably be returned in the model, and thus sorted on a db-level
-        # if request.query_params.get('order_by') == 'score':
+        topics = Topic.objects.all().order_by('-created_on').prefetch_related('created_by', 'action_set')
 
         if request.GET.get('order_by') == 'time':
-            payload = utils.multikeysort(payload, ['-created_on'])
+            payload = sorted(topics, key=operator.attrgetter('ranking'), reverse=True)
         else:
-            payload = utils.multikeysort(payload, ['-ranking', '-created_on'])
+            payload = sorted(topics, key=operator.attrgetter('ranking'), reverse=True)
 
         page = request.GET.get('page')
-        payload = utils.paginate(payload, page)
+        payload = utils.paginate(topics, page)
         serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
@@ -99,7 +62,6 @@ class TopicDetail(APIView):
         try:
             topic = Topic.objects.get(pk=pk)
             topic.tags = [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()]
-            user = CustomUser.objects.get(id=int(topic.created_by.id))
             serialized_topic = TopicDetailSerializer(topic)
             payload = {}
             for attr, value in serialized_topic.data.items():
@@ -107,7 +69,7 @@ class TopicDetail(APIView):
 
             payload['action_count'] = topic.action_set.filter(approved=1).count()
             payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
-            payload['username'] = user.username
+            payload['username'] = topic.created_by.username
             payload['banner'] = topic.topic_banner.url
 
             try:

@@ -17,14 +17,24 @@ class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
 
 
 class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
-    tags = TagListSerializerField()
-    score = serializers.ReadOnlyField()
+    tags = serializers.SerializerMethodField('format_tags')
+    score = serializers.SerializerMethodField('print_score')
     username = serializers.ReadOnlyField()
     actions = serializers.ReadOnlyField()
     ranking = serializers.ReadOnlyField()
-    thumbnail = serializers.ReadOnlyField()
+    thumbnail = serializers.SerializerMethodField()
     banner = serializers.ReadOnlyField()
-    
+
+    def format_tags(self, topic):
+        # print(topic.tags)
+        return [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()]
+
+    def print_score(self, topic):
+        return topic.rating_likes
+
+    def get_thumbnail(self, topic):
+        return topic.topic_thumbnail.url
+
     class Meta:
         model = Topic
         # Fields = ('title', 'description', 'article_link', 'created_by', 'tags', 'score', 'image_url', 'username')

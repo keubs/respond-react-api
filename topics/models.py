@@ -3,6 +3,7 @@ from django.db import models
 from customuser.models import CustomUser
 from django.core.validators import URLValidator
 
+from . import utils
 from updown.fields import RatingField
 from taggit.managers import TaggableManager
 from address.models import AddressField
@@ -43,6 +44,11 @@ class Topic(models.Model):
         max_length=9,
     )
     address = AddressField(null=True, blank=True)
+
+    @property
+    def ranking(self):
+        score = utils.Scoring(self)
+        return score.add_all_points()
 
     def __str__(self):
         return str(self.title)
