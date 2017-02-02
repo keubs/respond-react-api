@@ -18,25 +18,27 @@ class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
 
 class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = serializers.SerializerMethodField('format_tags')
-    score = serializers.SerializerMethodField('print_score')
+    score = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
-    actions = serializers.ReadOnlyField()
+    actions = serializers.SerializerMethodField()
     ranking = serializers.ReadOnlyField()
     thumbnail = serializers.SerializerMethodField()
     banner = serializers.ReadOnlyField()
 
     def format_tags(self, topic):
-        # print(topic.tags)
         return [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()]
 
-    def print_score(self, topic):
+    def get_score(self, topic):
         return topic.rating_likes
+
+    def get_thumbnail(self, topic):
+        return topic.topic_thumbnail.url
 
     def get_username(self, topic):
         return topic.created_by.username
 
-    def get_thumbnail(self, topic):
-        return topic.topic_thumbnail.url
+    def get_actions(self, topic):
+        return topic.action_set.count()
 
     class Meta:
         model = Topic
@@ -45,11 +47,31 @@ class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
 
 
 class TopicDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
-    tags = TagListSerializerField()
-    score = serializers.ReadOnlyField()
+    tags = serializers.SerializerMethodField('format_tags')
+    score = serializers.SerializerMethodField()
     image = serializers.FileField()
-    actions = ActionSerializer(many=True, read_only=True)
-    action_count = serializers.ReadOnlyField()
+    action_count = serializers.SerializerMethodField('get_actions')
+    username = serializers.SerializerMethodField()
+    banner = serializers.SerializerMethodField()
+    address = serializers.SerializerMethodField()
+
+    def get_address(self, topic):
+        return topic.address.raw
+
+    def get_username(self, topic):
+        return topic.created_by.username
+
+    def format_tags(self, topic):
+        return [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()]
+
+    def get_actions(self, topic):
+        return topic.action_set.count()
+
+    def get_score(self, topic):
+        return topic.rating_likes
+
+    def get_banner(self, topic):
+        return topic.topic_banner.url
 
     class Meta:
         model = Topic

@@ -10,7 +10,6 @@ from .serializers import ActionSerializer, TopicSerializer, TopicDetailSerialize
 from .permissions import IsOwnerOrReadOnly
 
 from django.shortcuts import get_object_or_404
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
@@ -38,12 +37,12 @@ class TopicList(APIView):
         topics = Topic.objects.all().prefetch_related('created_by', 'action_set')
 
         if request.GET.get('order_by') == 'time':
-            payload = sorted(topics, key=operator.attrgetter('ranking'), reverse=True)
+            payload = sorted(topics, key=operator.attrgetter('created_on'), reverse=True)
         else:
             payload = sorted(topics, key=operator.attrgetter('ranking'), reverse=True)
 
         page = request.GET.get('page')
-        payload = utils.paginate(topics, page)
+        payload = utils.paginate(payload, page)
         serialized_topics = TopicSerializer(payload, many=True)
         return Response(serialized_topics.data)
 
@@ -61,25 +60,26 @@ class TopicDetail(APIView):
     def get(self, request, pk, format=None):
         try:
             topic = Topic.objects.get(pk=pk)
-            topic.tags = [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()]
+            # topic.tags = [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()]
+            # payload = {}
+            # for attr, value in serialized_topic.data.items():
+            #     payload[attr] = value
+
+            # payload['action_count'] = topic.action_set.filter(approved=1).count()
+            # payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
+            # payload['username'] = topic.created_by.username
+            # payload['banner'] = topic.topic_banner.url
+
+            # try:
+            #     topic_address = Address.objects.get(pk=payload['address'])
+            #     address_serializer = AddressSerializer(topic_address)
+            #     payload['address'] = address_serializer.data
+            # except Address.DoesNotExist:
+            #     pass
+            # return Response(payload)
+
             serialized_topic = TopicDetailSerializer(topic)
-            payload = {}
-            for attr, value in serialized_topic.data.items():
-                payload[attr] = value
-
-            payload['action_count'] = topic.action_set.filter(approved=1).count()
-            payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
-            payload['username'] = topic.created_by.username
-            payload['banner'] = topic.topic_banner.url
-
-            try:
-                topic_address = Address.objects.get(pk=payload['address'])
-                address_serializer = AddressSerializer(topic_address)
-                payload['address'] = address_serializer.data
-            except Address.DoesNotExist:
-                pass
-            return Response(payload)
-
+            return Response(serialized_topic.data, status=status.HTTP_200_OK)
         except Topic.DoesNotExist:
             return Response({"error": "topic not found"}, status=status.HTTP_404_NOT_FOUND)
 
