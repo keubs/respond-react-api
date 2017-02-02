@@ -19,7 +19,7 @@ class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
 class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = serializers.SerializerMethodField('format_tags')
     score = serializers.SerializerMethodField('print_score')
-    username = serializers.ReadOnlyField()
+    username = serializers.SerializerMethodField()
     actions = serializers.ReadOnlyField()
     ranking = serializers.ReadOnlyField()
     thumbnail = serializers.SerializerMethodField()
@@ -31,6 +31,9 @@ class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     def print_score(self, topic):
         return topic.rating_likes
+
+    def get_username(self, topic):
+        return topic.created_by.username
 
     def get_thumbnail(self, topic):
         return topic.topic_thumbnail.url

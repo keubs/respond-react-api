@@ -35,7 +35,7 @@ class TopicList(APIView):
 
     def get(self, request, format=None):
 
-        topics = Topic.objects.all().order_by('-created_on').prefetch_related('created_by', 'action_set')
+        topics = Topic.objects.all().prefetch_related('created_by', 'action_set')
 
         if request.GET.get('order_by') == 'time':
             payload = sorted(topics, key=operator.attrgetter('ranking'), reverse=True)
@@ -86,40 +86,9 @@ class TopicDetail(APIView):
 
 class TopicListByTag(APIView):
     def get(self, request, tag, format=None):
-        topics = Topic.objects.filter(tags__slug__in=[tag])
-        payload = []
-        for topic in topics:
-            score = topic.rating_likes - topic.rating_dislikes
-            user = CustomUser.objects.get(id=int(topic.created_by.id))
-            # actions = Action.objects.filter(topic=topic.id, approved=1).count()
-            actions = topic.action_set.filter(topic=topic.id, approved=1).count()
-            topic_thumbnail = topic.topic_thumbnail.url
-            content = {
-                'id': topic.id,
-                'title': topic.title,
-                'description': topic.description,
-                'article_link': topic.article_link,
-                'created_on': topic.created_on,
-                'score': score,
-                'created_by': topic.created_by,
-                'username': user.username,
-                'rating_likes': topic.rating_likes,
-                'rating_dislikes': topic.rating_dislikes,
-                'tags': [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()],
-                'image': topic.image,
-                'thumbnail': topic_thumbnail,
-                'image_url': topic.image_url,
-                'scope': topic.scope,
-                'address': topic.address,
-                'actions': actions,
-            }
-
-            score = utils.Scoring(topic)
-            content['ranking'] = score.add_all_points()
-            payload.append(content)
-
-        payload = utils.multikeysort(payload, ['-ranking', '-created_on'])
-        serialized_topics = TopicSerializer(payload, many=True)
+        topics = Topic.objects.filter(tags__slug__in=[tag]).prefetch_related('created_by', 'action_set')
+        topics = sorted(topics, key=operator.attrgetter('ranking'), reverse=True)
+        serialized_topics = TopicSerializer(topics, many=True)
         return Response(serialized_topics.data)
 
 
