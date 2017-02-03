@@ -24,7 +24,6 @@ from misc import views as misc_views
 from customuser.models import CustomUser
 
 from address.models import Address, Locality, State, Country
-from addressapi.serializers import AddressSerializer
 
 logr = logging.getLogger(__name__)
 MAX_PAGE_SIZE = 10
@@ -296,70 +295,23 @@ class ActionList(APIView):
 class ActionListByTopic(APIView):
     def get(self, request, pk, format=None):
 
-        # rewrite payload to include 'score' value
         actions = Action.objects.filter(topic_id=pk, approved=1)
-
-        # paginator = Paginator(actions, 20)
-        # page = request.GET.get('action_page')
-
-        # try:
-        #     actions = paginator.page(page)
-        # except PageNotAnInteger:
-        #     # If page is not an integer, deliver first page.
-        #     actions = paginator.page(1)
-        # except EmptyPage:
-        #     # If page is out of range (e.g. 9999), deliver last page of results.
-        #     actions = paginator.page(paginator.num_pages)
-
         payload = []
         expired = []
+        
         for action in actions:
-            score = action.rating_likes - action.rating_dislikes
-            user = CustomUser.objects.get(id=int(action.created_by.id))
-            if action.address:
-                raw = action.address.raw
-            else:
-                raw = None
-
-            content = {
-                'id': action.id,
-                'title': action.title,
-                'description': action.description,
-                'article_link': action.article_link,
-                'created_on': action.created_on,
-                'start_date_time': action.start_date_time,
-                'end_date_time': action.end_date_time,
-                'score': score,
-                'topic': action.topic,
-                'username': user.username,
-                'created_by': action.created_by,
-                'rating_likes': action.rating_likes,
-                'rating_dislikes': action.rating_dislikes,
-                'tags': [{'slug': tag.slug, 'name': tag.name.title()} for tag in action.tags.all()],
-                'image': action.image,
-                'image_url': action.image_url,
-                'action': action.address,
-                'scope': action.scope,
-                'address': action.address,
-                'address_raw': raw,
-                'approved': action.approved,
-            }
-
             if action.end_date_time is not None:
                 if datetime.now() > action.end_date_time.replace(tzinfo=None):
-                    expired.append(content)
+                    expired.append(action)
                 else:
-                    payload.append(content)
+                    payload.append(action)
             else:
-                payload.append(content)
+                payload.append(action)
 
-        # sort by score instead
-        # @TODO score should probably be returned in the model, and thus sorted on a db-level
-        # if request.query_params.get('order_by') == 'score':
-
-        payload = utils.multikeysort(payload, ['-score', '-created_on'])
+        payload = sorted(payload, key=operator.attrgetter('rating_likes'), reverse=True)
         payload = payload + expired
         serialized_actions = ActionSerializer(payload, many=True)
+
         return Response(serialized_actions.data)
 
 

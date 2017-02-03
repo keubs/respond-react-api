@@ -1,14 +1,36 @@
 from rest_framework import serializers
-from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
+from taggit_serializer.serializers import TaggitSerializer
 
 from .models import Action, Topic
 
 
 class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
-    score = serializers.ReadOnlyField()
-    username = serializers.ReadOnlyField()
-    tags = TagListSerializerField()
-    address_raw = serializers.ReadOnlyField()
+    score = serializers.SerializerMethodField()
+    username = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField('format_tags')
+    # address = serializers.SerializerMethodField()
+    address_raw = serializers.SerializerMethodField('get_raw')
+
+    def get_address(self, action):
+        if action.address is not None:
+            return action.address
+        else:
+            return None
+
+    def get_raw(self, action):
+        if action.address is not None:
+            return action.address.raw
+        else:
+            return None
+
+    def get_username(self, action):
+        return action.created_by.username
+
+    def get_score(self, action):
+        return action.rating_likes
+
+    def format_tags(self, action):
+        return [{'slug': tag.slug, 'name': tag.name.title()} for tag in action.tags.all()]
 
     class Meta:
         model = Action
