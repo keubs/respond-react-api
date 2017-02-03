@@ -60,24 +60,6 @@ class TopicDetail(APIView):
     def get(self, request, pk, format=None):
         try:
             topic = Topic.objects.get(pk=pk)
-            # topic.tags = [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()]
-            # payload = {}
-            # for attr, value in serialized_topic.data.items():
-            #     payload[attr] = value
-
-            # payload['action_count'] = topic.action_set.filter(approved=1).count()
-            # payload['score'] = (serialized_topic['rating_likes'].value - serialized_topic['rating_dislikes'].value)
-            # payload['username'] = topic.created_by.username
-            # payload['banner'] = topic.topic_banner.url
-
-            # try:
-            #     topic_address = Address.objects.get(pk=payload['address'])
-            #     address_serializer = AddressSerializer(topic_address)
-            #     payload['address'] = address_serializer.data
-            # except Address.DoesNotExist:
-            #     pass
-            # return Response(payload)
-
             serialized_topic = TopicDetailSerializer(topic)
             return Response(serialized_topic.data, status=status.HTTP_200_OK)
         except Topic.DoesNotExist:

@@ -56,7 +56,10 @@ class TopicDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
     address = serializers.SerializerMethodField()
 
     def get_address(self, topic):
-        return topic.address.raw
+        if topic.address is not None:
+            return topic.address.raw
+        else:
+            return None
 
     def get_username(self, topic):
         return topic.created_by.username
