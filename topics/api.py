@@ -298,7 +298,8 @@ class ActionListByTopic(APIView):
         actions = Action.objects.filter(topic_id=pk, approved=1)
         payload = []
         expired = []
-        
+
+        # split results into active and expired, then re-join
         for action in actions:
             if action.end_date_time is not None:
                 if datetime.now() > action.end_date_time.replace(tzinfo=None):

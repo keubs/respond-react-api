@@ -18,19 +18,28 @@ class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
             return None
 
     def get_raw(self, action):
-        if action.address is not None:
-            return action.address.raw
+        if(hasattr(action, 'address')):
+            if action.address is not None:
+                return action.address.raw
+            else:
+                return None
         else:
             return None
 
     def get_username(self, action):
-        return action.created_by.username
+        if(hasattr(action, 'created_by')):
+            return action.created_by.username
 
     def get_score(self, action):
-        return action.rating_likes
+        if(hasattr(action, 'rating_likes')):
+            return action.rating_likes
+        else:
+            return 0
 
     def format_tags(self, action):
-        return [{'slug': tag.slug, 'name': tag.name.title()} for tag in action.tags.all()]
+        if(hasattr(action, 'tags')):
+            if(hasattr(action.tags, 'all')):
+                return [{'slug': tag.slug, 'name': tag.name.title()} for tag in action.tags.all()]
 
     class Meta:
         model = Action
