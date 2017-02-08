@@ -38,7 +38,7 @@ runserver() {
 
 seed() {
   echo "${prefix} seed started"
-  ${pm} seed --dummy ${settings}
+  ${pm} seed ${settings}
   echo "${prefix} seed finished"
 }
 

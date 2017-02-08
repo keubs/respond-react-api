@@ -23,28 +23,19 @@ class Command(BaseCommand):
         self.users = []
         super(Command, self).__init__(*args, **kwargs)
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            "-d",
-            "--dummy",
-            action="store_true",
-            help="Load dummy data in addition to fixture data")
-
     def handle(self, *args, **kwargs):
-        # @todo could identify data that should be loaded for production too
-        if kwargs.get("dummy", False):
-            # addressapi
-            self._create_countries()
-            self._create_states()
-            self._create_localities()
-            # customuser
-            self._create_users()
-            # linkfactory
-            self._create_links()
-            self._create_linktypes()
-            # topics
-            self._create_topics()
-            self._create_actions()
+        # addressapi
+        self._create_countries()
+        self._create_states()
+        self._create_localities()
+        # customuser
+        self._create_users()
+        # linkfactory
+        self._create_links()
+        self._create_linktypes()
+        # topics
+        self._create_topics()
+        self._create_actions()
 
     def _create_actions(self):
         count = 2
@@ -99,7 +90,6 @@ class Command(BaseCommand):
                 description="testing",
                 image_url=link,
                 scope=random.choice(["local", "national", "worldwide"]),
-#                tags='["test_tag"]',
                 title="test"))
         self._report("topics", count)
 
