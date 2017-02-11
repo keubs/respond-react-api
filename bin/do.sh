@@ -36,6 +36,12 @@ runserver() {
   echo "${prefix} runserver finished"
 }
 
+seed() {
+  echo "${prefix} seed started"
+  ${pm} seed ${settings}
+  echo "${prefix} seed finished"
+}
+
 test() {
   echo "${prefix} test started"
   ${pm} test --settings=untitled.settings.test
