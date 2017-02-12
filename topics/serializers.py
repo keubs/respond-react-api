@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from taggit_serializer.serializers import TaggitSerializer
+from taggit_serializer.serializers import TaggitSerializer, TagListSerializerField
 
 from .models import Action, Topic
 
@@ -7,7 +7,7 @@ from .models import Action, Topic
 class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
     score = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
-    tags = serializers.SerializerMethodField('format_tags')
+    tags = TagListSerializerField()
     # address = serializers.SerializerMethodField()
     address_raw = serializers.SerializerMethodField('get_raw')
 
@@ -48,7 +48,7 @@ class ActionSerializer(TaggitSerializer, serializers.ModelSerializer):
 
 
 class TopicSerializer(TaggitSerializer, serializers.ModelSerializer):
-    tags = serializers.SerializerMethodField('format_tags')
+    tags = TagListSerializerField()
     score = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
     actions = serializers.SerializerMethodField()
