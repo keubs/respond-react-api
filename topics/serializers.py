@@ -99,7 +99,7 @@ class TopicDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
         return [{'slug': tag.slug, 'name': tag.name.title()} for tag in topic.tags.all()]
 
     def get_actions(self, topic):
-        return topic.action_set.count()
+        return topic.action_set.filter(approved=True).count()
 
     def get_score(self, topic):
         return topic.rating_likes
