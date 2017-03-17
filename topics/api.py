@@ -252,6 +252,24 @@ class TopicDelete(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
+class TopicSearch(APIView):
+    def post(self, request, format=None):
+        term = request.data['term']
+        query = """
+            SELECT id, title FROM
+            (SELECT topics_topic.id, topics_topic.title, to_tsvector(topics_topic.title) || ' ' ||  to_tsvector(topics_topic.description) as document FROM topics_topic) t_search
+            WHERE t_search.document @@ to_tsquery('{term}');
+            """.format(term=term)
+        topics = Topic.objects.raw(query)
+            
+        payload = []
+        for topic in topics:
+            top = Topic.objects.get(pk=topic.id)
+            topic_serializer = TopicSerializer(top, partial=True)
+            payload.append(topic_serializer.data)
+        return Response(payload, status=status.HTTP_200_OK)
+
+
 class ActionListByTag(APIView):
     def get(self, request, tag, format=None):
         actions = Action.objects.filter(tags__slug__in=[tag])
