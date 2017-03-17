@@ -163,7 +163,7 @@ urlpatterns = [
             topic_api.ActionListByTopic.as_view(),
             name="topic_action_list"),
         url(
-            r'topics/search/$',
+            r'^search/$',
             topic_api.TopicSearch.as_view(),
             name="topic_search"),
 
