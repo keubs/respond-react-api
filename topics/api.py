@@ -257,7 +257,10 @@ class TopicSearch(APIView):
         term = request.data['term']
         query = """
             SELECT id, title FROM
-            (SELECT topics_topic.id, topics_topic.title, to_tsvector(topics_topic.title) || ' ' ||  to_tsvector(topics_topic.description) as document FROM topics_topic) t_search
+            (SELECT topics_topic.id, 
+                    topics_topic.title, 
+                    to_tsvector(topics_topic.title) || ' ' ||  to_tsvector(topics_topic.description) as document 
+                    FROM topics_topic ORDER BY topics_topic.created_on DESC) t_search
             WHERE t_search.document @@ to_tsquery('{term}:*');
             """.format(term=term)
         topics = Topic.objects.raw(query)
