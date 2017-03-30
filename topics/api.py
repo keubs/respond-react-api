@@ -255,6 +255,7 @@ class TopicDelete(APIView):
 class TopicSearch(APIView):
     def post(self, request, format=None):
         term = request.data['term']
+        term = ' & '.join(term.split(' '))
         query = """
             SELECT id, title FROM
             (SELECT topics_topic.id, 
