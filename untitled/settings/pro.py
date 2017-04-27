@@ -17,3 +17,9 @@ EMAIL_USE_TLS = True
 
 STATIC_ROOT = SERVER_ROOT + '/static'
 STATIC_URL = 'http://api.respondreact.com/static/'
+
+REST_FRAMEWORK = {
+	'DEFAULT_RENDERER_CLASSES': (
+		'rest_framework.renderers.JSONRenderer',
+	)
+}
