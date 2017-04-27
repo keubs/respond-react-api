@@ -172,10 +172,10 @@ urlpatterns = [
             r'^users/(?P<pk>.*)/topics/$',
             topic_api.TopicListByUser.as_view(),
             name="user_topics"),
-        url(
-            r'users/$',
-            customuser_viewset.CustomUserViewSet.as_view({'get': 'list'}),
-            name="user_list"),
+        # url(
+        #     r'users/$',
+        #     customuser_viewset.CustomUserViewSet.as_view({'get': 'list'}),
+        #     name="user_list"),
         url(
             r'users/(?P<pk>[0-9]+)/update$',
             customuser_viewset.CustomUserViewSet.as_view({'post': 'update'}),
